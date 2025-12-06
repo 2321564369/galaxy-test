@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Season & Episode Selector</title>
+<title>Dynamic Season & Episode Selector</title>
 <style>
   html, body {
     margin: 0;
@@ -46,7 +46,6 @@
 </head>
 <body>
 
-<!-- SEASON SELECTOR -->
 <label style="font-size:22px;">Season:</label>
 <select id="seasonSelect" onchange="updateEpisodes()">
   <option value="">Select a season...</option>
@@ -55,45 +54,31 @@
   <option value="3">Season 3</option>
 </select>
 
-<!-- EPISODE SELECTOR -->
 <label style="font-size:22px;">Episode:</label>
 <select id="episodeSelect" onchange="openEpisode()" disabled>
   <option value="">Select a season first...</option>
 </select>
 
-<!-- FULL SCREEN PLAYER -->
 <div id="playerContainer">
   <img id="backBtn" src="back.png" onclick="closePlayer()">
   <iframe id="playerIframe" allowfullscreen></iframe>
 </div>
 
 <script>
-// --------------------------------------------
-// EDIT THIS PART — Add your real episode URLs
-// --------------------------------------------
-const episodes = {
-  "1": { // Season 1
-    "1": "https://example.com/s1e1",
-    "2": "https://example.com/s1e2",
-    "3": "https://example.com/s1e3"
-  },
-  "2": { // Season 2
-    "1": "https://example.com/s2e1",
-    "2": "https://example.com/s2e2",
-    "3": "https://example.com/s2e3"
-  },
-  "3": { // Season 3
-    "1": "https://example.com/s3e1",
-    "2": "https://example.com/s3e2"
-  }
+// Total episodes per season
+const episodesPerSeason = {
+  1: 10,  // Season 1 has 10 episodes
+  2: 8,   // Season 2 has 8 episodes
+  3: 12   // Season 3 has 12 episodes
 };
-// --------------------------------------------
+
+// Base URL
+const baseURL = "https://111movies.com/tv/82728";
 
 function updateEpisodes() {
   const season = document.getElementById("seasonSelect").value;
   const episodeSelect = document.getElementById("episodeSelect");
 
-  // Reset episode list
   episodeSelect.innerHTML = "";
 
   if (!season) {
@@ -103,13 +88,14 @@ function updateEpisodes() {
   }
 
   episodeSelect.disabled = false;
-
-  // Add episodes for selected season
   episodeSelect.innerHTML = "<option value=''>Select an episode...</option>";
-  for (let ep in episodes[season]) {
+
+  const totalEpisodes = episodesPerSeason[season];
+
+  for (let i = 1; i <= totalEpisodes; i++) {
     const opt = document.createElement("option");
-    opt.value = episodes[season][ep];
-    opt.textContent = "Episode " + ep;
+    opt.value = `${baseURL}/${season}/${i}`;
+    opt.textContent = "Episode " + i;
     episodeSelect.appendChild(opt);
   }
 }
