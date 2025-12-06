@@ -40,12 +40,15 @@ header h1 {
 }
 
 #showInfo img {
-  width: 120px;
-  height: 160px;
-  object-fit: contain; /* Show full image */
+  width: auto;      /* Let the image keep its natural width */
+  height: auto;     /* Let the image keep its natural height */
+  max-width: 100%;  /* Optional: prevent it from overflowing container */
+  max-height: 400px; /* Optional: limit height if needed */
+  object-fit: contain;
   margin-right: 20px;
   border-radius: 8px;
 }
+
 
 #showInfo .title {
   font-size: 24px;
