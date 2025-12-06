@@ -15,7 +15,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Background image fade using pseudo-element */
 body::before {
   content: "";
   position: fixed;
@@ -27,14 +26,30 @@ body::before {
   background-size: cover;
   z-index: -1;
 
-  /* Fade from left - adjust start/end percentages */
-  -webkit-mask-image: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 70%, rgba(255,255,255,0) 100%);
+  /* Strong black fade from left */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0,0,0,1) 0%,     /* fully black */
+    rgba(0,0,0,0.85) 20%, /* still mostly black */
+    rgba(0,0,0,0.55) 40%, /* mid fade */
+    rgba(0,0,0,0.25) 60%, /* lighter fade */
+    rgba(0,0,0,0.00) 100% /* clear */
+  );
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: cover;
-  mask-image: linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 70%, rgba(255,255,255,0) 100%);
+
+  mask-image: linear-gradient(
+    to right,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.85) 20%,
+    rgba(0,0,0,0.55) 40%,
+    rgba(0,0,0,0.25) 60%,
+    rgba(0,0,0,0.00) 100%
+  );
   mask-repeat: no-repeat;
   mask-size: cover;
 }
+
 
 /* Header with logo */
 header {
