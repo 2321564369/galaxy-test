@@ -1,1 +1,40 @@
-<button onclick="location.href='player.html'">Open Player</button>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Full Screen Player</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+  }
+
+  #playerContainer {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  #playerIframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  #openBtn {
+    padding: 20px 35px;
+    font-size: 22px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<button id="openBtn" onclick="openPlayer()">Open Player</button>
+
+<div id="playerContainer">
+  <iframe id="playerIframe"></iframe>
+</div>
