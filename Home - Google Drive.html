@@ -38,3 +38,19 @@
 <div id="playerContainer">
   <iframe id="playerIframe"></iframe>
 </div>
+
+<script>
+function openPlayer() {
+  document.getElementById("playerIframe").src =
+    "https://111movies.com/tv/82728/1/1";  // <--- put your video player URL here
+
+  // Show the full-screen player
+  document.getElementById("playerContainer").style.display = "block";
+
+  // Hide the button
+  document.getElementById("openBtn").style.display = "none";
+}
+</script>
+
+</body>
+</html>
