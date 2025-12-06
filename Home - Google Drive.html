@@ -22,33 +22,26 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('https://assets-prd.ignimgs.com/2023/11/22/bluey-thumb-1700628294058.png') no-repeat center center;
-  background-size: cover;
   z-index: -1;
 
-  /* Strong black fade from left */
-  -webkit-mask-image: linear-gradient(
-    to left,
-    rgba(255,255,255,1) 0%,     /* fully black */
-    rgba(255,255,255,0.85) 20%, /* still mostly black */
-    rgba(255,255,255,0.55) 40%, /* mid fade */
-    rgba(255,255,255,0.25) 60%, /* lighter fade */
-    rgba(255,255,255,0.00) 100% /* clear */
-  );
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: cover;
+  /* Background image */
+  background: url('https://assets-prd.ignimgs.com/2023/11/22/bluey-thumb-1700628294058.png') 
+              no-repeat center center;
+  background-size: cover;
 
-  mask-image: linear-gradient(
-    to left,
-    rgba(255,255,255,1) 0%,     /* fully black */
-    rgba(255,255,255,0.85) 20%, /* still mostly black */
-    rgba(255,255,255,0.55) 40%, /* mid fade */
-    rgba(255,255,255,0.25) 60%, /* lighter fade */
-    rgba(255,255,255,0.00) 100% /* clear */
-  );
-  mask-repeat: no-repeat;
-  mask-size: cover;
+  /* black fade overlay */
+  background-image: 
+    linear-gradient(
+      to right,
+      rgba(0,0,0,1) 0%,      /* Black */
+      rgba(0,0,0,0.85) 20%,  /* Fade begins */
+      rgba(0,0,0,0.55) 40%,  /* Mid fade */
+      rgba(0,0,0,0.25) 60%,  /* Soft fade */
+      rgba(0,0,0,0) 100%     /* Fully visible image */
+    ),
+    url('https://assets-prd.ignimgs.com/2023/11/22/bluey-thumb-1700628294058.png');
 }
+
 
 
 /* Header with logo */
