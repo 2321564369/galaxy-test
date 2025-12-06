@@ -18,12 +18,24 @@
     width: 100%;
     height: 100%;
     background: black;
+    z-index: 9999;
   }
 
   #playerIframe {
     border: none;
     width: 100%;
     height: 100%;
+  }
+
+  /* BACK BUTTON IMAGE */
+  #backBtn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 10000;
   }
 
   #openBtn {
@@ -37,16 +49,25 @@
 <button id="openBtn" onclick="openPlayer()">Open Player</button>
 
 <div id="playerContainer">
+  <!-- BACK BUTTON IMAGE -->
+  <img id="backBtn" src="back.png" onclick="closePlayer()">
+  
   <iframe id="playerIframe" allowfullscreen></iframe>
 </div>
 
 <script>
 function openPlayer() {
   document.getElementById("playerIframe").src =
-    "https://111movies.com/tv/82728/1/1"; // <-- your player URL
+    "https://111movies.com/tv/82728/1/1"; // <-- replace with your player URL
 
   document.getElementById("playerContainer").style.display = "block";
   document.getElementById("openBtn").style.display = "none";
+}
+
+function closePlayer() {
+  document.getElementById("playerContainer").style.display = "none";
+  document.getElementById("playerIframe").src = "";
+  document.getElementById("openBtn").style.display = "inline-block";
 }
 </script>
 
