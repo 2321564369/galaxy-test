@@ -2,32 +2,33 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Full Screen Player</title>
+<title>Responsive Player</title>
 <style>
   html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: black;
   }
 
   #playerContainer {
     display: none;
-    width: 100vw;
-    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
   }
 
   #playerIframe {
+    border: none;
     width: 100%;
     height: 100%;
-    border: none;
   }
 
   #openBtn {
-    padding: 20px 35px;
-    font-size: 22px;
-    border-radius: 8px;
-    cursor: pointer;
+    padding: 20px 30px;
+    font-size: 20px;
   }
 </style>
 </head>
@@ -36,18 +37,15 @@
 <button id="openBtn" onclick="openPlayer()">Open Player</button>
 
 <div id="playerContainer">
-  <iframe id="playerIframe"></iframe>
+  <iframe id="playerIframe" allowfullscreen></iframe>
 </div>
 
 <script>
 function openPlayer() {
   document.getElementById("playerIframe").src =
-    "https://111movies.com/tv/82728/1/1";  // <--- put your video player URL here
+    "https://example.com/player"; // <-- your player URL
 
-  // Show the full-screen player
   document.getElementById("playerContainer").style.display = "block";
-
-  // Hide the button
   document.getElementById("openBtn").style.display = "none";
 }
 </script>
