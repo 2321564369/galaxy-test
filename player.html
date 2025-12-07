@@ -2,24 +2,227 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Player</title>
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
+<title>Bluey</title>
 
-  iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
+<style>
+/* Remove default body spacing */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background image + black fade */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(0,0,0,1) 0%,
+      rgba(0,0,0,0.85) 20%,
+      rgba(0,0,0,0.55) 40%,
+      rgba(0,0,0,0.25) 60%,
+      rgba(0,0,0,0) 100%
+    ),
+    url('https://assets-prd.ignimgs.com/2023/11/22/bluey-thumb-1700628294058.png') no-repeat center center fixed;
+
+  background-size: cover;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+header img {
+  height: 50px;
+  margin-right: 15px;
+}
+
+/* Show image + title */
+#showInfo {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+#showInfo img {
+  width: 120px;
+  height: auto;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+#showInfo .title {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Dropdowns */
+select {
+  font-size: 18px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(128,128,128,0.7);
+  color: white;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 5px;
+}
+
+select option {
+  color: black;
+}
+
+/* Player fullscreen */
+#playerContainer {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  z-index: 9999;
+}
+
+#playerIframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Back button */
+#backBtn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 10000;
+}
 </style>
 </head>
+
 <body>
 
-<iframe src="https://111movies.com/tv/82728/1/1"></iframe>
+<!-- HEADER -->
+<header>
+  <img src="https://github.com/2321564369/shows/blob/main/bluey/Your_paragraph_text__1_-removebg-preview.png?raw=true">
+</header>
+
+<!-- SHOW INFO -->
+<div id="showInfo">
+  <img src="https://inoriginal.net/uploads/posts/2024-09/1726306639_logo.webp">
+  <div class="title">Bluey</div>
+</div>
+
+<!-- SELECTORS -->
+<div style="padding: 20px;">
+
+  <!-- Season -->
+  <label>Season:</label><br>
+  <select id="seasonSelect" onchange="updateEpisodes()">
+    <option value="">Select a season...</option>
+    <option value="1">Season 1</option>
+    <option value="2">Season 2</option>
+    <option value="3">Season 3</option>
+  </select>
+
+  <br><br>
+
+  <!-- Episode -->
+  <label>Episode:</label><br>
+  <select id="episodeSelect" onchange="openEpisode()" disabled>
+    <option value="">Select a season first...</option>
+  </select>
+
+</div>
+
+<!-- FULLSCREEN PLAYER -->
+<div id="playerContainer">
+  <img id="backBtn" src="back.png" onclick="closePlayer()">
+  <iframe id="playerIframe" allowfullscreen></iframe>
+</div>
+
+<script>
+/* SEPARATE LINKS FOR EACH EPISODE */
+const episodeLinks = {
+  1: {
+    1: "https://example.com/s1e1",
+    2: "https://example.com/s1e2",
+    3: "https://example.com/s1e3",
+    4: "https://example.com/s1e4",
+    5: "https://example.com/s1e5"
+  },
+  2: {
+    1: "https://example.com/s2e1",
+    2: "https://example.com/s2e2",
+    3: "https://example.com/s2e3"
+  },
+  3: {
+    1: "https://example.com/s3e1",
+    2: "https://example.com/s3e2",
+    3: "https://example.com/s3e3"
+  }
+};
+
+/* UPDATE EPISODE LIST WHEN SEASON CHANGES */
+function updateEpisodes() {
+  const season = document.getElementById("seasonSelect").value;
+  const epSelect = document.getElementById("episodeSelect");
+  epSelect.innerHTML = "";
+
+  if (!season) {
+    epSelect.disabled = true;
+    epSelect.innerHTML = "<option>Select a season first...</option>";
+    return;
+  }
+
+  epSelect.disabled = false;
+  epSelect.innerHTML = "<option value=''>Select an episode...</option>";
+
+  const eps = episodeLinks[season];
+  for (const epNum in eps) {
+    let opt = document.createElement("option");
+    opt.value = eps[epNum];
+    opt.textContent = "Episode " + epNum;
+    epSelect.appendChild(opt);
+  }
+}
+
+/* OPEN EPISODE IN FULLSCREEN */
+function openEpisode() {
+  const url = document.getElementById("episodeSelect").value;
+  if (!url) return;
+
+  document.getElementById("playerIframe").src = url;
+  document.getElementById("playerContainer").style.display = "block";
+}
+
+/* CLOSE PLAYER */
+function closePlayer() {
+  document.getElementById("playerContainer").style.display = "none";
+  document.getElementById("playerIframe").src = "";
+  document.getElementById("episodeSelect").value = "";
+}
+</script>
 
 </body>
 </html>
