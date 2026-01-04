@@ -1,6 +1,8 @@
-<html lang="en" class="focus-outline-visible"><head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTML Games Hub</title>
   <style>
     :root {
@@ -60,6 +62,16 @@
       transition: transform .2s ease, box-shadow .2s ease;
     }
 
+    .game-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 1rem;
+      object-fit: cover;
+      background: #020617;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
+    }
+    }
+
     .game-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 20px 40px rgba(0,0,0,.6);
@@ -117,7 +129,7 @@
   <div class="games-grid" id="gamesGrid"></div>
 
   </div>
-
+</div>
 
 <footer>
   Add more games by copying a card and changing the function + URL.
@@ -136,6 +148,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://orteil.dashnet.org/cookieclicker/",
+          image: "images/cookieclicker.png",
           id: "GameurlCookie"
         },
         {
@@ -143,6 +156,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "games/local-shooter/index.html",
+          image: "images/local-shooter.png",
           id: "LocalShooter01"
         }
       ]
@@ -152,7 +166,6 @@
   /* =============================
      UI GENERATION FROM FILE SYSTEM
      ============================= */
-  document.addEventListener("DOMContentLoaded", () => {
   const grid = document.getElementById("gamesGrid");
 
   FILE_SYSTEM.forEach(section => {
@@ -161,6 +174,7 @@
       card.className = "game-card";
 
       card.innerHTML = `
+        <img class="game-thumb" src="${game.image}" alt="${game.title}">
         <h3>${game.title}</h3>
         <p>Launch type: ${game.type}</p>
         <button id="${game.id}">Play</button>
@@ -177,8 +191,6 @@
       });
     });
   });
-});
-
 
   /* =============================
      WINDOW INJECT FUNCTION
@@ -244,6 +256,5 @@ iframe{border:0;width:100%;height:100%}
   }
 </script>
 
-
-
-</body></html>
+</body>
+</html>
