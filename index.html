@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTML Games Hub</title>
+
+  <!-- ========== GALAXY THEME (SHARED) ========== -->
   <style>
     :root {
       --bg: #05010d;
@@ -26,134 +28,9 @@
         linear-gradient(180deg, #020617, var(--bg));
       color: var(--text);
       min-height: 100vh;
-      overflow-x: hidden;
-    }
     }
 
-    header {
-      padding: 3rem 2rem 2rem;
-      text-align: center;
-      position: relative;
-    }
-
-    header::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top, rgba(255,255,255,.08), transparent 70%);
-      pointer-events: none;
-    }
-
-    header h1 {
-      font-size: 2.5rem;
-      margin: 0;
-      color: var(--accent);
-    }
-
-    header p {
-      color: var(--muted);
-      margin-top: .5rem;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1rem 2rem 3rem;
-    }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .game-card {
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0)),
-        radial-gradient(300px 200px at top right, rgba(167,139,250,.25), transparent 60%),
-        linear-gradient(180deg, #060024, #020617);
-      border-radius: 1.5rem;
-      padding: 1.25rem;
-      box-shadow:
-        0 0 0 1px rgba(167,139,250,.15),
-        0 20px 60px rgba(0,0,0,.7);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-
-    .game-card:hover {
-      transform: translateY(-6px) scale(1.01);
-      box-shadow:
-        0 0 0 1px rgba(56,189,248,.4),
-        0 30px 80px rgba(0,0,0,.9);
-    }
-    }
-
-    .game-thumb {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 1.25rem;
-      object-fit: cover;
-      background: #020617;
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.08),
-        0 10px 40px rgba(167,139,250,.35);
-    }
-    }
-
-    .game-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px rgba(0,0,0,.6);
-    }
-
-    .game-card h3 {
-      margin: 0;
-      font-size: 1.25rem;
-    }
-
-    .game-card p {
-      margin: 0;
-      font-size: .9rem;
-      color: var(--muted);
-      flex-grow: 1;
-    }
-
-    .game-card button {
-      appearance: none;
-      border: none;
-      border-radius: .9rem;
-      padding: .75rem 1rem;
-      font-size: .95rem;
-      font-weight: 700;
-      cursor: pointer;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #020617;
-      box-shadow: 0 10px 30px rgba(167,139,250,.45);
-      transition: transform .1s ease, box-shadow .15s ease, filter .15s ease;
-    }
-
-    .game-card button:hover {
-      filter: brightness(1.15);
-      box-shadow: 0 15px 45px rgba(56,189,248,.6);
-    }
-
-    .game-card button:hover {
-      filter: brightness(1.1);
-    }
-
-    .game-card button:active {
-      transform: scale(.98);
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: var(--muted);
-      font-size: .85rem;
-    }
-
+    /* ========== NAVBAR (SHARED ON ALL PAGES) ========== */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -191,13 +68,78 @@
 
     .nav-right a:hover {
       opacity: 1;
+      color: var(--accent2);
+    }
+
+    /* ========== PAGE CONTENT ========== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      color: var(--muted);
+      max-width: 700px;
+    }
+
+    .site-footer {
+      margin-top: 4rem;
+      padding: 2.5rem 2rem;
+      background:
+        linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,1)),
+        radial-gradient(800px 200px at 50% 100%, rgba(167,139,250,.25), transparent 60%);
+      box-shadow: 0 -20px 60px rgba(0,0,0,.7);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 2rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .footer-left strong {
       color: var(--accent);
+    }
+
+    .footer-center {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-center a {
+      color: var(--text);
+      text-decoration: none;
+      opacity: .75;
+    }
+
+    .footer-center a:hover {
+      opacity: 1;
+      color: var(--accent2);
+    }
+
+    .footer-right {
+      text-align: right;
     }
     }
   </style>
 </head>
 <body>
 
+<!-- ========== NAVBAR ========== -->
 <nav class="navbar">
   <div class="nav-left">🎮 HTML Games Hub</div>
   <div class="nav-right">
@@ -208,141 +150,35 @@
   </div>
 </nav>
 
-<header>
-  <h1>HTML Games Hub</h1>
-  <p>Launch local HTML games or external game URLs in a clean sandboxed window</p>
-</header>
-
+<!-- ========== PAGE CONTENT ========== -->
 <div class="container">
-  <div class="games-grid" id="gamesGrid"></div>
-
-  </div>
+  <h1>Page Title</h1>
+  <p>
+    This is a reusable page template.
+    Replace this content per page (Home, Library, About, Settings, etc).
+  </p>
 </div>
 
-<footer>
-  Add more games by copying a card and changing the function + URL.
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>HTML Games Hub</strong><br>
+      <span>Galaxy-themed HTML game launcher</span>
+    </div>
+
+    <div class="footer-center">
+      <a href="index.html">Home</a>
+      <a href="library.html">Library</a>
+      <a href="about.html">About</a>
+      <a href="settings.html">Settings</a>
+    </div>
+
+    <div class="footer-right">
+      <span>© 2026</span><br>
+      <span>All games belong to their creators</span>
+    </div>
+  </div>
 </footer>
-
-<script>
-  /* =============================
-     GAME FILE SYSTEM (EDIT THIS)
-     ============================= */
-  const FILE_SYSTEM = [
-    {
-      title: "Season 1 (52 Games)",
-      folder: [
-        {
-          title: "Cookie Clicker",
-          type: "game_url",
-          action: "launchURLGame",
-          file: "https://orteil.dashnet.org/cookieclicker/",
-          image: "images/cookieclicker.png",
-          id: "GameurlCookie"
-        },
-        {
-          title: "Local Shooter",
-          type: "file_url",
-          action: "launchLocalGame",
-          file: "games/local-shooter/index.html",
-          image: "images/local-shooter.png",
-          id: "LocalShooter01"
-        }
-      ]
-    }
-  ];
-
-  /* =============================
-     UI GENERATION FROM FILE SYSTEM
-     ============================= */
-  const grid = document.getElementById("gamesGrid");
-
-  FILE_SYSTEM.forEach(section => {
-    section.folder.forEach(game => {
-      const card = document.createElement("div");
-      card.className = "game-card";
-
-      card.innerHTML = `
-        <img class="game-thumb" src="${game.image}" alt="${game.title}">
-        <h3>${game.title}</h3>
-        <p>Launch type: ${game.type}</p>
-        <button id="${game.id}">Play</button>
-      `;
-
-      grid.appendChild(card);
-
-      document.getElementById(game.id).addEventListener("click", () => {
-        if (game.action === "launchLocalGame") {
-          launchLocalGame(game.file);
-        } else if (game.action === "launchURLGame") {
-          launchURLGame(game.file);
-        }
-      });
-    });
-  });
-
-  /* =============================
-     WINDOW INJECT FUNCTION
-     ============================= */
-  function openTemplatePage(htmlContent) {
-    const w = window.open("", "_blank");
-    if (!w) {
-      alert("Popup blocked! Please allow popups for this site.");
-      return;
-    }
-    try {
-      w.document.open();
-      w.document.write(htmlContent);
-      w.document.close();
-    } catch (e) {
-      const blob = new Blob([htmlContent], { type: "text/html" });
-      w.location = URL.createObjectURL(blob);
-    }
-  }
-
-  /* =============================
-     LOCAL FILE GAME LAUNCHER
-     ============================= */
-  async function launchLocalGame(FILE_URL) {
-    try {
-      const response = await fetch(FILE_URL);
-      const text = await response.text();
-
-      const injectedHTML = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><style>
-html,body{margin:0;padding:0;height:100%;background:#000;overflow:hidden}
-</style></head><body>${text}</body></html>`;
-
-      openTemplatePage(injectedHTML);
-    } catch (err) {
-      console.error(err);
-      alert("Local game failed to load");
-    }
-  }
-
-  /* =============================
-     EXTERNAL URL GAME LAUNCHER
-     ============================= */
-  function launchURLGame(GAME_URL) {
-    const injectedHTML = `<!DOCTYPE html>
-<html><head><meta charset="utf-8"><style>
-html,body{margin:0;padding:0;height:100%;background:#000}
-iframe{border:0;width:100%;height:100%}
-</style></head><body>
-<iframe src="${GAME_URL}" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen"></iframe>
-</body></html>`;
-
-    const w = window.open("", "_blank");
-    if (!w) return alert("Popup blocked");
-
-    try {
-      w.document.open();
-      w.document.write(injectedHTML);
-      w.document.close();
-    } catch {
-      w.location = GAME_URL;
-    }
-  }
-</script>
 
 </body>
 </html>
