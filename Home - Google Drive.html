@@ -1,221 +1,249 @@
-<html><head>
-<meta charset="UTF-8">
-<title>Bluey</title>
-<style>
-/* Full page background with fade from left */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  color: white;
-  position: relative;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+<html lang="en" class="focus-outline-visible"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Games Hub</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #020617;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+    }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
+    * { box-sizing: border-box; }
 
-  /* Background image */
-  background: url('https://assets-prd.ignimgs.com/2023/11/22/bluey-thumb-1700628294058.png') 
-              no-repeat center center;
-  background-size: cover;
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1e293b, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+    }
 
-  /* black fade overlay */
-  background-image: 
-    linear-gradient(
-      to right,
-      rgba(0,0,0,1) 0%,      /* Black */
-      rgba(0,0,0,0.85) 20%,  /* Fade begins */
-      rgba(0,0,0,0.55) 40%,  /* Mid fade */
-      rgba(0,0,0,0.25) 60%,  /* Soft fade */
-      rgba(0,0,0,0) 100%     /* Fully visible image */
-    ),
-    url('https://assets-prd.ignimgs.com/2023/11/22/bluey-thumb-1700628294058.png');
-}
+    header {
+      padding: 2rem;
+      text-align: center;
+    }
 
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      color: var(--accent);
+    }
 
+    header p {
+      color: var(--muted);
+      margin-top: .5rem;
+    }
 
-/* Header with logo */
-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-  background: rgba(0, 0, 0, 0.5);
-}
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem 3rem;
+    }
 
-header img {
-  height: 50px;
-  margin-right: 15px;
-}
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
 
-header h1 {
-  font-size: 28px;
-  margin: 0;
-}
+    .game-card {
+      background: linear-gradient(180deg, #020617, #020617cc);
+      border-radius: 1.25rem;
+      padding: 1.25rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,.4);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
 
-/* Show image / title placeholder */
-#showInfo {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-}
+    .game-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,.6);
+    }
 
-#showInfo img {
-  width: auto;
-  height: auto;
-  max-width: 200px;  /* optional max size */
-  max-height: 300px; /* optional max size */
-  object-fit: contain; 
-  margin-right: 20px;
-  border-radius: 8px;
-}
+    .game-card h3 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
 
-#showInfo .title {
-  font-size: 24px;
-  font-weight: bold;
-}
+    .game-card p {
+      margin: 0;
+      font-size: .9rem;
+      color: var(--muted);
+      flex-grow: 1;
+    }
 
-/* Dropdowns */
-select {
-  font-size: 18px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  background: rgba(128, 128, 128, 0.7);
-  color: white;
-  outline: none;
-  cursor: pointer;
-  width: 100%;
-  max-width: 300px;
-  margin-top: 5px;
-}
+    .game-card button {
+      appearance: none;
+      border: none;
+      border-radius: .75rem;
+      padding: .75rem 1rem;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), #0ea5e9);
+      color: #020617;
+      transition: filter .15s ease, transform .1s ease;
+    }
 
-select option {
-  color: black;
-}
+    .game-card button:hover {
+      filter: brightness(1.1);
+    }
 
-/* Full-screen player container */
-#playerContainer {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  z-index: 9999;
-}
+    .game-card button:active {
+      transform: scale(.98);
+    }
 
-#playerIframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Back button */
-#backBtn {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  z-index: 10000;
-}
-</style>
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+  </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
-  <img src="https://github.com/2321564369/shows/blob/main/bluey/Your_paragraph_text__1_-removebg-preview.png?raw=true" alt="Logo">
-  <h1></h1>
+  <h1>HTML Games Hub</h1>
+  <p>Launch local HTML games or external game URLs in a clean sandboxed window</p>
 </header>
 
-<!-- SHOW IMAGE AND TITLE -->
-<div id="showInfo">
-  <img src="https://inoriginal.net/uploads/posts/2024-09/1726306639_logo.webp" alt="Show Image">
-  <div class="title">Bluey</div>
-</div>
+<div class="container">
+  <div class="games-grid" id="gamesGrid"></div>
 
-<!-- SEASON AND EPISODE SELECTORS -->
-<div style="padding: 0 20px 20px 20px;">
-  <!-- Season Dropdown -->
-  <div style="margin-bottom: 15px;">
-    <label>Season:</label><br>
-    <select id="seasonSelect" onchange="updateEpisodes()">
-      <option value="1">Season 1</option>
-      <option value="2">Season 2</option>
-      <option value="3">Season 3</option>
-    </select>
   </div>
 
-  <!-- Episode Dropdown -->
-  <div>
-    <label>Episode:</label><br>
-    <select id="episodeSelect" onchange="openEpisode()"><option value="">Select an episode...</option><option value="https://111movies.com/tv/82728/1/1">Episode 1</option><option value="https://111movies.com/tv/82728/1/2">Episode 2</option><option value="https://111movies.com/tv/82728/1/3">Episode 3</option><option value="https://111movies.com/tv/82728/1/4">Episode 4</option><option value="https://111movies.com/tv/82728/1/5">Episode 5</option><option value="https://111movies.com/tv/82728/1/6">Episode 6</option><option value="https://111movies.com/tv/82728/1/7">Episode 7</option><option value="https://111movies.com/tv/82728/1/8">Episode 8</option><option value="https://111movies.com/tv/82728/1/9">Episode 9</option><option value="https://111movies.com/tv/82728/1/10">Episode 10</option><option value="https://111movies.com/tv/82728/1/11">Episode 11</option><option value="https://111movies.com/tv/82728/1/12">Episode 12</option><option value="https://111movies.com/tv/82728/1/13">Episode 13</option><option value="https://111movies.com/tv/82728/1/14">Episode 14</option><option value="https://111movies.com/tv/82728/1/15">Episode 15</option><option value="https://111movies.com/tv/82728/1/16">Episode 16</option><option value="https://111movies.com/tv/82728/1/17">Episode 17</option><option value="https://111movies.com/tv/82728/1/18">Episode 18</option><option value="https://111movies.com/tv/82728/1/19">Episode 19</option><option value="https://111movies.com/tv/82728/1/20">Episode 20</option><option value="https://111movies.com/tv/82728/1/21">Episode 21</option><option value="https://111movies.com/tv/82728/1/22">Episode 22</option><option value="https://111movies.com/tv/82728/1/23">Episode 23</option><option value="https://111movies.com/tv/82728/1/24">Episode 24</option><option value="https://111movies.com/tv/82728/1/25">Episode 25</option><option value="https://111movies.com/tv/82728/1/26">Episode 26</option><option value="https://111movies.com/tv/82728/1/27">Episode 27</option><option value="https://111movies.com/tv/82728/1/28">Episode 28</option><option value="https://111movies.com/tv/82728/1/29">Episode 29</option><option value="https://111movies.com/tv/82728/1/30">Episode 30</option><option value="https://111movies.com/tv/82728/1/31">Episode 31</option><option value="https://111movies.com/tv/82728/1/32">Episode 32</option><option value="https://111movies.com/tv/82728/1/33">Episode 33</option><option value="https://111movies.com/tv/82728/1/34">Episode 34</option><option value="https://111movies.com/tv/82728/1/35">Episode 35</option><option value="https://111movies.com/tv/82728/1/36">Episode 36</option><option value="https://111movies.com/tv/82728/1/37">Episode 37</option><option value="https://111movies.com/tv/82728/1/38">Episode 38</option><option value="https://111movies.com/tv/82728/1/39">Episode 39</option><option value="https://111movies.com/tv/82728/1/40">Episode 40</option><option value="https://111movies.com/tv/82728/1/41">Episode 41</option><option value="https://111movies.com/tv/82728/1/42">Episode 42</option><option value="https://111movies.com/tv/82728/1/43">Episode 43</option><option value="https://111movies.com/tv/82728/1/44">Episode 44</option><option value="https://111movies.com/tv/82728/1/45">Episode 45</option><option value="https://111movies.com/tv/82728/1/46">Episode 46</option><option value="https://111movies.com/tv/82728/1/47">Episode 47</option><option value="https://111movies.com/tv/82728/1/48">Episode 48</option><option value="https://111movies.com/tv/82728/1/49">Episode 49</option><option value="https://111movies.com/tv/82728/1/50">Episode 50</option><option value="https://111movies.com/tv/82728/1/51">Episode 51</option><option value="https://111movies.com/tv/82728/1/52">Episode 52</option></select>
-  </div>
-</div>
 
-<div>CHOOSE SERVER CHARLIE FOR FHD</div><!-- FULL SCREEN PLAYER -->
-<div id="playerContainer" style="display: none;">
-  <img id="backBtn" src="https://cdn-icons-png.flaticon.com/512/5974/5974636.png" onclick="closePlayer()">
-  <iframe id="playerIframe" allowfullscreen="" src=""></iframe>
-</div>
+<footer>
+  Add more games by copying a card and changing the function + URL.
+</footer>
 
 <script>
-// Episodes per season
-const episodesPerSeason = {
-  1: 52, // Season 1
-  2: 52,  // Season 2
-  3: 50,  // Season 3
-};
+  /* =============================
+     GAME FILE SYSTEM (EDIT THIS)
+     ============================= */
+  const FILE_SYSTEM = [
+    {
+      title: "Season 1 (52 Games)",
+      folder: [
+        {
+          title: "Cookie Clicker",
+          type: "game_url",
+          action: "launchURLGame",
+          file: "https://orteil.dashnet.org/cookieclicker/",
+          id: "GameurlCookie"
+        },
+        {
+          title: "Local Shooter",
+          type: "file_url",
+          action: "launchLocalGame",
+          file: "games/local-shooter/index.html",
+          id: "LocalShooter01"
+        }
+      ]
+    }
+  ];
 
-const baseURL = "https://111movies.com/tv/82728"; // Replace with your URL
+  /* =============================
+     UI GENERATION FROM FILE SYSTEM
+     ============================= */
+  document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.getElementById("gamesGrid");
 
-function updateEpisodes() {
-  const season = document.getElementById("seasonSelect").value;
-  const episodeSelect = document.getElementById("episodeSelect");
-  episodeSelect.innerHTML = "";
+  FILE_SYSTEM.forEach(section => {
+    section.folder.forEach(game => {
+      const card = document.createElement("div");
+      card.className = "game-card";
 
-  if (!season) {
-    episodeSelect.disabled = true;
-    episodeSelect.innerHTML = "<option>Select a season first...</option>";
-    return;
+      card.innerHTML = `
+        <h3>${game.title}</h3>
+        <p>Launch type: ${game.type}</p>
+        <button id="${game.id}">Play</button>
+      `;
+
+      grid.appendChild(card);
+
+      document.getElementById(game.id).addEventListener("click", () => {
+        if (game.action === "launchLocalGame") {
+          launchLocalGame(game.file);
+        } else if (game.action === "launchURLGame") {
+          launchURLGame(game.file);
+        }
+      });
+    });
+  });
+});
+
+
+  /* =============================
+     WINDOW INJECT FUNCTION
+     ============================= */
+  function openTemplatePage(htmlContent) {
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Popup blocked! Please allow popups for this site.");
+      return;
+    }
+    try {
+      w.document.open();
+      w.document.write(htmlContent);
+      w.document.close();
+    } catch (e) {
+      const blob = new Blob([htmlContent], { type: "text/html" });
+      w.location = URL.createObjectURL(blob);
+    }
   }
 
-  episodeSelect.disabled = false;
-  episodeSelect.innerHTML = "<option value=''>Select an episode...</option>";
+  /* =============================
+     LOCAL FILE GAME LAUNCHER
+     ============================= */
+  async function launchLocalGame(FILE_URL) {
+    try {
+      const response = await fetch(FILE_URL);
+      const text = await response.text();
 
-  const totalEpisodes = episodesPerSeason[season];
+      const injectedHTML = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;padding:0;height:100%;background:#000;overflow:hidden}
+</style></head><body>${text}</body></html>`;
 
-  for (let i = 1; i <= totalEpisodes; i++) {
-    const opt = document.createElement("option");
-    opt.value = `${baseURL}/${season}/${i}`;
-    opt.textContent = "Episode " + i;
-    episodeSelect.appendChild(opt);
+      openTemplatePage(injectedHTML);
+    } catch (err) {
+      console.error(err);
+      alert("Local game failed to load");
+    }
   }
-}
 
-function openEpisode() {
-  const url = document.getElementById("episodeSelect").value;
-  if (!url) return;
+  /* =============================
+     EXTERNAL URL GAME LAUNCHER
+     ============================= */
+  function launchURLGame(GAME_URL) {
+    const injectedHTML = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+html,body{margin:0;padding:0;height:100%;background:#000}
+iframe{border:0;width:100%;height:100%}
+</style></head><body>
+<iframe src="${GAME_URL}" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-fullscreen"></iframe>
+</body></html>`;
 
-  document.getElementById("playerIframe").src = url;
-  document.getElementById("playerContainer").style.display = "block";
-}
+    const w = window.open("", "_blank");
+    if (!w) return alert("Popup blocked");
 
-function closePlayer() {
-  document.getElementById("playerContainer").style.display = "none";
-  document.getElementById("playerIframe").src = "";
-  document.getElementById("episodeSelect").value = "";
-}
+    try {
+      w.document.open();
+      w.document.write(injectedHTML);
+      w.document.close();
+    } catch {
+      w.location = GAME_URL;
+    }
+  }
 </script>
+
+
+
 </body></html>
