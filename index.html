@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HTML Games Hub</title>
   <style>
     :root {
@@ -45,7 +43,7 @@
     }
 
     header h1 {
-      font-size: 2.5rem;
+      font-size: 5rem;
       margin: 0;
       color: var(--accent);
     }
@@ -193,35 +191,84 @@
       opacity: 1;
       color: var(--accent);
     }
+    .site-footer {
+      margin-top: 4rem;
+      padding: 2.5rem 2rem;
+      background:
+        linear-gradient(180deg, rgba(2,6,23,.9), rgba(2,6,23,1)),
+        radial-gradient(800px 200px at 50% 100%, rgba(167,139,250,.25), transparent 60%);
+      box-shadow: 0 -20px 60px rgba(0,0,0,.7);
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 2rem;
+      align-items: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .footer-left strong {
+      color: var(--accent);
+    }
+
+    .footer-center {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-center a {
+      color: var(--text);
+      text-decoration: none;
+      opacity: .75;
+    }
+
+    .footer-center a:hover {
+      opacity: 1;
+      color: var(--accent2);
+    }
+
+    .footer-right {
+      text-align: right;
+    }
     }
   </style>
 </head>
 <body>
 
 <nav class="navbar">
-  <div class="nav-left">🎮 HTML Games Hub</div>
+  <div class="nav-left">🌌Unbaned Galaxy🚀</div>
   <div class="nav-right">
     <a href="index.html">Home</a>
-    <a href="library.html">Library</a>
-    <a href="about.html">About</a>
-    <a href="settings.html">Settings</a>
+    <a href="discord.html">Discord</a>
   </div>
 </nav>
 
 <header>
-  <h1>HTML Games Hub</h1>
-  <p>Launch local HTML games or external game URLs in a clean sandboxed window</p>
+  <h1 style="text-align: center;">Galaxy</h1>
+  <p style="text-align: center;">Free, Unblocked, Always Updated.</p>
 </header>
 
 <div class="container">
-  <div class="games-grid" id="gamesGrid"></div>
+  <div class="games-grid" id="gamesGrid"><div class="game-card">
+        <img class="game-thumb" src="images/cookieclicker.png" alt="Cookie Clicker">
+        <h3>Cookie Clicker</h3>
+        <p>Launch type: game_url</p>
+        <button id="GameurlCookie">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="images/local-shooter.png" alt="Local Shooter">
+        <h3>Local Shooter</h3>
+        <p>Launch type: file_url</p>
+        <button id="LocalShooter01">Play</button>
+      </div></div>
 
   </div>
-</div>
 
-<footer>
-  Add more games by copying a card and changing the function + URL.
-</footer>
+
+
 
 <script>
   /* =============================
@@ -343,6 +390,22 @@ iframe{border:0;width:100%;height:100%}
     }
   }
 </script>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>Unbaned Galaxy</strong><br>
+      <span>Galaxy-themed HTML game launcher</span>
+    </div>
+    <div class="footer-center">
+      <a href="index.html">Home</a>
+      <a href="discord.html">Discord</a>
+    </div>
+    <div class="footer-right">
+      <span>© 2026</span><br>
+      <span>All games belong to their creators</span>
+    </div>
+  </div>
+</footer>
 
-</body>
-</html>
+
+</body></html>
