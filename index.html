@@ -192,6 +192,77 @@
       opacity: 1;
       color: var(--accent);
     }
+    /* Dropdown wrapper */
+.dropdown {
+  position: relative;
+}
+
+/* Button */
+.dropbtn {
+  font-weight: 600;
+  cursor: pointer;
+  padding: .25rem 0;
+  user-select: none;
+}
+
+/* Dropdown menu */
+.dropdown-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 190px;
+  padding: .5rem 0;
+  display: none;
+  z-index: 100;
+
+  /* 🌌 Galaxy background */
+  background:
+    linear-gradient(180deg, rgba(15,23,42,.95), rgba(2,6,23,.98)),
+    radial-gradient(300px 150px at top, rgba(167,139,250,.35), transparent 60%);
+  backdrop-filter: blur(14px);
+
+  border-radius: 1rem;
+  box-shadow:
+    0 0 0 1px rgba(167,139,250,.25),
+    0 20px 50px rgba(0,0,0,.8);
+}
+
+/* Invisible hover bridge (prevents closing) */
+.dropdown-content::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  width: 100%;
+  height: 12px;
+}
+
+/* Links */
+.dropdown-content a {
+  display: block;
+  padding: .75rem 1.25rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  opacity: .85;
+}
+
+.dropdown-content a:hover {
+  background: rgba(167,139,250,.15);
+  opacity: 1;
+  color: var(--accent2);
+}
+
+/* Show menu */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Mobile click support */
+.dropdown.open .dropdown-content {
+  display: block;
+}
+
     .site-footer {
       margin-top: 4rem;
       padding: 2.5rem 2rem;
@@ -243,7 +314,12 @@
 <nav class="navbar">
   <div class="nav-left">🌌Unbanned Galaxy🚀</div>
   <div class="nav-right">
-    <a href="index.html">Home</a>
+     <div class="dropdown">
+      <a class="dropbtn">Home ▾</a>
+      <div class="dropdown-content">
+        <a href="index.html">Home</a>
+      </div>
+    </div>
     <a href="discord.html">Discord</a>
     <a href="gpt.html">GPT</a>
   </div>
@@ -270,7 +346,7 @@
      ============================= */
   const FILE_SYSTEM = [
     {
-      title: "Season 1 (52 Games)",
+      title: "Games",
       folder: [
         {
           title: "Cookie Clicker",
