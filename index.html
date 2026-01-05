@@ -52,26 +52,6 @@
       color: var(--muted);
       margin-top: .5rem;
     }
-    .counter-wrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-#gameCounter {
-  animation: glow 1.2s ease-out;
-  padding: .6rem 1.2rem;
-  border-radius: 999px;
-  background: rgba(167,139,250,.15);
-  box-shadow: 0 0 0 1px rgba(167,139,250,.25);
-  color: var(--text);
-  font-weight: 600;
-}
-@keyframes glow {
-  0% { box-shadow: 0 0 0 rgba(167,139,250,0); }
-  100% { box-shadow: 0 0 25px rgba(167,139,250,.4); }
-}
-
 
     .container {
       max-width: 1200px;
@@ -107,7 +87,7 @@
         0 0 0 1px rgba(56,189,248,.4),
         0 30px 80px rgba(0,0,0,.9);
     }
-    
+    }
 
     .game-thumb {
       width: 100%;
@@ -119,7 +99,7 @@
         0 0 0 1px rgba(255,255,255,.08),
         0 10px 40px rgba(167,139,250,.35);
     }
-    
+    }
 
     .game-card:hover {
       transform: translateY(-4px);
@@ -326,7 +306,7 @@
     .footer-right {
       text-align: right;
     }
-    
+    }
   </style>
 </head>
 <body>
@@ -349,18 +329,17 @@
 <header>
   <h1 style="text-align: center;">Galaxy</h1>
   <p style="text-align: center; margin-bottom:50; ">Free, Unblocked, Always Updated.</p>
-  <div class="counter-wrap">
-    <div id="gameCounter"></div>
-  </div>
-  
 </header>
 
 <div class="container">
   <div id="gamesGrid" class="games-grid"></div>
 </div>
 
+
+
+<script>
   /* =============================
-     GAME FILE SYSTEM 
+     GAME FILE SYSTEM (EDIT THIS)
      game_url
      launchURLGame
      file_url
@@ -507,6 +486,14 @@
           id: "poltrak"
         },
         {
+          title: "Pico-8",
+          type: "game_url",
+          action: "launchURLGame",
+          file: "https://script.google.com/macros/s/AKfycbxOVZK3wbs-BQK-bc9zgzX3eC8X-6r-6hnO-Ye59dQJ1BcOeUsfiVUDKD40oWFzyeaeaw/exec",
+          image: "https://forums.cdn.launchbox.gg/monthly_2021_03/pico-8.thumb.png.ececf1a340ce821a1111bb1d416e3775.png",
+          id: "pico8"
+        },
+        {
           title: "BitLife",
           type: "game_url",
           action: "launchURLGame",
@@ -573,46 +560,6 @@
       ]
     }
   ];
-  /*Counter logic*/
-<script>
-  function countGames(fileSystem) {
-    let count = 0;
-    fileSystem.forEach(section => {
-      if (Array.isArray(section.folder)) {
-        count += section.folder.length;
-      }
-    });
-    return count;
-  }
-
-  function animateCounter(element, endValue, duration = 1200) {
-    let start = 0;
-    const startTime = performance.now();
-
-    function update(now) {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out
-      const value = Math.floor(eased * endValue);
-
-      element.textContent = `🎮 ${value} Games Available`;
-
-      if (progress < 1) {
-        requestAnimationFrame(update);
-      } else {
-        element.textContent = `🎮 ${endValue} Games Available`;
-      }
-    }
-
-    requestAnimationFrame(update);
-  }
-
-  const totalGames = countGames(FILE_SYSTEM);
-  const counterEl = document.getElementById("gameCounter");
-
-  animateCounter(counterEl, totalGames);
-</script>
-
-
 
   /* =============================
      UI GENERATION FROM FILE SYSTEM
