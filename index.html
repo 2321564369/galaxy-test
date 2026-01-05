@@ -52,6 +52,21 @@
       color: var(--muted);
       margin-top: .5rem;
     }
+    .counter-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+#gameCounter {
+  padding: .6rem 1.2rem;
+  border-radius: 999px;
+  background: rgba(167,139,250,.15);
+  box-shadow: 0 0 0 1px rgba(167,139,250,.25);
+  color: var(--text);
+  font-weight: 600;
+}
+
 
     .container {
       max-width: 1200px;
@@ -329,6 +344,10 @@
 <header>
   <h1 style="text-align: center;">Galaxy</h1>
   <p style="text-align: center; margin-bottom:50; ">Free, Unblocked, Always Updated.</p>
+  <div class="counter-wrap">
+    <div id="gameCounter"></div>
+  </div>
+  
 </header>
 
 <div class="container">
@@ -552,6 +571,24 @@
       ]
     }
   ];
+  /*Counter logic*/
+  <script>
+  function countGames(fileSystem) {
+    let count = 0;
+    fileSystem.forEach(section => {
+      if (Array.isArray(section.folder)) {
+        count += section.folder.length;
+      }
+    });
+    return count;
+  }
+
+  const totalGames = countGames(FILE_SYSTEM);
+
+  document.getElementById("gameCounter").textContent =
+    `🎮 ${totalGames} Games Available`;
+</script>
+
 
   /* =============================
      UI GENERATION FROM FILE SYSTEM
