@@ -868,13 +868,15 @@ iframe{border:0;width:100%;height:100%}
 </script>
 
 <script>
+  
   document.getElementById("cloakBtn").addEventListener("click", () => {
+    window.location.replace('http://example.com/');
     const w = window.open("about:blank", "_blank");
     if (!w) {
       alert("Popup blocked! Allow popups.");
       return;
     }
-   window.location.replace('http://example.com/');
+   
 
     const html = `
 <!DOCTYPE html>
