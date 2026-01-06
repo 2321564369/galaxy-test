@@ -1,7 +1,7 @@
 <html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><|0_0|></title>
+  <title>&lt;|0_0|&gt;</title>
   <style>
     :root {
       --bg: #05010d;
@@ -57,6 +57,34 @@
   justify-content: center;
   margin-top: 1rem;
 }
+    .cloak-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 3rem;
+}
+
+#cloakBtn {
+  background: linear-gradient(135deg, #a78bfa, #38bdf8);
+  border: none;
+  border-radius: .9rem;
+  padding: .6rem 1.4rem;
+  font-weight: 800;
+  font-size: .95rem;
+  cursor: pointer;
+  color: #020617;
+  box-shadow: 0 10px 30px rgba(167,139,250,.45);
+  transition: transform .15s ease, filter .15s ease;
+}
+
+#cloakBtn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+#cloakBtn:active {
+  transform: scale(.97);
+}
+
 
 #gameCounter {
   animation: glow 1.2s ease-out;
@@ -344,6 +372,7 @@
     </div>
     <a href="discord.html">Discord</a>
     <a href="gpt.html">GPT</a>
+    <a href="links.html">Links</a>
   </div>
 </nav>
 
@@ -351,13 +380,141 @@
   <h1 style="text-align: center;">Galaxy</h1>
   <p style="text-align: center; margin-bottom:50; ">Free, Unblocked, Always Updated.</p>
   <div class="counter-wrap">
-    <div id="gameCounter">🎮 0 Games Available</div>
+    <div id="gameCounter">🎮 25 Games Available</div>
   </div>
+<div class="cloak-wrapper">
+  <button id="cloakBtn">Open in about:blank</button>
+</div>
 
 </header>
 
 <div class="container">
-  <div id="gamesGrid" class="games-grid"></div>
+  <div id="gamesGrid" class="games-grid"><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzmP53ErJrSbT72ndRYaiOnrj2-71v0ed2Q&amp;s" alt="Cookie Clicker">
+        <h3>Cookie Clicker</h3>
+        <p>Launch type: file_url</p>
+        <button id="GameurlCookie">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxV3JrbIR8D1Z8P7jI4UsXshCxnzAntjArfg&amp;s" alt="Slow Roads">
+        <h3>Slow Roads</h3>
+        <p>Launch type: game_url</p>
+        <button id="SlowRoads">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQfjN3dI-n_Ya2LTCK-7H7fjgQ355QCTSSkg&amp;s" alt="Funny Shooter 2">
+        <h3>Funny Shooter 2</h3>
+        <p>Launch type: file_url</p>
+        <button id="FunnyShooter2">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://play-lh.googleusercontent.com/SWTpYqsX9RN2YirCDnAjQ8qsbgn4UrHkRRGsjwuASnHMVqssIvWKzq82mP82y_ffBSE" alt="Paper.io 2">
+        <h3>Paper.io 2</h3>
+        <p>Launch type: file_url</p>
+        <button id="Paperio2">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://i1.sndcdn.com/artworks-dlE84zfZ12KeMNkl-hb1cUA-t500x500.jpg" alt="Snow Rider">
+        <h3>Snow Rider</h3>
+        <p>Launch type: file_url</p>
+        <button id="snowrider">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://run3-free.github.io/data/image/game/run-3-game.png" alt="Run 3">
+        <h3>Run 3</h3>
+        <p>Launch type: game_url</p>
+        <button id="run3">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbdLdp4-WFFacSW7SWpnVsfFy7LgvjdNPupw&amp;s" alt="Slope">
+        <h3>Slope</h3>
+        <p>Launch type: game_url</p>
+        <button id="slope">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://i1.sndcdn.com/artworks-DIzCkQaXyj9Id58k-tSjzCg-t500x500.jpg" alt="Subway Surfers">
+        <h3>Subway Surfers</h3>
+        <p>Launch type: game_url</p>
+        <button id="subway">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM9vz6EnZ_cuKpfzDXOpbhS5xqGuzP2UIdHQ&amp;s" alt="Basket Random">
+        <h3>Basket Random</h3>
+        <p>Launch type: file_url</p>
+        <button id="basketrand">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://play-lh.googleusercontent.com/G1PIlb6HWKSaDre0XpUcmKGps9T4iamsSlwrogB3EJzYv4bz0M2am4D17MtGzndaOOU" alt="Soccer Random">
+        <h3>Soccer Random</h3>
+        <p>Launch type: file_url</p>
+        <button id="soccerrand">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHlcBjYjoBIzGV2geb6fCBpUMXIsSV1uIPrg&amp;s" alt="Survival Race">
+        <h3>Survival Race</h3>
+        <p>Launch type: file_url</p>
+        <button id="surrace">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNmshUSHMXXe_iI4z8PisDUhUaRGfD1R-gEA&amp;s" alt="Pico-8">
+        <h3>Pico-8</h3>
+        <p>Launch type: game_url</p>
+        <button id="pico8">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTtb8g4UJIHENNRXbotsiaZLrN0ZATekjk6g&amp;s" alt="Retro-Bowl">
+        <h3>Retro-Bowl</h3>
+        <p>Launch type: game_url</p>
+        <button id="retball">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRejzLiTOObgVmmZ-6OpFH6CWmoiCcWVQAAvA&amp;s" alt="FootBall Bros">
+        <h3>FootBall Bros</h3>
+        <p>Launch type: file_url</p>
+        <button id="footbros">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdwguBfXdDfj3Dzr_T_p67D_YeKHWci7YfPA&amp;s" alt="Ragdoll Archers">
+        <h3>Ragdoll Archers</h3>
+        <p>Launch type: game_url</p>
+        <button id="arc">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqO_JKX-U7B6Ov2eN8QwrO0XE5WubKTO0v5g&amp;s" alt="Bloxorz">
+        <h3>Bloxorz</h3>
+        <p>Launch type: file_url</p>
+        <button id="bloxorz">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTte4SgbR4TxuCyscMmjBTxUkOuuPfTKPNaww&amp;s" alt="PolyTrack">
+        <h3>PolyTrack</h3>
+        <p>Launch type: game_url</p>
+        <button id="poltrak">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://m.media-amazon.com/images/I/41rOKE8BU9L.jpg" alt="BitLife">
+        <h3>BitLife</h3>
+        <p>Launch type: game_url</p>
+        <button id="bitlife">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://i1.sndcdn.com/artworks-000636775027-qr4yrz-t500x500.jpg" alt="Brawl Stars">
+        <h3>Brawl Stars</h3>
+        <p>Launch type: file_url</p>
+        <button id="brwalers">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://i1.sndcdn.com/artworks-TLJ6E8sjNKHCNZ8y-xkXuvg-t500x500.jpg" alt="Geometry Dash">
+        <h3>Geometry Dash</h3>
+        <p>Launch type: game_url</p>
+        <button id="gdash">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://play-lh.googleusercontent.com/v7KwGdPjJGjJjRXn46sck4DwDBdKSeRzGN44CjiXUtKV0jjOi51Bt4wcXud0m-SkXg" alt="OVO">
+        <h3>OVO</h3>
+        <p>Launch type: game_url</p>
+        <button id="ovo">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://play-lh.googleusercontent.com/gnSC6s8-6Tjc4uhvDW7nfrSJxpbhllzYhgX8y374N1LYvWBStn2YhozS9XXaz1T_Pi2q" alt="Clash Royale">
+        <h3>Clash Royale</h3>
+        <p>Launch type: file_url</p>
+        <button id="clashroyl">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://store-images.s-microsoft.com/image/apps.50957.14077711198622072.87de44b8-a3b1-4457-9a12-07ae7d1d2d1d.b7f82a68-5baf-43b2-a0f7-bba2ebf39c8c" alt="Kart Bros">
+        <h3>Kart Bros</h3>
+        <p>Launch type: game_url</p>
+        <button id="kartbros">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Wordle_Logo.svg/500px-Wordle_Logo.svg.png" alt="Wordle Unlimited">
+        <h3>Wordle Unlimited</h3>
+        <p>Launch type: game_url</p>
+        <button id="wordinf">Play</button>
+      </div><div class="game-card">
+        <img class="game-thumb" src="https://play-lh.googleusercontent.com/Zu0LoruCtIG45qs6iffZkWqGTuzEWflNoH8TNRtfMJ2NGgJxQGfw8kqSrxKtXGjPqeqFLNsnubW6EnPUJvOi8g" alt="Drift Boss">
+        <h3>Drift Boss</h3>
+        <p>Launch type: game_url</p>
+        <button id="drifbos">Play</button>
+      </div></div>
 </div>
 
 
@@ -379,7 +536,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/cach-ehm/ohhh@main/cok.xml",
-          image: "https://images.nintendolife.com/dad06ae428c12/cookie-clicker-cover.cover_large.jpg",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzmP53ErJrSbT72ndRYaiOnrj2-71v0ed2Q&s",
           id: "GameurlCookie"
         },
         {
@@ -387,7 +544,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://script.google.com/macros/s/AKfycbzqDA2SnuVZ3DRelxxbUxSV9Z1RJz_gQfDRx06WUpgppWgrdDEErtZ1Lev9O6j2w9ioBQ/exec",
-          image: "https://nointernetgame.com/game-icons/Slow%20Roads.webp",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxV3JrbIR8D1Z8P7jI4UsXshCxnzAntjArfg&s",
           id: "SlowRoads"
         },
         {
@@ -395,7 +552,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/er-73-xxx-88/ok@main/funnys.xml",
-          image: "https://funny-shooter.com/images/funny-shooter-2.jpg",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQfjN3dI-n_Ya2LTCK-7H7fjgQ355QCTSSkg&s",
           id: "FunnyShooter2"
         },
         {
@@ -427,7 +584,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://raw.githubusercontent.com/FinnBaltazar1111/slope/refs/heads/main/index.html",
-          image: "https://slopeio.org/data/image/game/slope-game.jpg",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbdLdp4-WFFacSW7SWpnVsfFy7LgvjdNPupw&s",
           id: "slope"
         },
         {
@@ -443,7 +600,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/ishere@main/basketrand.xml",
-          image: "https://taptapshots.net/uploads/2025/8/basket-random.webp",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM9vz6EnZ_cuKpfzDXOpbhS5xqGuzP2UIdHQ&s",
           id: "basketrand"
         },
         {
@@ -451,7 +608,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/awaiblecomponent/ss65@main/soc.xml",
-          image: "https://kevin.games/assets/images/new/soccer-random.jpg",
+          image: "https://play-lh.googleusercontent.com/G1PIlb6HWKSaDre0XpUcmKGps9T4iamsSlwrogB3EJzYv4bz0M2am4D17MtGzndaOOU",
           id: "soccerrand"
         },
         {
@@ -459,7 +616,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/organ-nizator/ohh@main/sur.xml",
-          image: "https://survival-race.io/data/image/survival-race.jpg",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHlcBjYjoBIzGV2geb6fCBpUMXIsSV1uIPrg&s",
           id: "surrace"
         },
         {
@@ -467,7 +624,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://script.google.com/macros/s/AKfycbxOVZK3wbs-BQK-bc9zgzX3eC8X-6r-6hnO-Ye59dQJ1BcOeUsfiVUDKD40oWFzyeaeaw/exec",
-          image: "https://forums.cdn.launchbox.gg/monthly_2021_03/pico-8.thumb.png.ececf1a340ce821a1111bb1d416e3775.png",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNmshUSHMXXe_iI4z8PisDUhUaRGfD1R-gEA&s",
           id: "pico8"
         },
         {
@@ -475,7 +632,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://amhooman.github.io/website/games/retrobowl/game.html",
-          image: "https://taptapshots.net/uploads/2025/8/retro-bowl.webp",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTtb8g4UJIHENNRXbotsiaZLrN0ZATekjk6g&s",
           id: "retball"
         },
         {
@@ -483,7 +640,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/classrooms-1/ohanganamaranes@main/tara.xml",
-          image: "https://nargames.com/storage/uploads/thumbs/football-bros.webp",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRejzLiTOObgVmmZ-6OpFH6CWmoiCcWVQAAvA&s",
           id: "footbros"
         },
         {
@@ -491,7 +648,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://map-l.github.io/play/ragdollarchers/",
-          image: "https://imgs.crazygames.com/ragdoll-archers_1x1/20250926080758/ragdoll-archers_1x1-cover?format=auto&quality=100&metadata=none&width=1200",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdwguBfXdDfj3Dzr_T_p67D_YeKHWci7YfPA&s",
           id: "arc"
         },
         {
@@ -499,7 +656,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/ultimate-gclassrooms/ok@main/Bloxorz.xml",
-          image: "https://www.onlinegames.io/media/posts/849/responsive/bloxorz-xs.jpg",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqO_JKX-U7B6Ov2eN8QwrO0XE5WubKTO0v5g&s",
           id: "bloxorz"
         },
         {
@@ -507,7 +664,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://script.google.com/macros/s/AKfycbzuhv-wKflC3QgCI_d8xsy90ngRlqgKj-qfICMuzhimGuYwWXFI5tPWwwfjrYk-biJu/exec",
-          image: "https://www.desura.games/files/images/fe/fe917ef48f1fb76ebbf7a135d2b55322.jpg",
+          image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTte4SgbR4TxuCyscMmjBTxUkOuuPfTKPNaww&s",
           id: "poltrak"
         },
         {
@@ -523,7 +680,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/zort@main/1yz.xml",
-          image: "https://i.redd.it/52gy3323dkm51.jpg",
+          image: "https://i1.sndcdn.com/artworks-000636775027-qr4yrz-t500x500.jpg",
           id: "brwalers"
         },
         {
@@ -539,7 +696,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://2321564369.github.io/ovo/ovo.htmlec",
-          image: "https://slopeio.org/data/image/ovo-classic.jpg",
+          image: "https://play-lh.googleusercontent.com/v7KwGdPjJGjJjRXn46sck4DwDBdKSeRzGN44CjiXUtKV0jjOi51Bt4wcXud0m-SkXg",
           id: "ovo"
         },
         {
@@ -547,7 +704,7 @@
           type: "file_url",
           action: "launchLocalGame",
           file: "https://cdn.jsdelivr.net/gh/ertemr33/vahvah@main/1.xml",
-          image: "https://i.redd.it/how-strong-do-you-think-clash-of-clans-and-royale-is-v0-miyklymc4nnd1.jpg?width=500&format=pjpg&auto=webp&s=1e4125058ca310b356613c11d89a95c032b75259",
+          image: "https://play-lh.googleusercontent.com/gnSC6s8-6Tjc4uhvDW7nfrSJxpbhllzYhgX8y374N1LYvWBStn2YhozS9XXaz1T_Pi2q",
           id: "clashroyl"
         },
         {
@@ -563,7 +720,7 @@
           type: "game_url",
           action: "launchURLGame",
           file: "https://bosorioo.github.io/wordle-unlimited/",
-          image: "https://wordleunlimitedgame.org/logo-wordle-unlimited.webp",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Wordle_Logo.svg/500px-Wordle_Logo.svg.png",
           id: "wordinf"
         },
         {
@@ -575,6 +732,8 @@
           id: "drifbos"
         }
       ]
+      
+        
     }
   ];
 
@@ -708,6 +867,36 @@ iframe{border:0;width:100%;height:100%}
   animateCounter(counterEl, totalGames);
 </script>
 
+<script>
+  document.getElementById("cloakBtn").addEventListener("click", () => {
+    const w = window.open("about:blank", "_blank");
+    if (!w) {
+      alert("Popup blocked! Allow popups.");
+      return;
+    }
+   window.location.replace('google.com');
+
+    const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>about:blank</title>
+</head>
+<body style="margin:0">
+  <iframe
+    src="${location.href}"
+    style="border:none;width:100vw;height:100vh"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-fullscreen"
+  ></iframe>
+</body>
+</html>`;
+    
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  });
+</script>
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-left">
@@ -718,6 +907,7 @@ iframe{border:0;width:100%;height:100%}
       <a href="index.html">Home</a>
       <a href="discord.html">Discord</a>
       <a href="gpt.html">GPT</a>
+      <a href="links.html">Links</a>
     </div>
     <div class="footer-right">
       <span>© 2026</span><br>
@@ -725,6 +915,7 @@ iframe{border:0;width:100%;height:100%}
     </div>
   </div>
 </footer>
+
 
 
 </body></html>
