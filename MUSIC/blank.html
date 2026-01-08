@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Galaxy Music</title>
+  <link rel="stylesheet" href="galaxythy.free.nf/musicplayer/style.css?v=30">
+</head>
+<body>
+
+<div class="galaxy"></div>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>🌌 Galaxy Music</h2>
+
+    <ul id="playlists">
+      <li onclick="loadAll()">All Songs</li>
+      <li onclick="loadLiked()">❤️ Liked</li>
+    </ul>
+
+    <button class="new-playlist" onclick="newPlaylist()">＋ New Playlist</button>
+    <button class="new-playlist" onclick="suggestion()">Suggest Songs</button>
+  </aside>
+
+  <!-- Main -->
+  <main class="content">
+    <div class="topbar">
+      <h1 id="viewTitle">All Songs</h1>
+
+      <select id="sortSelect">
+        <option value="none">Sort</option>
+        <option value="artist">Artist</option>
+        <option value="album">Genre</option>
+      </select>
+    </div>
+
+    <div id="songList" class="songs"></div>
+  </main>
+</div>
+
+<!-- Player -->
+<div class="player">
+
+  <img id="cover" class="cover">
+
+  <div class="now">
+    <div id="nowPlaying">Nothing playing</div>
+  </div>
+
+  <div class="controls">
+    <button class="icon prev" onclick="prev()"></button>
+    <button class="icon play" onclick="toggle()"></button>
+    <button class="icon next" onclick="next()"></button>
+    <button class="icon shuffle" onclick="toggleShuffle()"></button>
+    <button class="icon autoplay" onclick="toggleAutoplay()"></button>
+  </div>
+
+  <input type="range" id="progress" value="0">
+  <div class="timeText" id="timeText">0:00 / 0:00</div>
+
+  <input type="range" id="volume" min="0" max="1" step="0.01" value="0.4">
+
+  <audio id="audio"></audio>
+</div>
+
+<script src="galaxythy.free.nf/musicplayer/player.js?v=31"></script>
+</body>
+</html>
