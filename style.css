@@ -1,0 +1,464 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  background: black;
+  color: white;
+  overflow: hidden;
+}
+
+/* 🌌 Galaxy Background */
+.galaxy {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, #5f3dc4, transparent 40%),
+    radial-gradient(circle at 80% 60%, #0ea5e9, transparent 35%),
+    radial-gradient(circle at 50% 50%, #020617, #000);
+  z-index: -2;
+}
+
+/* Stars */
+.galaxy::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, white, transparent),
+    radial-gradient(1px 1px at 200px 150px, white, transparent),
+    radial-gradient(1px 1px at 400px 80px, white, transparent),
+    radial-gradient(1px 1px at 600px 300px, white, transparent);
+  animation: stars 40s linear infinite;
+  opacity: .6;
+}
+
+@keyframes stars {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1000px); }
+}
+
+/* App Layout */
+.app {
+  display: flex;
+  height: calc(100vh - 90px);
+  backdrop-filter: blur(12px);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: rgba(10,10,25,.75);
+  padding: 20px;
+  border-right: 1px solid rgba(255,255,255,.05);
+}
+
+.sidebar h2 {
+  color: #a78bfa;
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 10px;
+  cursor: pointer;
+  opacity: .75;
+}
+
+.sidebar li:hover,
+.sidebar li.active {
+  opacity: 1;
+}
+
+/* Buttons */
+.new-playlist {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg,#7c3aed,#22d3ee);
+  border: none;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.songs {
+  margin-top: 20px;
+}
+
+.song {
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(255,255,255,.03);
+  margin-bottom: 10px;
+}
+
+.song:hover {
+  background: rgba(167,139,250,.15);
+}
+
+/* Player */
+.player {
+  position: fixed;
+  bottom: 0;
+  inset-inline: 0;
+  height: 90px;
+  background: rgba(15,15,30,.85);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+}
+
+.cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 0 20px rgba(167,139,250,.6);
+}
+
+.controls button {
+  background: none;
+  border: none;
+  color: #e9d5ff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#likeBtn {
+  color: #f472b6;
+}
+
+input[type="range"] {
+  flex: 1;
+}
+#volume {
+  flex: 0;
+  width: 90px;          /* ← main size control */
+  height: 3px;
+  opacity: 0.8;
+}
+
+/* Smaller thumb */
+#volume::-webkit-slider-thumb {
+  width: 10px;
+  height: 10px;
+}
+
+#volume::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+}
+
+/* Slight hover emphasis */
+#volume:hover {
+  opacity: 1;
+}
+/* ===============================
+   ➕ ADD TO PLAYLIST BUTTON
+   =============================== */
+
+.song {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.addBtn {
+  all: unset;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  color: #a78bfa;
+  background: rgba(167,139,250,.15);
+  transition: transform .15s ease, background .2s ease;
+}
+
+.addBtn:hover {
+  background: rgba(167,139,250,.35);
+  transform: scale(1.1);
+}
+/* ===============================
+   🎵 SONG LIST WITH THUMBNAILS
+   =============================== */
+
+.song {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(255,255,255,.03);
+  margin-bottom: 10px;
+}
+
+.song:hover {
+  background: rgba(167,139,250,.18);
+}
+
+.thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Playing animation overlay */
+.thumb.playing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif");
+  background-size: cover;
+  border-radius: 8px;
+  opacity: 0.8;
+}
+
+.songInfo {
+  flex: 1;
+}
+
+.songTitle {
+  font-weight: 600;
+}
+
+.songMeta {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+/* ===============================
+   🗑 REMOVE SONG BUTTON
+   =============================== */
+
+.removeBtn {
+  all: unset;
+  cursor: pointer;
+  font-size: 16px;
+  color: #f87171;
+  padding: 6px;
+}
+
+.removeBtn:hover {
+  transform: scale(1.15);
+}
+
+/* ===============================
+   ⏱ PLAYER TIME DISPLAY
+   =============================== */
+
+.timeText {
+  min-width: 110px;
+  font-size: 13px;
+  opacity: 0.75;
+  text-align: right;
+}
+/* ===============================
+   🎛 PLAYER CONTROL BUTTONS
+   =============================== */
+
+.controls button {
+  all: unset;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #a78bfa, #5b21b6);
+  box-shadow:
+    0 0 12px rgba(167,139,250,.5),
+    inset 0 0 6px rgba(255,255,255,.25);
+  transition: transform .15s ease, box-shadow .15s ease;
+  font-size: 0; /* hides emoji text */
+}
+
+.controls button:hover {
+  transform: scale(1.12);
+  box-shadow:
+    0 0 18px rgba(167,139,250,.8),
+    inset 0 0 10px rgba(255,255,255,.35);
+}
+
+.controls button:active {
+  transform: scale(.95);
+}
+
+/* ===============================
+   ▶ ICONS (CSS, NOT EMOJIS)
+   =============================== */
+
+.controls button::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+/* Play / Pause */
+.controls button:nth-child(2)::before {
+  border-width: 7px 0 7px 12px;
+  border-color: transparent transparent transparent white;
+}
+
+/* Previous */
+.controls button:nth-child(1)::before {
+  width: 14px;
+  height: 14px;
+  background:
+    linear-gradient(white, white) left/3px 100% no-repeat,
+    linear-gradient(white, white) right/3px 100% no-repeat;
+}
+
+/* Next */
+.controls button:nth-child(3)::before {
+  width: 14px;
+  height: 14px;
+  background:
+    linear-gradient(white, white) left/3px 100% no-repeat,
+    linear-gradient(white, white) right/3px 100% no-repeat;
+  transform: scaleX(-1);
+}
+
+/* Like */
+#likeBtn::before {
+  content: "♥";
+  color: white;
+  font-size: 14px;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+/* ===============================
+   🎮 PLAYER CONTROLS (GALAXY)
+   =============================== */
+
+/* ===============================
+   🎵 ICON BUTTON BASE
+   =============================== */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.controls .icon {
+  all: unset;
+  cursor: pointer;
+
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: radial-gradient(
+    circle at top left,
+    #cdb8ff,
+    #7b5cff 55%,
+    #2a0f5f
+  );
+
+  box-shadow:
+    0 0 14px rgba(160, 130, 255, 0.7),
+    inset 0 0 8px rgba(255,255,255,0.2);
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.controls .icon:hover {
+  transform: scale(1.12);
+  box-shadow:
+    0 0 22px rgba(180, 150, 255, 1),
+    inset 0 0 10px rgba(255,255,255,0.35);
+}
+
+.controls .icon:active {
+  transform: scale(0.95);
+}
+
+/* ===============================
+   🎯 ICON GLYPHS (CSS-ONLY)
+   =============================== */
+
+.controls .icon::before {
+  content: "";
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 0 4px rgba(255,255,255,0.6));
+}
+
+/* Individual icons */
+.icon.prev::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpolygon points='11,12 20,18 20,6'/%3E%3Crect x='4' y='6' width='3' height='12'/%3E%3C/svg%3E");
+}
+.icon.play::before {
+  width: 22px;
+  height: 22px;
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'>\
+<polygon points='8,5 19,12 8,19'/>\
+</svg>");
+}
+
+.icon.next::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpolygon points='13,12 4,18 4,6'/%3E%3Crect x='17' y='6' width='3' height='12'/%3E%3C/svg%3E");
+}
+
+.icon.shuffle::before {
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'>\
+<path d='M16 3h5v5l-1.5-1.5-4 4-1.5-1.5 4-4L16 3zM3 6h5l4 4-1.5 1.5L7.5 8.5H3V6zm5 12H3v-2h4.5l3-3L12 14.5l-4 4zM16 16l2.5 2.5L20 17v5h-5l1.5-1.5-4-4 1.5-1.5 4 4z'/>\
+</svg>");
+}
+
+.icon.autoplay::before {
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'>\
+<path d='M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6 0 .8-.2 1.6-.5 2.3l1.5 1.3C19.6 14.5 20 13.3 20 12c0-4.4-3.6-8-8-8zm-6.5.7L4 6.2C3.4 7.4 3 8.7 3 10c0 4.4 3.6 8 8 8v3l4-4-4-4v3c-3.3 0-6-2.7-6-6 0-.8.2-1.6.5-2.3z'/>\
+</svg>");
+}
+
+/* Bigger play button */
+.controls .play {
+  width: 52px;
+  height: 52px;
+}
+
+
+
+
+
+
