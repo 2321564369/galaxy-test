@@ -1217,7 +1217,7 @@ window.onload = async function() {
   // Add scan button
   const scanBtn = document.createElement("button");
   scanBtn.className = "new-playlist";
-  scanBtn.textContent = "🔍 Scan for songs";
+  scanBtn.textContent = "To update song list restart player or go to full version";
   scanBtn.onclick = function() {
     rescanSongs();
   };
