@@ -14,20 +14,18 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <h2>🌌 Galaxy Music</h2>
-    <a href="https://galaxythy.free.nf/musicplayer/" 
-   style="display: inline-block; 
-          padding: 10px 20px; 
-          background: linear-gradient(135deg, #7c3aed, #5b21b6); 
-          color: white; 
-          text-decoration: none; 
-          border-radius: 8px; 
-          font-weight: bold;
-          margin: 0px;
-          transition: all 0.2s ease;"
-   onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 20px rgba(124, 58, 237, 0.3)';"
-   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-    Go to https://galaxythy.free.nf/musicplayer/ for full version
-</a>
+    <button onclick="window.open('https://galaxythy.free.nf/musicplayer/', '_blank')" 
+        style="padding: 12px 24px; 
+               background: linear-gradient(135deg, #7c3aed, #5b21b6); 
+               border: none; 
+               color: white; 
+               border-radius: 8px; 
+               cursor: pointer; 
+               font-weight: bold;
+               font-size: 16px;
+               margin: 20px;">
+   🌌 Open Full Music Player
+</button>
 
     <ul id="playlists">
       <li class="active" onclick="loadAll()">All Songs</li>
