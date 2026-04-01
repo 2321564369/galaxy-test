@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sandboxels – Controls (Bloxels Style)</title>
+    <style>
+        /* Reset & base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+        }
+
+        body {
+            background: #0a0f1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Press Start 2P', 'Courier New', monospace;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Pixelated background grid */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(80, 100, 150, 0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(80, 100, 150, 0.2) 1px, transparent 1px);
+            background-size: 16px 16px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Main bloxels card */
+        .controls-card {
+            position: relative;
+            z-index: 2;
+            background: #1e1f2c;
+            border: 4px solid #5f7f9f;
+            box-shadow: 8px 8px 0px 0px #0f0f1a;
+            max-width: 1000px;
+            width: 100%;
+            padding: 2rem 1.8rem;
+            transition: all 0.1s step-start;
+        }
+
+        /* Decorative top pixel strip */
+        .pixel-strip {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .pixel-strip span {
+            width: 12px;
+            height: 12px;
+            background: #6f8faf;
+            box-shadow: 0 0 0 1px #2f3f4f;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            text-align: center;
+            color: #ffd966;
+            text-shadow: 3px 3px 0 #7a4c1a;
+            margin-bottom: 1.5rem;
+            word-break: keep-all;
+            border-bottom: 3px solid #5f7f9f;
+            display: inline-block;
+            width: auto;
+            padding-bottom: 10px;
+        }
+
+        .title-wrap {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Control grid – bloxels style */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .control-group {
+            background: #0c0f17;
+            border: 2px solid #3e5a6e;
+            padding: 1rem;
+            transition: 0.05s linear;
+        }
+        .control-group:hover {
+            border-color: #ffb347;
+            background: #121725;
+        }
+
+        .control-group h2 {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: #ffb347;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-left: 8px solid #ffb347;
+            padding-left: 12px;
+        }
+
+        .control-list {
+            list-style: none;
+        }
+        .control-list li {
+            font-size: 0.7rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            border-bottom: 1px dotted #2f4050;
+            padding-bottom: 8px;
+        }
+        .key {
+            background: #010101;
+            border: 2px solid #8fafcf;
+            color: #ffd966;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            min-width: 70px;
+            text-align: center;
+            box-shadow: 2px 2px 0 #2f3f4f;
+            text-transform: uppercase;
+        }
+        .desc {
+            color: #cfdfef;
+            flex: 1;
+        }
+        .note {
+            font-size: 0.55rem;
+            color: #9bb7d4;
+            margin-top: 5px;
+        }
+
+        /* Special badge */
+        .hot-badge {
+            background: #4a2a1a;
+            padding: 2px 5px;
+            font-size: 0.5rem;
+            margin-left: 6px;
+            border-radius: 2px;
+            color: #ffaa66;
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.55rem;
+            border-top: 2px solid #2f4f6f;
+            padding-top: 1rem;
+            color: #6f8faa;
+        }
+        footer a {
+            color: #c9ae5c;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* responsive */
+        @media (max-width: 650px) {
+            .controls-card {
+                padding: 1.2rem;
+            }
+            h1 {
+                font-size: 1.2rem;
+            }
+            .key {
+                min-width: 55px;
+                font-size: 0.6rem;
+                padding: 3px 5px;
+            }
+            .desc {
+                font-size: 0.65rem;
+            }
+            .control-group h2 {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="controls-card">
+    <div class="pixel-strip">
+        <!-- decorative pixel row -->
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="title-wrap">
+        <h1>⚡ SANDBOXELS · CONTROLS ⚡</h1>
+    </div>
+
+    <div class="controls-grid">
+        <!-- MOUSE & BRUSH -->
+        <div class="control-group">
+            <h2>🎮 MOUSE / BRUSH</h2>
+            <ul class="control-list">
+                <li><span class="key">🖱️ LEFT</span><span class="desc">Place current element</span></li>
+                <li><span class="key">🖱️ RIGHT</span><span class="desc">Erase pixel</span></li>
+                <li><span class="key">🖱️ MIDDLE</span><span class="desc">Pick element from world</span></li>
+                <li><span class="key">SCROLL ↑↓</span><span class="desc">Increase / decrease brush size</span></li>
+                <li><span class="key">[ ] / - +</span><span class="desc">Change brush size (keyboard)</span></li>
+                <li><span class="key">SHIFT + drag</span><span class="desc">Draw straight line</span></li>
+                <li><span class="key">ALT / OPT</span><span class="desc">Hold for alternate tool modes</span></li>
+            </ul>
+        </div>
+
+        <!-- GAME FLOW -->
+        <div class="control-group">
+            <h2>⏯️ SIMULATION</h2>
+            <ul class="control-list">
+                <li><span class="key">P / SPACE</span><span class="desc">Pause / unpause</span></li>
+                <li><span class="key">. (period)</span><span class="desc">Step one frame (when paused)</span></li>
+                <li><span class="key">R</span><span class="desc">Toggle Replace mode (override pixels)</span></li>
+                <li><span class="key">C / F2</span><span class="desc">Take screenshot (PNG)</span></li>
+                <li><span class="key">F</span><span class="desc">Fullscreen mode</span></li>
+            </ul>
+        </div>
+
+        <!-- ELEMENT & INFO -->
+        <div class="control-group">
+            <h2>🔍 ELEMENT / INFO</h2>
+            <ul class="control-list">
+                <li><span class="key">E</span><span class="desc">Select element by name (search)</span></li>
+                <li><span class="key">I / /</span><span class="desc">Open element info / wiki panel</span></li>
+                <li><span class="key">← → arrows</span><span class="desc">Switch element categories</span></li>
+                <li><span class="key">ESC</span><span class="desc">Close info / mods / settings</span></li>
+                <li><span class="key">M</span><span class="desc">Open Mod Manager</span></li>
+                <li><span class="key">\ (backslash)</span><span class="desc">Open Settings menu</span></li>
+            </ul>
+        </div>
+
+        <!-- VIEW & DEBUG -->
+        <div class="control-group">
+            <h2>👁️ VIEW MODES</h2>
+            <ul class="control-list">
+                <li><span class="key">1</span><span class="desc">Default view (element colors)</span></li>
+                <li><span class="key">2</span><span class="desc">Thermal view (temperature gradient)</span></li>
+                <li><span class="key">3</span><span class="desc">Basic view (flat colors)</span></li>
+                <li><span class="key">4</span><span class="desc">Smooth view (blended edges)</span></li>
+                <li><span class="key">0</span><span class="desc">Reset view to default</span></li>
+                <li><span class="key">F1</span><span class="desc">Hide / show UI panels</span></li>
+            </ul>
+        </div>
+
+        <!-- EXTRA SHORTCUTS -->
+        <div class="control-group">
+            <h2>⚙️ ADVANCED</h2>
+            <ul class="control-list">
+                <li><span class="key">TAB</span><span class="desc">Cycle UI focus / highlight buttons</span></li>
+                <li><span class="key">CTRL + Z</span><span class="desc">(No undo, but reset clears world)</span></li>
+                <li><span class="key">HOLD SHIFT</span><span class="desc">+ brush = line drawing / extra tool power</span></li>
+                <li><span class="key">TPS BUTTON</span><span class="desc">Change ticks per second (speed)</span></li>
+            </ul>
+            <div class="note">💡 TIP: Right‑click on any element button to see its info instantly!</div>
+        </div>
+    </div>
+
+    <footer>
+        🧱 Bloxels style — Press Start 2P font • Sandboxels simulation • 200+ elements<br>
+        <a href="#" id="backLink" style="color:#bd9a5c;">← back to game</a> (if embedded) — full controls available in-game.
+    </footer>
+</div>
+
+<script>
+    // Just a dummy link to simulate "back" action (optional)
+    const backLink = document.getElementById('backLink');
+    if (backLink) {
+        backLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (window.history.length > 1) window.history.back();
+            else alert('Launch the game to use this control panel as reference.');
+        });
+    }
+    // Add some retro console flair
+    console.log("%c⚡ Sandboxels Controls | Bloxels edition", "font-family: 'Press Start 2P'; font-size: 12px; color: #ffb347;");
+</script>
+</body>
+</html>
