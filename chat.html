@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Galaxy Chat · Secure GitHub Messaging</title>
+<style>
+:root {
+  --bg-dark: #030014;
+  --card-bg: rgba(8, 4, 28, 0.2);
+  --accent: #c084fc;
+  --accent2: #60a5fa;
+  --blur-amount: 12px;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+  background: var(--bg-dark);
+  color: #f0f3ff;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+/* Cosmic background image (from galaxy hub) */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--bg-image, url('https://github.com/2321564369/galaxy-test/blob/main/81af94cb-74da-47c1-9dc1-7bfd46fd586f.jpg?raw=true'));
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+}
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 0, 20, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: -1;
+}
+/* Floating orbs */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: -1;
+  animation: drift 22s infinite alternate;
+}
+.orb1 { width: 500px; height: 500px; background: #a855f7; top: -150px; left: -100px; }
+.orb2 { width: 600px; height: 600px; background: #3b82f6; bottom: -200px; right: -120px; animation-duration: 28s; opacity: 0.15; }
+.orb3 { width: 350px; height: 350px; background: #ec489a; top: 50%; left: 80%; opacity: 0.1; }
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, -40px) scale(1.1); }
+}
+.scan-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg, rgba(0,255,255,0.02) 0px, rgba(0,255,255,0.02) 2px, transparent 2px, transparent 8px);
+  pointer-events: none;
+  z-index: 999;
+}
+header {
+  padding: 2rem 1.5rem 1rem;
+  text-align: center;
+}
+header h1 {
+  font-size: 4rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.chat-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+.chat-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 1.5rem;
+  box-shadow: 0 20px 35px -10px rgba(0,0,0,0.6);
+}
+.username-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.current-user {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  padding: 0.3rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--accent);
+}
+.chat-box {
+  background: rgba(0,0,0,0.3);
+  border-radius: 1.5rem;
+  height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.message {
+  margin-bottom: 0.8rem;
+  padding: 0.6rem 1rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(4px);
+  word-wrap: break-word;
+}
+.message strong { color: var(--accent); }
+.message small { font-size: 0.7rem; opacity: 0.7; margin-left: 0.5rem; }
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.input-group input {
+  flex: 1;
+  background: rgba(10,6,30,0.7);
+  border: 1px solid var(--accent2);
+  border-radius: 3rem;
+  padding: 0.8rem 1.2rem;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+}
+.input-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(192,132,252,0.5);
+}
+button {
+  background: linear-gradient(95deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 3rem;
+  padding: 0.8rem 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  color: #020018;
+}
+button:hover {
+  transform: scale(0.97);
+  filter: brightness(1.1);
+}
+.status {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.error { color: #ff8a8a; }
+.success { color: #a3e635; }
+.footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 1rem;
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="scan-line"></div>
+
+<header>
+  <h1>Galaxy Chat</h1>
+  <p>encrypted chat · powered by GitHub</p>
+</header>
+
+<div class="chat-container">
+  <div class="chat-card">
+    <div class="username-header">
+      <span class="current-user">💬 chatting as: <strong id="displayUsername">(loading)</strong></span>
+      <button id="changeUsernameBtn" style="padding: 0.3rem 1rem;">✏️ change</button>
+    </div>
+    <div id="chatBox" class="chat-box">
+      <div style="text-align: center; color: #aaa;">connecting to the void...</div>
+    </div>
+    <div class="input-group">
+      <input type="text" id="messageInput" placeholder="type your message..." autocomplete="off">
+      <button id="sendBtn">🚀 send</button>
+    </div>
+    <div id="statusMsg" class="status"></div>
+  </div>
+  <div class="footer">
+    <span>🔒 messages stored in GitHub repo · username saved locally</span>
+  </div>
+</div>
+
+<script>
+// Encoded token - wat you loking at
+const ENCODED_TOKEN = "Z2l0aHViX3BhdF8xMUE2VVk3UkEwT1g0MHg1NjZNYTBHX1RvQVY0Z0l6bVZXd1YxODZ2TjZnSkhaNmt5ZGpsVGI3eHgyRUtBZk9JZUhSQTVCM0lIVzJRVkZhdUVk";
+
+// GitHub repo settings- no touchie
+const REPO_OWNER   = "2321564369";
+const REPO_NAME    = "galaxy-test";
+const FILE_PATH    = "messages.json";
+
+// DOM elements
+const chatBox = document.getElementById('chatBox');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const statusMsg = document.getElementById('statusMsg');
+const displayUsernameSpan = document.getElementById('displayUsername');
+const changeUsernameBtn = document.getElementById('changeUsernameBtn');
+
+let currentUsername = '';
+let lastMessageCount = 0;
+let pollInterval = null;
+
+// Username stored in localStorage
+function loadStoredUsername() {
+  const stored = localStorage.getItem('galaxy_chat_username');
+  if (stored && stored.trim() !== '') {
+    currentUsername = stored.trim();
+  } else {
+    currentUsername = prompt('✨ Enter your chat username:', 'Name');
+    if (!currentUsername || currentUsername.trim() === '') currentUsername = 'N/A';
+    localStorage.setItem('galaxy_chat_username', currentUsername);
+  }
+  displayUsernameSpan.textContent = currentUsername;
+}
+
+function changeUsername() {
+  const newName = prompt('Enter new username:', currentUsername);
+  if (newName && newName.trim() !== '') {
+    currentUsername = newName.trim();
+    localStorage.setItem('galaxy_chat_username', currentUsername);
+    displayUsernameSpan.textContent = currentUsername;
+    showStatus(`Username changed to ${currentUsername}`, 'success');
+  } else if (newName === '') {
+    showStatus('Username cannot be empty', 'error');
+  }
+}
+
+function showStatus(msg, type = 'info') {
+  statusMsg.innerHTML = msg;
+  statusMsg.className = `status ${type === 'error' ? 'error' : (type === 'success' ? 'success' : '')}`;
+  setTimeout(() => { if (statusMsg.innerHTML === msg) statusMsg.innerHTML = ''; }, 4000);
+}
+
+// GitHub API
+function getApiUrl() {
+  return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+}
+
+async function getFileAndSha() {
+  const url = getApiUrl();
+  const response = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github+json' }
+  });
+  if (response.status === 200) {
+    const data = await response.json();
+    const content = atob(data.content);
+    const messages = JSON.parse(content);
+    return { messages, sha: data.sha };
+  } else if (response.status === 404) {
+    return { messages: [], sha: null };
+  } else {
+    const errorText = await response.text();
+    throw new Error(`GitHub error ${response.status}: ${errorText}`);
+  }
+}
+
+async function updateMessages(messages, sha) {
+  const url = getApiUrl();
+  const newContent = JSON.stringify(messages, null, 2);
+  const encodedContent = btoa(unescape(encodeURIComponent(newContent)));
+  const payload = { message: `Chat from ${currentUsername}`, content: encodedContent, sha: sha };
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) throw new Error(`Update failed: ${response.status}`);
+  return (await response.json()).content.sha;
+}
+
+// Send message
+async function sendMessage() {
+  const text = messageInput.value.trim();
+  if (!text) return showStatus('Message cannot be empty', 'error');
+  if (!currentUsername) return showStatus('Set username first', 'error');
+  sendBtn.disabled = true;
+  try {
+    let { messages, sha } = await getFileAndSha();
+    messages.push({ user: currentUsername, text: text, timestamp: Date.now() });
+    await updateMessages(messages, sha);
+    messageInput.value = '';
+    showStatus('✅ message sent', 'success');
+    await refreshMessages();
+  } catch (err) {
+    showStatus(`❌ ${err.message}`, 'error');
+    console.error(err);
+  } finally {
+    sendBtn.disabled = false;
+  }
+}
+
+// Poll for new messages
+async function refreshMessages() {
+  try {
+    const { messages } = await getFileAndSha();
+    if (!messages) return;
+    if (messages.length !== lastMessageCount) {
+      lastMessageCount = messages.length;
+      renderMessages(messages);
+    }
+  } catch (err) {
+    console.warn('Poll error:', err);
+    if (err.message.includes('401') || err.message.includes('403')) {
+      showStatus('⚠️ Auth failed – check token or repo permissions', 'error');
+      stopChat();
+    }
+  }
+}
+
+function renderMessages(messages) {
+  if (!messages || messages.length === 0) {
+    chatBox.innerHTML = '<div style="text-align:center; color:#888;">✨ no messages yet — be the first</div>';
+    return;
+  }
+  const html = messages.map(msg => {
+    const time = new Date(msg.timestamp).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+    return `<div class="message"><strong>${escapeHtml(msg.user)}</strong> <small>${time}</small><br>${escapeHtml(msg.text)}</div>`;
+  }).join('');
+  chatBox.innerHTML = html;
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m));
+}
+
+function startChat() {
+  if (pollInterval) clearInterval(pollInterval);
+  refreshMessages().catch(err => chatBox.innerHTML = `<div style="color:#f88">⚠️ ${err.message}</div>`);
+  pollInterval = setInterval(refreshMessages, 3000);
+}
+function stopChat() { if (pollInterval) clearInterval(pollInterval); }
+
+// Initialize
+async function init() {
+  loadStoredUsername();
+  try {
+    const { messages, sha } = await getFileAndSha();
+    if (sha === null) await updateMessages([], null);
+    startChat();
+    showStatus('🌌 connected to galaxy', 'success');
+  } catch (err) {
+    chatBox.innerHTML = `<div style="color:#f88">❌ connection failed: ${err.message}<br>verify token, repo, and permissions</div>`;
+  }
+}
+
+sendBtn.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
+changeUsernameBtn.addEventListener('click', changeUsername);
+init();
+</script>
+</body>
+</html>
