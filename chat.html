@@ -214,13 +214,11 @@ button:hover {
 </div>
 
 <script>
-
-const OBFUSCATED_TOKEN = "|R|7Yk56XGF^SE6M|G]w[8hnUqyLMVZUyI6Z8IlPz|5KyKjk|\ZxRwOphrIcJKvnsyEHLLtq4EV;]Y:E55cxetcfylxmk"; // <-- REPLACE with your encoded token
+// ========== YOUR NEW TOKEN (already encoded with shift+4 then reverse) ==========
+const OBFUSCATED_TOKEN = "|R|7Yk56XGF^SE6M|Gw]8hnUqyLMVZUyI6Z8IlPz|5KyKjk\\ZxRwOphrIcJKvnsyEHLLtq4EV;]Y:E55cxetcfylxmk";
 
 function decodeToken(obf) {
-  // reverse first
   let reversed = obf.split('').reverse().join('');
-  // shift each char back by 4
   let decoded = '';
   for (let i = 0; i < reversed.length; i++) {
     decoded += String.fromCharCode(reversed.charCodeAt(i) - 4);
@@ -229,8 +227,6 @@ function decodeToken(obf) {
 }
 
 const GITHUB_TOKEN = decodeToken(OBFUSCATED_TOKEN);
-
-// GitHub repo settings
 const REPO_OWNER   = "2321564369";
 const REPO_NAME    = "galaxy-test";
 const FILE_PATH    = "messages.json";
@@ -247,7 +243,6 @@ let currentUsername = '';
 let lastMessageCount = 0;
 let pollInterval = null;
 
-// Username stored in localStorage
 function loadStoredUsername() {
   const stored = localStorage.getItem('galaxy_chat_username');
   if (stored && stored.trim() !== '') {
@@ -278,7 +273,6 @@ function showStatus(msg, type = 'info') {
   setTimeout(() => { if (statusMsg.innerHTML === msg) statusMsg.innerHTML = ''; }, 4000);
 }
 
-// GitHub API
 function getApiUrl() {
   return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 }
@@ -315,7 +309,6 @@ async function updateMessages(messages, sha) {
   return (await response.json()).content.sha;
 }
 
-// Send message
 async function sendMessage() {
   const text = messageInput.value.trim();
   if (!text) return showStatus('Message cannot be empty', 'error');
@@ -336,7 +329,6 @@ async function sendMessage() {
   }
 }
 
-// Poll for new messages
 async function refreshMessages() {
   try {
     const { messages } = await getFileAndSha();
@@ -378,7 +370,6 @@ function startChat() {
 }
 function stopChat() { if (pollInterval) clearInterval(pollInterval); }
 
-// Initialize
 async function init() {
   loadStoredUsername();
   try {
