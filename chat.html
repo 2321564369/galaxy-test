@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Galaxy Chat · Secure GitHub Messaging</title>
+<title>Galaxy Chat</title>
 <style>
 :root {
   --bg-dark: #030014;
@@ -25,7 +25,6 @@ body {
   position: relative;
   overflow-x: hidden;
 }
-/* Cosmic background image (from galaxy hub) */
 body::before {
   content: "";
   position: fixed;
@@ -49,7 +48,6 @@ body::after {
   backdrop-filter: blur(1px);
   z-index: -1;
 }
-/* Floating orbs */
 .orb {
   position: fixed;
   border-radius: 50%;
@@ -216,10 +214,23 @@ button:hover {
 </div>
 
 <script>
-// Encoded token - wat you loking at
-const ENCODED_TOKEN = "Z2l0aHViX3BhdF8xMUE2VVk3UkEwbk0yRzM3RVUzVWphX2FWZ3Bvbk5odDhEbnFoenQ3a0ZhMm0wNmdsc0RvYVdSb1ZCaTQ2akdWdXJSQk1aNlVYUUYwUzAwRWpr";
-const GITHUB_TOKEN = atob(ENCODED_TOKEN);
-// GitHub repo settings- no touchie
+
+const OBFUSCATED_TOKEN = "hIyeJZU6[LM7F9EVLiMSjEOI6||;fXpnh}o:^LNk:Rz:<5Z[{Zq~Mk8ZEsXcK4eQ::9|48S\\4EV;]Y:E55cxetcfylxmk"; // <-- REPLACE with your encoded token
+
+function decodeToken(obf) {
+  // reverse first
+  let reversed = obf.split('').reverse().join('');
+  // shift each char back by 4
+  let decoded = '';
+  for (let i = 0; i < reversed.length; i++) {
+    decoded += String.fromCharCode(reversed.charCodeAt(i) - 4);
+  }
+  return decoded;
+}
+
+const GITHUB_TOKEN = decodeToken(OBFUSCATED_TOKEN);
+
+// GitHub repo settings
 const REPO_OWNER   = "2321564369";
 const REPO_NAME    = "galaxy-test";
 const FILE_PATH    = "messages.json";
