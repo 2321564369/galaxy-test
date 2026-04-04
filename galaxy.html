@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Galaxy · Unblocked Hub</title>
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+<style>
+/* ---------- ABSTRACT COSMIC RESET (fixed + improved) ---------- */
+:root {
+  --bg-dark: #030014;
+  --card-bg: rgba(8, 4, 28, 0.2);   /* opacity 0.2 */
+  --accent: #c084fc;
+  --accent2: #60a5fa;
+  --blur-amount: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+  background: var(--bg-dark);
+  color: #f0f3ff;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* DYNAMIC BACKGROUND */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: var(--bg-image, radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.5), transparent 70%));
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+  transition: background-image 0.5s ease;
+}
+
+/* Light overlay – image remains vivid */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(3, 0, 20, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: -1;
+}
+
+/* floating abstract orbs – subtle */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: -1;
+  animation: drift 22s infinite alternate;
+}
+.orb1 { width: 500px; height: 500px; background: #a855f7; top: -150px; left: -100px; }
+.orb2 { width: 600px; height: 600px; background: #3b82f6; bottom: -200px; right: -120px; animation-duration: 28s; opacity: 0.15; }
+.orb3 { width: 350px; height: 350px; background: #ec489a; top: 50%; left: 80%; opacity: 0.1; }
+
+@keyframes drift {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, -40px) scale(1.1); }
+}
+
+/* header – original style */
+header {
+  padding: 2.5rem 1.5rem 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 5;
+}
+header h1 {
+  font-size: 5rem;
+  margin: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent2), #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 15px rgba(167,139,250,0.5);
+}
+header p {
+  color: #cbd5e6;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+.version {
+  color: var(--accent2);
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* controls: search bar + cloak */
+.control-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem auto 1rem;
+  max-width: 800px;
+  padding: 0 1rem;
+}
+.search-box {
+  flex: 2;
+  min-width: 220px;
+  background: rgba(10, 6, 30, 0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 60px;
+  border: 1px solid rgba(96, 165, 250, 0.5);
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  color: white;
+  outline: none;
+  transition: 0.2s;
+}
+.search-box:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 18px rgba(192,132,252,0.5);
+}
+.counter-wrap {
+  margin: 0.8rem auto;
+  text-align: center;
+}
+#gameCounter {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  padding: 0.4rem 1.6rem;
+  border-radius: 100px;
+  font-weight: 600;
+  display: inline-block;
+  border: 1px solid rgba(167,139,250,0.6);
+}
+.cloak-wrapper {
+  text-align: center;
+  margin: 1rem 0 2rem;
+}
+#cloakBtn {
+  background: linear-gradient(135deg, #a78bfa, #38bdf8);
+  border: none;
+  border-radius: 2rem;
+  padding: 0.7rem 2rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: #0a0118;
+  box-shadow: 0 8px 24px rgba(167,139,250,.5);
+  transition: 0.2s;
+}
+#cloakBtn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* ---------- ABSTRACT GRID – WARPED, ORGANIC LAYOUT ---------- */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem 4rem;
+  position: relative;
+  z-index: 2;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem 1.8rem;
+  perspective: 1200px;
+}
+
+/* Each card gets unique organic distortions */
+.game-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  padding: 1.2rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 20px 35px -10px rgba(0,0,0,0.6);
+  transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  will-change: transform;
+  overflow: hidden;
+}
+
+/* Random abstract shapes per card */
+.game-card:nth-child(odd) {
+  border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+  transform: rotate(0.8deg);
+}
+.game-card:nth-child(even) {
+  border-radius: 30% 70% 50% 50% / 30% 40% 60% 70%;
+  transform: rotate(-0.6deg);
+}
+.game-card:nth-child(3n) {
+  border-radius: 60% 40% 30% 70% / 50% 60% 40% 50%;
+  transform: rotate(0.3deg);
+}
+.game-card:nth-child(5n+2) {
+  border-radius: 45% 55% 65% 35% / 55% 45% 55% 45%;
+  transform: rotate(-0.9deg);
+}
+.game-card:nth-child(7n+4) {
+  border-radius: 35% 65% 40% 60% / 70% 30% 70% 30%;
+}
+.game-card:hover {
+  transform: translateY(-12px) rotate(0deg) scale(1.02);
+  border-color: var(--accent);
+  box-shadow: 0 30px 45px -8px black, 0 0 0 2px rgba(192,132,252,0.5);
+  border-radius: 2rem;
+  transition: all 0.2s ease;
+}
+
+.game-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: inherit;
+  object-fit: cover;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.game-card h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.game-card p {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #e2e8ff;
+  text-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+.game-card button {
+  background: linear-gradient(95deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 2rem;
+  padding: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: #020018;
+  transition: 0.1s linear;
+  margin-top: 0.3rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+.game-card button:hover {
+  filter: brightness(1.08);
+  transform: scale(0.97);
+}
+
+/* footer */
+.site-footer {
+  margin-top: 4rem;
+  background: rgba(2,6,23,0.7);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(167,139,250,0.4);
+  padding: 2rem;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.footer-left strong {
+  color: var(--accent);
+}
+.footer-center button {
+  background: linear-gradient(135deg, #a78bfa, #38bdf8);
+  border: none;
+  border-radius: 2rem;
+  padding: 0.6rem 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #020617;
+  transition: 0.2s;
+}
+.footer-center button:hover {
+  filter: brightness(1.1);
+  transform: scale(0.98);
+}
+.footer-right {
+  text-align: right;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+@media (max-width: 700px) {
+  header h1 { font-size: 3rem; }
+  .games-grid { gap: 1.2rem; }
+  .control-panel { flex-direction: column; }
+}
+.scan-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg, rgba(0,255,255,0.02) 0px, rgba(0,255,255,0.02) 2px, transparent 2px, transparent 8px);
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* COUNTDOWN STYLES (fixed) */
+.countdown-wrapper {
+  text-align: center;
+  margin: 1rem auto;
+  padding: 0.5rem;
+}
+.countdown-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--accent2, #60a5fa);
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+/* Digital seven‑segment style */
+.seven-segment {
+  font-family: 'Courier New', 'Fira Code', 'VT323', monospace;
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.7);
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--accent, #c084fc);
+  color: var(--accent, #c084fc);
+  text-shadow: 0 0 6px var(--accent2, #60a5fa);
+  letter-spacing: 6px;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .seven-segment {
+    font-size: 1.6rem;
+    letter-spacing: 4px;
+    padding: 0.2rem 0.8rem;
+  }
+}
+
+/* Glow animation for digits */
+@keyframes digitGlow {
+  0% { text-shadow: 0 0 2px var(--accent); }
+  100% { text-shadow: 0 0 10px var(--accent2); }
+}
+.seven-segment {
+  animation: digitGlow 1.5s ease-in-out infinite alternate;
+}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="scan-line"></div>
+
+<header>
+  <h1>Galaxy</h1>
+  <p>NOT Free, Unblocked, Kinda Updated.</p>
+  <p class="version">v 1.7</p>
+  <div class="countdown-wrapper">
+    <div class="countdown-label">Time till freedom(T1):</div>
+    <div class="seven-segment" id="digitalCountdown">00:00:00:00</div>
+  </div>
+  <div class="counter-wrap">
+    <div id="gameCounter">🎮 0 Games Available</div>
+  </div>
+  <div class="cloak-wrapper">
+    <button id="cloakBtn">Open in about:blank</button>
+  </div>
+</header>
+
+<div class="control-panel">
+  <input type="text" id="searchGames" class="search-box" placeholder="🔍 Search game...">
+</div>
+
+<div class="container">
+  <div id="gamesGrid" class="games-grid"></div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>Unbanned Galaxy</strong><br>
+      <span>Made by Andrepicaso</span>
+    </div>
+    <div class="footer-center">
+      <button id="prankBtn">Back To Top</button>
+    </div>
+    <div class="footer-right">
+      <span>© 2026</span><br>
+      <span>All games belong to their creators</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ========== CONFIGURATION ==========
+// Fixed background URL
+const BACKGROUND_IMAGE_URL = "https://github.com/2321564369/galaxy-test/blob/main/81af94cb-74da-47c1-9dc1-7bfd46fd586f.jpg?raw=true";
+
+// Rickroll URL
+const RICKROLL_URL = "https://cdn.jsdelivr.net/gh/2321564369/rickroll@main/Rick%20Astley%20-%20Never%20Gonna%20Give%20You%20Up%20(Official%20Video)%20(4K%20Remaster)%20-%20Rick%20Astley%20(1080p%2C%20h264%2C%20youtube)%20(2).mp4";
+
+// ========== GAME DATABASE (original, no extra demo) ==========
+const FILE_SYSTEM = [
+  {
+    folder: [
+      { title: "Cookie Clicker", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/cach-ehm/ohhh@main/cok.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzmP53ErJrSbT72ndRYaiOnrj2-71v0ed2Q&s", id: "GameurlCookie" },
+      { title: "The Binding Of Isaac: Wrath Of The Lamb", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/RobiFet/CMinterview@a4017231eca9f2173ad7ec0e63b01e4786b4ad6b/web/src/BiWrath.swf", image: "https://m.media-amazon.com/images/M/MV5BOWY5M2EyYTgtZGE3MC00ZjgyLTk3NWEtMGRiNTAwYmRkMWRlXkEyXkFqcGc@._V1_.jpg", id: "BIW" },
+      { title: "Slow Roads", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbzqDA2SnuVZ3DRelxxbUxSV9Z1RJz_gQfDRx06WUpgppWgrdDEErtZ1Lev9O6j2w9ioBQ/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxV3JrbIR8D1Z8P7jI4UsXshCxnzAntjArfg&s", id: "SlowRoads" },
+      { title: "Paper.io 2", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/cach-ehm/papper@main/paper-io-2.xml", image: "https://play-lh.googleusercontent.com/SWTpYqsX9RN2YirCDnAjQ8qsbgn4UrHkRRGsjwuASnHMVqssIvWKzq82mP82y_ffBSE", id: "Paperio2" },
+      { title: "Basket Random", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/ishere@main/basrand.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM9vz6EnZ_cuKpfzDXOpbhS5xqGuzP2UIdHQ&s", id: "basketrand" },
+      { title: "Soccer Random", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/awaiblecomponent/ss65@main/soc.xml", image: "https://play-lh.googleusercontent.com/G1PIlb6HWKSaDre0XpUcmKGps9T4iamsSlwrogB3EJzYv4bz0M2am4D17MtGzndaOOU", id: "soccerrand" },
+      { title: "Survival Race", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/organ-nizator/ohh@main/sur.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHlcBjYjoBIzGV2geb6fCBpUMXIsSV1uIPrg&s", id: "surrace" },
+      { title: "Pico-8", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbxOVZK3wbs-BQK-bc9zgzX3eC8X-6r-6hnO-Ye59dQJ1BcOeUsfiVUDKD40oWFzyeaeaw/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNmshUSHMXXe_iI4z8PisDUhUaRGfD1R-gEA&s", id: "pico8" },
+      { title: "FootBall Bros", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/classrooms-1/ohanganamaranes@main/tara.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRejzLiTOObgVmmZ-6OpFH6CWmoiCcWVQAAvA&s", id: "footbros" },
+      { title: "PolyTrack", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbzuhv-wKflC3QgCI_d8xsy90ngRlqgKj-qfICMuzhimGuYwWXFI5tPWwwfjrYk-biJu/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTte4SgbR4TxuCyscMmjBTxUkOuuPfTKPNaww&s", id: "poltrak" },
+      { title: "Brawl Stars", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/zort@main/1yz.xml", image: "https://i1.sndcdn.com/artworks-000636775027-qr4yrz-t500x500.jpg", id: "brwalers" },
+      { title: "Geometry Dash", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbydNb9Y8FIM3D0vcweKtYCYbjJcSXghedO6MN0aWbP5qIwamjjSkBDirvuMHR_6sc4/exec", image: "https://i1.sndcdn.com/artworks-TLJ6E8sjNKHCNZ8y-xkXuvg-t500x500.jpg", id: "gdash" },
+      { title: "Clash Royale", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/ertemr33/vahvah@main/1.xml", image: "https://play-lh.googleusercontent.com/gnSC6s8-6Tjc4uhvDW7nfrSJxpbhllzYhgX8y374N1LYvWBStn2YhozS9XXaz1T_Pi2q", id: "clashroyl" },
+      { title: "Drift Boss", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbwAOi2tPbjzeWDkigfZMIPEGubYxz2la_qjxJyydNZyjwgbqsv9mv05g7tdmLHdvdaw/exec", image: "https://play-lh.googleusercontent.com/Zu0LoruCtIG45qs6iffZkWqGTuzEWflNoH8TNRtfMJ2NGgJxQGfw8kqSrxKtXGjPqeqFLNsnubW6EnPUJvOi8g", id: "drifbos" },
+      { title: "FNAF 2", type: "game_url", action: "launchURLGame", file: "https://storage.googleapis.com/freezenova/all/2024/more2/five-nights-at-freddys-2/pre-gg.html", image: "https://m.media-amazon.com/images/I/81HBpJd2h8L.png", id: "fnaf2" },
+      { title: "Fnaf", type: "game_url", action: "launchURLGame", file: "https://storage.googleapis.com/freezenova/all/2024/more2/five-nights-at-freddys/pre-gg.html", image: "https://play-lh.googleusercontent.com/myJ2kwywsCRglKkZuHBq6Aku9PX7HB75v-8KbnTK9JOPU6z0hpD9xtvjiTGqrn-e4eI", id: "fnaf" },
+      { title: "Portal Flash", type: "file_url", action: "launchSWF", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/main/portal-the-flash-version%20(2).swf", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA0IcNCQbbGLgV2P61zDa4Lj1baSTHtrSYRQ&s", id: "portal-flash" },
+      { title: "Impossible Quiz", type: "file_url", action: "launchSWF", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/main/impossible_quiz1%20(1).swf", image: "https://www.metacritic.com/a/img/catalog/provider/6/12/6-1-159569-52.jpg", id: "impquz" },
+      { title: "Worlds Hardest Game", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/filesmabex/z3x4@main/wordes-hardest-gae.swf", image: "https://play-lh.googleusercontent.com/WoyHFBEgzmhlM0VCsmH3zPqPFquIYZHQLCbcpVOBKgY4ku7Xb3XIB7rMWwZ6oLsAACA", id: "woldhg1" },
+      { title: "Stick War", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbw6ZtLTvS_AkT86pJbNZK61tdfDTo_tio_QIXcEZfx8QPlr1ty-Sm0bMSbUyJYc6rGRRA/exec", image: "https://imgs.crazygames.com/auto-covers/stick-war_1x1.jpg?format=auto&quality=100&metadata=none&width=1200", id: "stkwar" },
+      { title: "SandBloxels", type: "game_url", action: "launchLocalGame", file: "https://games.crazygames.com/en_US/stone-grass-mowing-simulator/index.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCo1suWbjCP-5FA5u2lAFeowEX3oNqjLpXGYzwd5faHMNN67E:https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3664820/642b7904abc85160b4d64e3aad815d3ff3856643/ss_642b7904abc85160b4d64e3aad815d3ff3856643.1920x1080.jpg%3Ft%3D1772994627&s", id: "sand" },
+      { title: "Minecraft 1.8", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/stonegrass.html", image: "https://assets-prd.ignimgs.com/2021/12/14/minecraft-1639513933156.jpg?crop=1%3A1%2Csmart&width=348&height=348&format=jpg&auto=webp&quality=80", id: "mc1.8" },
+      { title: "2048", type: "file_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbwgo9fzGlgbzqpBKfXrw7gGGvg8cYPPL-ycgd_y9jKePSDVnk_zr_keYn8v-0eUJQd5/exec", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/2048_logo.svg/1280px-2048_logo.svg.png", id: "2048" },
+      { title: "Tetris-N-Blox", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/lunasoldstuff/homework@cb988c0932d22789877a65d7a3fada7ed088cee2/nblox.swf", image: "https://tetris.wiki/images/thumb/a/ab/N-Blox_title.png/1200px-N-Blox_title.png", id: "tetris" },
+      { title: "10 minutes till dawn", type: "file_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbx2IFRHO-Q3RsgjhwW_bUmXSIRPff-nBBosAEZeXD8Y0e9EpfFFjCjJZzPWvO5147UY/exec", image: "https://img.itch.zone/aW1nLzg3MTU5NzMucG5n/original/0LqGxb.png", id: "10min" }
+    ]
+  }
+];
+
+// ---------- ENHANCED HTML/XML LAUNCHER (runs .html like .xml) ----------
+async function launchLocalGame(url) {
+  const ext = url.split(".").pop().toLowerCase();
+  if (ext === "xml" || ext === "html" || ext === "htm") {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      let content = await response.text();
+      
+      // SMART INJECTION: if it's a full HTML document, replace entire window content
+      const trimmed = content.trim();
+      const isFullHtml = /^<!DOCTYPE\s+html/i.test(trimmed) || /^<html/i.test(trimmed) || (trimmed.includes("<head") && trimmed.includes("<body"));
+      
+      const w = window.open("about:blank", "_blank");
+      if (!w) { alert("Popup blocked! Please allow popups for this site."); return; }
+      
+      if (isFullHtml) {
+        // Preserve full HTML structure (perfect for .html games, works exactly like original)
+        w.document.open();
+        w.document.write(content);
+        w.document.close();
+      } else {
+        // For XML/mini games: wrap in minimal structure
+        const wrappedHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Galaxy Game</title><style>body{margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;}*{box-sizing:border-box;}</style></head><body>${content}</body></html>`;
+        w.document.open();
+        w.document.write(wrappedHtml);
+        w.document.close();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load game. Check URL or network.");
+    }
+  } else {
+    alert("Only .xml, .html, .htm files are supported in this launcher.");
+  }
+}
+
+// Classic iframe launcher for direct game URLs
+function launchURLGame(url) {
+  const w = window.open("about:blank", "_blank");
+  if (!w) { alert("Popup blocked! allow popups"); return; }
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Galaxy · Game</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;}iframe{border:none;width:100%;height:100%;}</style></head><body><iframe src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-fullscreen allow-modals"></iframe></body></html>`;
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+// SWF launcher (Ruffle)
+function launchSWF(url, title) {
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${title}</title><style>html,body{margin:0;width:100%;height:100%;background:#000;}ruffle-player{width:100%;height:100%;}</style></head><body><script src="https://unpkg.com/@ruffle-rs/ruffle"><\/script><script>const ruffle=window.RufflePlayer.newest();const player=ruffle.createPlayer();document.body.appendChild(player);player.load({url:"${url}"});<\/script></body></html>`;
+  const w = window.open("about:blank", "_blank");
+  if (!w) { alert("Popup blocked!"); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+}
+
+// --- RENDER GRID WITH SEARCH ---
+function renderGames(filterText = "") {
+  const grid = document.getElementById("gamesGrid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  const gamesList = FILE_SYSTEM[0].folder;
+  let visible = 0;
+  gamesList.forEach(game => {
+    if (!game.title.toLowerCase().includes(filterText.toLowerCase())) return;
+    visible++;
+    const card = document.createElement("div");
+    card.className = "game-card";
+    card.innerHTML = `
+      <img class="game-thumb" src="${game.image}" alt="${game.title}" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Galaxy+Game'">
+      <h3>${game.title}</h3>
+      <button id="${game.id}">▶ PLAY NOW</button>
+    `;
+    grid.appendChild(card);
+    const btn = document.getElementById(game.id);
+    if (btn) {
+      btn.onclick = () => {
+        if (game.action === "launchLocalGame") launchLocalGame(game.file);
+        else if (game.action === "launchURLGame") launchURLGame(game.file);
+        else if (game.action === "launchSWF") launchSWF(game.file, game.title);
+        else alert(`${game.title} is currently unstable`);
+      };
+    }
+  });
+  const totalGames = gamesList.length;
+  const counterEl = document.getElementById("gameCounter");
+  if (filterText === "") animateCounter(counterEl, totalGames);
+  else counterEl.innerHTML = `🎮 ${visible} / ${totalGames} Games (filtered)`;
+}
+
+function animateCounter(el, end, duration = 800) {
+  if (!el) return;
+  let start = 0;
+  const startTime = performance.now();
+  function step(now) {
+    let p = Math.min((now - startTime) / duration, 1);
+    let val = Math.floor(p * end);
+    el.textContent = `🎮 ${val} Games Available`;
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = `🎮 ${end} Games Available`;
+  }
+  requestAnimationFrame(step);
+}
+
+// --- BACKGROUND SETUP ---
+function setBackgroundFromUrl(url) {
+  if (!url) return;
+  document.body.style.setProperty('--bg-image', `url(${url})`);
+}
+
+// --- PRANK / RICKROLL ---
+function rickroll() {
+  launchURLGame(RICKROLL_URL);
+}
+
+// --- DIGITAL COUNTDOWN (target Dec 31 2026)---
+const TARGET_DATE = "2026-06-02T03:00:00";
+let countdownInterval;
+function updateDigitalCountdown() {
+  const target = new Date(TARGET_DATE).getTime();
+  const now = new Date().getTime();
+  const distance = target - now;
+  if (distance < 0) {
+    document.getElementById("digitalCountdown").innerHTML = "00:00:00:00";
+    if (countdownInterval) clearInterval(countdownInterval);
+    return;
+  }
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  const formatted = `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  document.getElementById("digitalCountdown").innerHTML = formatted;
+}
+
+// --- INITIALIZATION ---
+document.addEventListener("DOMContentLoaded", () => {
+  renderGames("");
+  const searchInput = document.getElementById("searchGames");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => renderGames(e.target.value));
+  }
+  if (BACKGROUND_IMAGE_URL) setBackgroundFromUrl(BACKGROUND_IMAGE_URL);
+  
+  const cloakBtn = document.getElementById("cloakBtn");
+  if (cloakBtn) {
+    cloakBtn.addEventListener("click", () => {
+      const w = window.open("about:blank", "_blank");
+      if (!w) { alert("Popup blocked! Please allow popups."); return; }
+      const html = `<!DOCTYPE html><html><head><title>about:blank</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style></head><body><iframe src="${location.href}" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-fullscreen"></iframe></body></html>`;
+      w.document.open(); w.document.write(html); w.document.close();
+    });
+  }
+  
+  const prankBtn = document.getElementById("prankBtn");
+  if (prankBtn) {
+    prankBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      rickroll();
+    });
+  }
+  
+  countdownInterval = setInterval(updateDigitalCountdown, 1000);
+  updateDigitalCountdown();
+});
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey && e.shiftKey && e.altKey && e.code === "BracketLeft") {
+    e.preventDefault();
+    launchLocalGame('https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/chat.html');
+  }
+});
+</script>
+</body>
+</html>
+
