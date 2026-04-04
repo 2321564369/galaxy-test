@@ -620,7 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
   updateDigitalCountdown();
 });
 document.addEventListener("keydown", e => {
-  if (e.ctrlKey && e.shiftKey && e.altKey && e.code === "BracketLeft") {
+  if (e.ctrlKey && e.code === "BracketLeft") {
     e.preventDefault();
     launchLocalGame('https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/chat.html');
   }
