@@ -20,7 +20,6 @@ body{
   color:#f0f3ff;
 }
 
-/* bg */
 body::before{
   content:"";
   position:fixed;
@@ -37,13 +36,11 @@ body::after{
   z-index:-1;
 }
 
-/* orbs */
 .orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.2;}
 .orb1{width:500px;height:500px;background:#a855f7;top:-150px;left:-100px;}
 .orb2{width:600px;height:600px;background:#3b82f6;bottom:-200px;right:-120px;}
 .orb3{width:350px;height:350px;background:#ec489a;top:50%;left:80%;}
 
-/* header */
 header{text-align:center;padding:2rem;}
 header h1{
   font-size:100px;
@@ -52,7 +49,6 @@ header h1{
   color:transparent;
 }
 
-/* card */
 .wrap{max-width:900px;margin:auto;padding:1rem;}
 .box{
   background:var(--card);
@@ -62,7 +58,6 @@ header h1{
   border:1px solid rgba(255,255,255,0.2);
 }
 
-/* user row */
 .row{display:flex;justify-content:space-between;margin-bottom:10px;}
 .user{padding:5px 10px;border-radius:20px;border:1px solid var(--accent);}
 button{
@@ -73,7 +68,6 @@ button{
   cursor:pointer;
 }
 
-/* chat */
 .chat{
   height:350px;
   overflow-y:auto;
@@ -82,7 +76,6 @@ button{
   padding:10px;
 }
 
-/* scrollbar */
 .chat::-webkit-scrollbar{width:8px;}
 .chat::-webkit-scrollbar-track{background:transparent;}
 .chat::-webkit-scrollbar-thumb{
@@ -90,7 +83,6 @@ button{
   border-radius:10px;
 }
 
-/* message */
 .msg{
   margin-bottom:10px;
   padding:8px;
@@ -98,18 +90,15 @@ button{
   background:rgba(255,255,255,0.05);
 }
 
-/* only new messages animate */
 .msg.new{
   animation:fadeIn .35s ease;
 }
 
-/* animation */
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(10px);}
   to{opacity:1;transform:translateY(0);}
 }
 
-/* input */
 .input{display:flex;margin-top:10px;gap:10px;}
 input{
   flex:1;
@@ -149,13 +138,12 @@ input{
 </div>
 
 <script>
-// token
 const A = "nwn<sFwSJF]R8NMNogT~=7znEN";
 const B = "\\Okwvh|F7E^Qw48\\56LKFY;8woopl<rnQc<{nROlJ\\u";
 const C = "|kP4EV;]Y:E55cxetcfylxmk";
 
 let lastLen = 0;
-// decode
+
 function k(){
   let s=A+B+C;
   s=s.split('').reverse().join('');
@@ -168,17 +156,14 @@ function k(){
 
 const X=k();
 
-// config
 const O="2321564369";
 const R="galaxy-test";
 const F="messages.json";
 
-// dom
 const c=document.getElementById("c");
 const i=document.getElementById("i");
 const u=document.getElementById("u");
 
-// user
 let n=localStorage.getItem("n")||prompt("name")||"user";
 localStorage.setItem("n",n);
 u.textContent=n;
@@ -188,12 +173,10 @@ function setName(){
   if(v){n=v;localStorage.setItem("n",n);u.textContent=n;}
 }
 
-// api
 function p(){
   return `https://api.github.com/repos/${O}/${R}/contents/${F}?t=${Date.now()}`;
 }
 
-// get
 async function g(){
   const r=await fetch(p(),{headers:{Authorization:`token ${X}`}});
   if(r.status===404)return{m:[],s:null};
@@ -201,7 +184,6 @@ async function g(){
   return{m:JSON.parse(atob(d.content)),s:d.sha};
 }
 
-// update
 async function w(m,s){
   const e=btoa(unescape(encodeURIComponent(JSON.stringify(m))));
   await fetch(p(),{
@@ -214,27 +196,41 @@ async function w(m,s){
   });
 }
 
-// send
 async function send(){
-  if(!i.value)return;
-  let {m,s}=await g();
-  m.push({u:n,t:i.value,d:Date.now()});
+  if ("Notification" in window && Notification.permission !== "granted") {
+    await Notification.requestPermission();
+  }
+
+  if(!i.value) return;
+
+  let text = i.value.trim();
+  let {m,s} = await g();
+
+  if(text.toLowerCase() === "wipe_chat"){
+    await w([], s);
+    c.innerHTML = "";
+    lastLen = 0;
+    i.value = "";
+    return;
+  }
+
+  m.push({u:n,t:text,d:Date.now()});
   await w(m,s);
+
   i.value="";
   load();
 }
 
-// render
 function r(m){
   if(m.length === lastLen) return;
 
   const isFirstLoad = lastLen === 0;
+  const newMessages = m.slice(lastLen);
   lastLen = m.length;
 
   c.innerHTML = m.map((x, idx)=>{
     let t = new Date(x.d).toLocaleTimeString();
 
-    // only animate new messages
     const anim = (!isFirstLoad && idx >= m.length - 1)
       ? "msg new"
       : "msg";
@@ -245,9 +241,18 @@ function r(m){
   }).join("");
 
   c.scrollTop = c.scrollHeight;
+
+  if (!isFirstLoad && "Notification" in window && Notification.permission === "granted" && document.hidden) {
+    newMessages.forEach(msg => {
+      if (msg.u !== n) {
+        new Notification(`${msg.u} says:`, {
+          body: msg.t,
+        });
+      }
+    });
+  }
 }
 
-// load
 async function load(){
   let {m}=await g();
   r(m);
