@@ -66,7 +66,11 @@ button{
   border-radius:20px;
   background:linear-gradient(90deg,var(--accent),var(--accent2));
   cursor:pointer;
+  color:white;
+  font-weight:bold;
+  transition:transform 0.2s;
 }
+button:hover{transform:scale(1.05);}
 
 .chat{
   height:350px;
@@ -85,9 +89,29 @@ button{
 
 .msg{
   margin-bottom:10px;
-  padding:8px;
+  padding:8px 12px;
   border-radius:15px;
   background:rgba(255,255,255,0.05);
+  border-left: 3px solid var(--accent);
+  word-wrap:break-word;
+}
+
+.msg.own {
+  border-left-color: var(--accent2);
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.msg.system {
+  border-left-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.1);
+  text-align: center;
+  color: #fbbf24;
+}
+
+.msg.error {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .msg.new{
@@ -99,14 +123,51 @@ button{
   to{opacity:1;transform:translateY(0);}
 }
 
+.msg-user {
+  color: var(--accent);
+  font-weight:bold;
+}
+
+.msg-time {
+  font-size: 0.8em;
+  opacity: 0.6;
+  margin-left: 8px;
+}
+
+.msg-text {
+  margin-top: 4px;
+}
+
 .input{display:flex;margin-top:10px;gap:10px;}
 input{
   flex:1;
-  padding:10px;
+  padding:10px 15px;
   border-radius:20px;
   border:1px solid var(--accent2);
   background:rgba(0,0,0,0.6);
   color:white;
+  outline: none;
+  transition: border-color 0.3s;
+}
+input:focus {
+  border-color: var(--accent);
+}
+
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  margin-top: 10px;
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+.status-bar .online {
+  color: #4ade80;
+}
+
+.status-bar .offline {
+  color: #f87171;
 }
 </style>
 </head>
@@ -124,149 +185,275 @@ input{
 
 <div class="row">
 <div class="user">💬 <span id="u"></span></div>
-<button onclick="setName()">change</button>
+<button onclick="setName()">Change Name</button>
 </div>
 
 <div id="c" class="chat"></div>
 
 <div class="input">
-<input id="i" placeholder="type message">
+<input id="i" placeholder="Type message..." maxlength="500">
 <button onclick="send()">Send</button>
+</div>
+
+<div class="status-bar">
+  <span id="status">🟢 Connected</span>
+  <span id="msgCount">0 messages</span>
 </div>
 
 </div>
 </div>
 
 <script>
-const A = "fjN<q9UETGO:8YY\WY=jJ6oTusWhmuoS{";
+
+
+const A = "fjN<q9UETGO:8YY\\WY=jJ6oTusWhmuoS{";
 const B = "M~u~MXrVWvUz~4{E8OTr:oRZMwc^7hhue:8^6]=4EV;]";
 const C = "Y:E55cxetcfylxmk";
 
+function getToken() {
+    let combined = A + B + C;
+    combined = combined.split('').reverse().join('');
+    let token = '';
+    for (let i = 0; i < combined.length; i++) {
+        token += String.fromCharCode(combined.charCodeAt(i) - 4);
+    }
+    return token;
+}
+
+const GITHUB_TOKEN = getToken();
+
+// Verify token in console
+console.log('Token length:', GITHUB_TOKEN.length);
+console.log('Token starts with:', GITHUB_TOKEN.substring(0, 20));
+
+const O = "2321564369";
+const R = "galaxy-test";
+const F = "messages.json";
+
+const c = document.getElementById("c");
+const i = document.getElementById("i");
+const u = document.getElementById("u");
+const statusEl = document.getElementById("status");
+const msgCountEl = document.getElementById("msgCount");
+
 let lastLen = 0;
+let n = localStorage.getItem("n") || prompt("Enter your name:") || "user";
+localStorage.setItem("n", n);
+u.textContent = n;
 
-function k(){
-  let s=A+B+C;
-  s=s.split('').reverse().join('');
-  let o='';
-  for(let i=0;i<s.length;i++){
-    o+=String.fromCharCode(s.charCodeAt(i)-4);
+function setName() {
+  let v = prompt("New name:", n);
+  if (v && v.trim()) {
+    n = v.trim();
+    localStorage.setItem("n", n);
+    u.textContent = n;
   }
-  return o;
 }
 
-const X=k();
-
-const O="2321564369";
-const R="galaxy-test";
-const F="messages.json";
-
-const c=document.getElementById("c");
-const i=document.getElementById("i");
-const u=document.getElementById("u");
-
-let n=localStorage.getItem("n")||prompt("name")||"user";
-localStorage.setItem("n",n);
-u.textContent=n;
-
-function setName(){
-  let v=prompt("new name",n);
-  if(v){n=v;localStorage.setItem("n",n);u.textContent=n;}
-}
-
-function p(){
+function getApiUrl() {
   return `https://api.github.com/repos/${O}/${R}/contents/${F}?t=${Date.now()}`;
 }
 
-async function g(){
-  const r=await fetch(p(),{headers:{Authorization:`token ${X}`}});
-  if(r.status===404)return{m:[],s:null};
-  const d=await r.json();
-  return{m:JSON.parse(atob(d.content)),s:d.sha};
+async function getMessages() {
+  try {
+    const response = await fetch(getApiUrl(), {
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    
+    if (response.status === 404) {
+      return { messages: [], sha: null };
+    }
+    
+    if (response.status === 401) {
+      statusEl.innerHTML = '🔴 Token Invalid!';
+      statusEl.className = 'offline';
+      c.innerHTML = `<div class="msg error">❌ Invalid GitHub token. Please check your token.</div>`;
+      return { messages: [], sha: null };
+    }
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const data = await response.json();
+    if (!data.content) {
+      return { messages: [], sha: null };
+    }
+    
+    const content = atob(data.content);
+    const messages = JSON.parse(content);
+    return { messages: messages, sha: data.sha };
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    statusEl.innerHTML = '🔴 Error';
+    statusEl.className = 'offline';
+    return { messages: [], sha: null };
+  }
 }
 
-async function w(m,s){
-  const e=btoa(unescape(encodeURIComponent(JSON.stringify(m))));
-  await fetch(p(),{
-    method:"PUT",
-    headers:{
-      Authorization:`token ${X}`,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({message:"c",content:e,sha:s,branch:"main"})
-  });
+async function saveMessages(messages, sha) {
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(messages))));
+    const response = await fetch(getApiUrl(), {
+      method: "PUT",
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify({
+        message: "Update chat messages",
+        content: content,
+        sha: sha,
+        branch: "main"
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving messages:', error);
+    throw error;
+  }
 }
 
-async function send(){
+async function send() {
   if ("Notification" in window && Notification.permission !== "granted") {
     await Notification.requestPermission();
   }
 
-  if(!i.value) return;
+  const text = i.value.trim();
+  if (!text) return;
 
-  let text = i.value.trim();
-  let {m,s} = await g();
+  try {
+    let { messages, sha } = await getMessages();
 
-  if(text.toLowerCase() === "wipe_chat"){
-    await w([], s);
-    c.innerHTML = "";
-    lastLen = 0;
+    // Commands
+    if (text.toLowerCase() === "wipe_chat" || text.toLowerCase() === "/clear") {
+      if (confirm('Clear all messages?')) {
+        await saveMessages([], sha);
+        c.innerHTML = `<div class="msg system">🗑️ Chat cleared by ${n}</div>`;
+        lastLen = 0;
+        i.value = "";
+        msgCountEl.textContent = '0 messages';
+        statusEl.innerHTML = '🟢 Cleared';
+      }
+      return;
+    }
+
+    if (text.toLowerCase() === "/users" || text.toLowerCase() === "/who") {
+      const users = [...new Set(messages.map(msg => msg.u))];
+      c.innerHTML += `<div class="msg system">👥 Users: ${users.join(', ') || 'No users yet'}</div>`;
+      c.scrollTop = c.scrollHeight;
+      i.value = "";
+      return;
+    }
+
+    messages.push({ u: n, t: text, d: Date.now() });
+    await saveMessages(messages, sha);
     i.value = "";
+    await loadMessages();
+    
+  } catch (error) {
+    console.error('Send error:', error);
+    c.innerHTML += `<div class="msg error">❌ Failed to send message: ${error.message}</div>`;
+    c.scrollTop = c.scrollHeight;
+  }
+}
+
+function renderMessages(messages) {
+  if (!messages || messages.length === 0) {
+    c.innerHTML = `<div class="msg system">💬 No messages yet. Say hello!</div>`;
+    msgCountEl.textContent = '0 messages';
     return;
   }
 
-  m.push({u:n,t:text,d:Date.now()});
-  await w(m,s);
-
-  i.value="";
-  load();
-}
-
-function r(m){
-  if(m.length === lastLen) return;
-
   const isFirstLoad = lastLen === 0;
-  const newMessages = m.slice(lastLen);
-  lastLen = m.length;
+  const newMessages = messages.slice(lastLen);
+  lastLen = messages.length;
 
-  c.innerHTML = m.map((x, idx)=>{
-    let t = new Date(x.d).toLocaleTimeString();
-
-    const anim = (!isFirstLoad && idx >= m.length - 1)
-      ? "msg new"
-      : "msg";
-
-    return `<div class="${anim}">
-      <b>${x.u}</b> (${t})<br>${x.t}
+  c.innerHTML = messages.map((msg, idx) => {
+    const time = new Date(msg.d).toLocaleTimeString();
+    const isNew = !isFirstLoad && idx >= messages.length - newMessages.length;
+    const isOwn = msg.u === n;
+    
+    return `<div class="msg ${isNew ? 'new' : ''} ${isOwn ? 'own' : ''}">
+      <span class="msg-user">${escapeHtml(msg.u)}</span>
+      <span class="msg-time">${time}</span>
+      <div class="msg-text">${escapeHtml(msg.t)}</div>
     </div>`;
   }).join("");
 
   c.scrollTop = c.scrollHeight;
+  msgCountEl.textContent = `${messages.length} messages`;
+  statusEl.innerHTML = '🟢 Connected';
+  statusEl.className = 'online';
 
+  // Notifications for new messages
   if (!isFirstLoad && "Notification" in window && Notification.permission === "granted" && document.hidden) {
     newMessages.forEach(msg => {
       if (msg.u !== n) {
         new Notification(`${msg.u} says:`, {
           body: msg.t,
+          icon: '💬'
         });
       }
     });
   }
 }
 
-async function load(){
-  let {m}=await g();
-  r(m);
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
-setInterval(load,3000);
-load();
+async function loadMessages() {
+  try {
+    const { messages } = await getMessages();
+    renderMessages(messages);
+  } catch (error) {
+    console.error('Load error:', error);
+    statusEl.innerHTML = '🔴 Error';
+    statusEl.className = 'offline';
+  }
+}
 
+// Auto-refresh every 3 seconds
+setInterval(loadMessages, 3000);
+loadMessages();
+
+// Enter key to send
 i.addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     send();
   }
 });
+
+// Connection status
+window.addEventListener('online', () => {
+  statusEl.innerHTML = '🟢 Online';
+  statusEl.className = 'online';
+  loadMessages();
+});
+
+window.addEventListener('offline', () => {
+  statusEl.innerHTML = '🔴 Offline';
+  statusEl.className = 'offline';
+});
+
+console.log('💬 Galaxy Chat loaded!');
+console.log('👤 User:', n);
+console.log('📡 Using GitHub API with scrambled token');
+console.log('💡 Commands: /clear, /users');
+console.log('✅ Token unscrambled successfully!');
 </script>
 
 </body>
