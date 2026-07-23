@@ -381,7 +381,7 @@ header p {
 <header>
   <h1>Galaxy</h1>
   <p>NOT Free, Unblocked, Kinda Updated.</p>
-  <p class="version">v 1.8.10</p>
+  <p class="version">v 1.8.5</p>
   <div class="countdown-wrapper">
     <div class="countdown-label">Time till freedom(T1):</div>
     <div class="seven-segment" id="digitalCountdown">00:00:00:00</div>
@@ -432,7 +432,7 @@ const FILE_SYSTEM = [
       { title: "Slope", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/slope.html", image: "https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs", id: "slop" },
       { title: "Hollow Knight", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/hollowknight.html", image: "https://upload.wikimedia.org/wikipedia/en/d/de/Hollow_Knight_2026_cover_art.jpg", id: "hollow" },
       { title: "Buckshot Roulete", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/bucksoth.html", image: "https://i.ytimg.com/vi/zaWPFbX7Q8A/sddefault.jpg", id: "bukshot" },
-      { title: "Block Blast", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/BLOCKBLAST.html", image: "https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E", id: "blockblast" },
+      { title: "Block Blast", type: "file_url", action: "launchLocalGame", file: "https://games.engineering.com/blockblastgame/index.html", base: "https://games.engineering.com/blockblastgame/", image: "https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E", id: "blockblast" },
       { title: "Bitlife", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/bitlife.html", image: "https://play-lh.googleusercontent.com/fUM-UyywXxjC8soxAZdIlxJrlRRXmql8wkE426SHzft4lJycSKVd2jCYQQX1BEG9Xw", id: "bitlife" },
       { title: "Balatro", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/balatro.html", image: "https://faang-cse391-25wi-b0b5d120fce8ff214d99c92141153a1ec83cf32798b76.pages.cs.washington.edu/assets/images/balatro.jpg", id: "balatro" },
       { title: "The Binding Of Isaac: Wrath Of The Lamb", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/RobiFet/CMinterview@a4017231eca9f2173ad7ec0e63b01e4786b4ad6b/web/src/BiWrath.swf", image: "https://m.media-amazon.com/images/M/MV5BOWY5M2EyYTgtZGE3MC00ZjgyLTk3NWEtMGRiNTAwYmRkMWRlXkEyXkFqcGc@._V1_.jpg", id: "BIW" },
@@ -469,7 +469,7 @@ const FILE_SYSTEM = [
 ];
 
 // ---------- LAUNCHERS ----------
-async function launchLocalGame(url) {
+async function launchLocalGame(url, baseUrl) {
   const ext = url.split(".").pop().toLowerCase();
   if (ext === "xml" || ext === "html" || ext === "htm") {
     try {
@@ -480,12 +480,21 @@ async function launchLocalGame(url) {
       const isFullHtml = /^<!DOCTYPE\s+html/i.test(trimmed) || /^<html/i.test(trimmed) || (trimmed.includes("<head") && trimmed.includes("<body"));
       const w = window.open("about:blank", "_blank");
       if (!w) { alert("Popup blocked! Please allow popups for this site."); return; }
+
+      // Only games that explicitly pass a baseUrl (via the optional
+      // "base" field on their FILE_SYSTEM entry) get a <base> tag
+      // injected — every other game's fetched HTML is untouched.
+      const baseTag = baseUrl ? `<base href="${baseUrl}">` : "";
+
       if (isFullHtml) {
+        const withBase = baseTag
+          ? content.replace(/<head(\s[^>]*)?>/i, (m) => `${m}${baseTag}`)
+          : content;
         w.document.open();
-        w.document.write(content);
+        w.document.write(withBase);
         w.document.close();
       } else {
-        const wrappedHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Galaxy Game</title><style>body{margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;}*{box-sizing:border-box;}</style></head><body>${content}</body></html>`;
+        const wrappedHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">${baseTag}<title>Galaxy Game</title><style>body{margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;}*{box-sizing:border-box;}</style></head><body>${content}</body></html>`;
         w.document.open();
         w.document.write(wrappedHtml);
         w.document.close();
@@ -643,7 +652,7 @@ function renderGames(filterText = "") {
     if (btn) {
       btn.onclick = (e) => {
         e.stopPropagation();
-        if (game.action === "launchLocalGame") launchLocalGame(game.file);
+        if (game.action === "launchLocalGame") launchLocalGame(game.file, game.base);
         else if (game.action === "launchURLGame") launchURLGame(game.file);
         else if (game.action === "launchSWF") launchSWF(game.file, game.title);
         else alert(`${game.title} is currently unstable`);
