@@ -1,3 +1,4 @@
+//
 function createUnityInstance(t, n, c) {
     function d(e, t) {
         if (!d.aborted && n.showBanner)
