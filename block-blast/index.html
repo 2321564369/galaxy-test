@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Block Blast</title>
+
+<style>
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#111;
+    overflow:hidden;
+}
+
+#unity-canvas{
+    width:867px;
+    height:911px;
+    display:block;
+    margin:auto;
+}
+
+#loading{
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    margin-top:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="loading">
+Loading Block Blast...
+</div>
+
+<canvas id="unity-canvas"></canvas>
+
+
+<script>
+const root =
+"https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/block-blast";
+
+const build =
+root + "/Build";
+
+
+const github =
+"https://raw.githubusercontent.com/2321564369/galaxy-test/main/block-blast/Build";
+
+const cdn =
+"https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/block-blast/Build";
+
+
+const config = {
+
+    dataUrl:
+    github + "/block-blast.data",
+
+    codeUrl:
+    github + "/block-blast.wasm",
+
+    frameworkUrl:
+    cdn + "/block-blast.framework.js",
+
+    streamingAssetsUrl:
+    "https://raw.githubusercontent.com/2321564369/galaxy-test/main/block-blast/StreamingAssets",
+
+    companyName:"GreenLight",
+    productName:"Block Blast",
+    productVersion:"0.1"
+};
+
+
+const canvas = document.querySelector("#unity-canvas");
+
+
+let script = document.createElement("script");
+script.src = build + "/block-blast.loader.js";
+
+
+script.onload = () => {
+
+    console.log("loader loaded");
+
+    createUnityInstance(
+        canvas,
+        config,
+        p => console.log("loading",p)
+    )
+    .then(() => {
+        console.log("READY");
+    })
+    .catch(console.error);
+
+};
+
+
+document.body.appendChild(script);
+
+</script>
+</body>
+</html>
