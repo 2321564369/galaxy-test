@@ -36,7 +36,7 @@ function createUnityInstance(t, n, c) {
         cacheControl: function(e) {
             return e == l.dataUrl || e.match(/\.bundle/) ? "must-revalidate" : "no-store"
         },
-        streamingAssetsUrl: "https://raw.githubusercontent.com/2321564369/galaxy-test/main/block-blast/StreamingAssets/",
+        streamingAssetsUrl: "StreamingAssets",
         downloadProgress: {},
         deinitializers: [],
         intervals: {},
