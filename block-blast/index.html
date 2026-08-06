@@ -72,7 +72,34 @@ const config = {
     productName:"Block Blast",
     productVersion:"0.1"
 };
+// Intercept ALL requests for .txt files and redirect to GitHub
+const originalFetch = window.fetch;
+window.fetch = function(url, options) {
+    if (typeof url === 'string') {
+        // Check if it's a .txt file request
+        if (url.includes('.txt') || url.includes('game.txt') || url.includes('setting.txt')) {
+            // Extract just the filename from the URL
+            const filename = url.split('/').pop();
+            // Redirect to your GitHub URL
+            url = `https://raw.githubusercontent.com/2321564369/galaxy-test/main/block-blast/StreamingAssets/${filename}`;
+            console.log(`Redirected ${filename} request to:`, url);
+        }
+    }
+    return originalFetch.call(this, url, options);
+};
 
+// Also intercept XHR requests
+const originalOpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+    if (typeof url === 'string') {
+        if (url.includes('.txt') || url.includes('game.txt') || url.includes('setting.txt')) {
+            const filename = url.split('/').pop();
+            url = `https://raw.githubusercontent.com/2321564369/galaxy-test/main/block-blast/StreamingAssets/${filename}`;
+            console.log(`Redirected ${filename} XHR to:`, url);
+        }
+    }
+    return originalOpen.call(this, method, url, ...rest);
+};
 
 const canvas = document.querySelector("#unity-canvas");
 
