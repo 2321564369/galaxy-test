@@ -136,68 +136,546 @@
 
 </div>
 	<script>
-(function() {
+(function () {
+
+    /* =========================================================
+       CLOUD SAVE SETTINGS
+       ========================================================= */
+
+    // Your GitHub repository
+    var CLOUD_REPO = "2321564369/cookie-saves";
+
+    // Your Cloudflare Worker URL goes here later
+    var CLOUD_API = "https://YOUR-WORKER.workers.dev";
+
+
+    /* =========================================================
+       USERNAME
+       ========================================================= */
+
+    function getUsername() {
+        var username = localStorage.getItem("cookieCloudUsername");
+
+        if (!username) {
+            username = prompt("Enter your cloud-save username:");
+
+            if (!username) {
+                alert("Username is required.");
+                return null;
+            }
+
+            username = username.trim();
+
+            if (!username) {
+                alert("Username cannot be empty.");
+                return null;
+            }
+
+            // Remove characters that would cause problems in a folder name
+            username = username.replace(/[\/\\:*?"<>|]/g, "_");
+
+            localStorage.setItem("cookieCloudUsername", username);
+        }
+
+        return username;
+    }
+
+
+    /* =========================================================
+       CHANGE USERNAME
+       ========================================================= */
+
+    window.changeCloudUsername = function () {
+        var current = localStorage.getItem("cookieCloudUsername") || "";
+
+        var username = prompt(
+            "Enter your cloud-save username:",
+            current
+        );
+
+        if (!username) return;
+
+        username = username.trim();
+
+        if (!username) {
+            alert("Username cannot be empty.");
+            return;
+        }
+
+        username = username.replace(/[\/\\:*?"<>|]/g, "_");
+
+        localStorage.setItem("cookieCloudUsername", username);
+
+        alert("Username changed to: " + username);
+    };
+
+
+    /* =========================================================
+       UPLOAD SAVE
+       ========================================================= */
+
+    window.uploadCloudSave = async function () {
+
+        var username = getUsername();
+
+        if (!username) return;
+
+        var bakeryName = prompt("Enter your bakery name:");
+
+        if (!bakeryName) return;
+
+        bakeryName = bakeryName.trim();
+
+        if (!bakeryName) {
+            alert("Bakery name cannot be empty.");
+            return;
+        }
+
+        // Prevent invalid filename characters
+        bakeryName = bakeryName.replace(/[\/\\:*?"<>|]/g, "_");
+
+        /*
+         * Cookie Clicker's save data.
+         *
+         * WriteSave(1) returns the save string without
+         * opening the normal export window.
+         */
+        var saveData;
+
+        try {
+            saveData = Game.WriteSave(1);
+        }
+        catch (e) {
+            alert("Could not create the Cookie Clicker save.\n\n" + e);
+            return;
+        }
+
+        if (!saveData) {
+            alert("Cookie Clicker returned an empty save.");
+            return;
+        }
+
+
+        /* Current date/time */
+
+        var now = new Date();
+
+        var date =
+            (now.getMonth() + 1) + "/" +
+            now.getDate() + "/" +
+            now.getFullYear();
+
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+
+        var ampm = hours >= 12 ? "PM" : "AM";
+
+        hours = hours % 12;
+
+        if (hours === 0) hours = 12;
+
+        minutes = minutes.toString().padStart(2, "0");
+
+        var time =
+            hours + ":" +
+            minutes + " " +
+            ampm;
+
+
+        /* Filename */
+
+        var filename =
+            bakeryName +
+            " | " +
+            username +
+            " | " +
+            date +
+            " " +
+            time +
+            ".txt";
+
+
+        /* Send to cloud API */
+
+        try {
+
+            alert("Uploading save...");
+
+            var response = await fetch(CLOUD_API + "/upload", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username,
+                    bakeryName: bakeryName,
+                    filename: filename,
+                    saveData: saveData
+                })
+            });
+
+
+            var result = await response.json();
+
+
+            if (!response.ok) {
+                throw new Error(
+                    result.error || "Upload failed."
+                );
+            }
+
+
+            alert(
+                "Save uploaded successfully!\n\n" +
+                filename
+            );
+
+        }
+        catch (e) {
+
+            console.error(e);
+
+            alert(
+                "Cloud save upload failed.\n\n" +
+                e.message
+            );
+        }
+    };
+
+
+    /* =========================================================
+       IMPORT SAVE
+       ========================================================= */
+
+    window.importCloudSave = async function () {
+
+        var username = getUsername();
+
+        if (!username) return;
+
+
+        try {
+
+            alert("Finding your cloud saves...");
+
+            var response = await fetch(
+                CLOUD_API +
+                "/list?username=" +
+                encodeURIComponent(username)
+            );
+
+
+            var result = await response.json();
+
+
+            if (!response.ok) {
+                throw new Error(
+                    result.error || "Could not get saves."
+                );
+            }
+
+
+            if (!result.files || result.files.length === 0) {
+
+                alert(
+                    "No cloud saves were found for " +
+                    username + "."
+                );
+
+                return;
+            }
+
+
+            /*
+             * If there is more than one save,
+             * let the user choose.
+             */
+
+            var message =
+                "Choose a save to import:\n\n";
+
+            for (var i = 0; i < result.files.length; i++) {
+
+                message +=
+                    (i + 1) +
+                    ". " +
+                    result.files[i].name +
+                    "\n";
+            }
+
+
+            var choice = prompt(message);
+
+
+            if (choice === null) return;
+
+            var number = parseInt(choice);
+
+
+            if (
+                isNaN(number) ||
+                number < 1 ||
+                number > result.files.length
+            ) {
+
+                alert("Invalid save number.");
+
+                return;
+            }
+
+
+            var selected =
+                result.files[number - 1];
+
+
+            /* Download the selected save */
+
+            var saveResponse = await fetch(
+                CLOUD_API +
+                "/download?username=" +
+                encodeURIComponent(username) +
+                "&filename=" +
+                encodeURIComponent(selected.name)
+            );
+
+
+            var saveResult =
+                await saveResponse.json();
+
+
+            if (!saveResponse.ok) {
+
+                throw new Error(
+                    saveResult.error ||
+                    "Could not download save."
+                );
+            }
+
+
+            if (!saveResult.saveData) {
+
+                throw new Error(
+                    "The cloud save was empty."
+                );
+            }
+
+
+            /*
+             * Load the Cookie Clicker save.
+             */
+
+            if (typeof Game.LoadSave === "function") {
+
+                Game.LoadSave(saveResult.saveData);
+
+            }
+            else {
+
+                /*
+                 * Fallback for versions where LoadSave
+                 * isn't available.
+                 */
+
+                Game.ImportSave();
+
+                setTimeout(function () {
+
+                    var input =
+                        document.querySelector(
+                            "#textareaPrompt"
+                        );
+
+                    if (input) {
+
+                        input.value =
+                            saveResult.saveData;
+
+                    }
+
+                }, 100);
+            }
+
+
+            alert(
+                "Cloud save imported!\n\n" +
+                selected.name
+            );
+
+        }
+        catch (e) {
+
+            console.error(e);
+
+            alert(
+                "Cloud save import failed.\n\n" +
+                e.message
+            );
+        }
+    };
+
+
+    /* =========================================================
+       CLOUD BUTTONS
+       ========================================================= */
 
     function addCloudButtons() {
-        var menu = document.getElementById('menu');
+
+        var menu = document.getElementById("menu");
+
         if (!menu) return;
 
-        var subsections = menu.getElementsByClassName('subsection');
 
-        for (var i = 0; i < subsections.length; i++) {
+        var subsections =
+            menu.getElementsByClassName("subsection");
 
-            var title = subsections[i].getElementsByClassName('title')[0];
 
-            if (title && title.textContent.trim() === 'General') {
+        for (
+            var i = 0;
+            i < subsections.length;
+            i++
+        ) {
 
-                // Already exists
-                if (document.getElementById('cloudSaveListing')) return;
+            var title =
+                subsections[i]
+                    .getElementsByClassName("title")[0];
 
-                var listing = document.createElement('div');
-                listing.className = 'listing';
-                listing.id = 'cloudSaveListing';
+
+            if (
+                title &&
+                title.textContent.trim() === "General"
+            ) {
+
+
+                /*
+                 * Don't add the buttons twice.
+                 */
+
+                if (
+                    document.getElementById(
+                        "cloudSaveListing"
+                    )
+                ) {
+
+                    return;
+                }
+
+
+                var listing =
+                    document.createElement("div");
+
+                listing.className = "listing";
+
+                listing.id =
+                    "cloudSaveListing";
+
 
                 listing.innerHTML =
-                    '<a class="option" onclick="alert(\'Upload Save clicked!\');">Upload Save</a>' +
-                    '<a class="option" onclick="alert(\'Import Save clicked!\');">Import Save</a>' +
-                    '<label>Save your progress to the cloud or import it from the cloud</label>';
 
-                var listings = subsections[i].getElementsByClassName('listing');
+                    '<a class="option" ' +
+                    'onclick="uploadCloudSave();">' +
+                    'Upload Save' +
+                    '</a>' +
 
-                for (var j = 0; j < listings.length; j++) {
-                    if (listings[j].textContent.indexOf('Wipe save') !== -1) {
-                        subsections[i].insertBefore(listing, listings[j]);
+                    '<a class="option" ' +
+                    'onclick="importCloudSave();">' +
+                    'Import Save' +
+                    '</a>' +
+
+                    '<a class="option" ' +
+                    'onclick="changeCloudUsername();">' +
+                    'Change Username' +
+                    '</a>' +
+
+                    '<label>' +
+                    'Save and load your Cookie Clicker save from the cloud' +
+                    '</label>';
+
+
+                /*
+                 * Put the cloud buttons above
+                 * "Wipe save".
+                 */
+
+                var listings =
+                    subsections[i]
+                        .getElementsByClassName(
+                            "listing"
+                        );
+
+
+                for (
+                    var j = 0;
+                    j < listings.length;
+                    j++
+                ) {
+
+                    if (
+                        listings[j]
+                            .textContent
+                            .indexOf("Wipe save") !== -1
+                    ) {
+
+                        subsections[i].insertBefore(
+                            listing,
+                            listings[j]
+                        );
+
                         return;
                     }
                 }
 
+
                 subsections[i].appendChild(listing);
+
                 return;
             }
         }
     }
 
+
+    /* =========================================================
+       WATCH COOKIE CLICKER'S MENU
+       ========================================================= */
+
     function startObserver() {
-        var menu = document.getElementById('menu');
+
+        var menu =
+            document.getElementById("menu");
+
 
         if (!menu) {
-            setTimeout(startObserver, 100);
+
+            setTimeout(
+                startObserver,
+                100
+            );
+
             return;
         }
 
-        // Add initially
+
         addCloudButtons();
 
-        // Watch Cookie Clicker rebuilding the menu
-        var observer = new MutationObserver(function() {
-            addCloudButtons();
-        });
 
-        observer.observe(menu, {
-            childList: true,
-            subtree: true
-        });
+        var observer =
+            new MutationObserver(function () {
+
+                addCloudButtons();
+
+            });
+
+
+        observer.observe(
+            menu,
+            {
+                childList: true,
+                subtree: true
+            }
+        );
     }
+
 
     startObserver();
 
