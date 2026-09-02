@@ -104,15 +104,6 @@
 				<div id="buildingsMaster"></div>
 				<div id="rows"></div>
 				<div id="menu"></div>
-
-	<div id="cloudSaveButtons" style="margin-top:10px;">
-    <div class="button" onclick="alert('Upload clicked!')">
-        Upload Save
-    </div>
-    <div class="button" onclick="alert('Import clicked!')">
-        Import Save
-    </div>
-</div>
 			</div>
 		</div>
 
@@ -144,6 +135,53 @@
 	</div>
 
 </div>
+	<script>
+(function() {
+    function addCloudButtons() {
+        var menu = document.getElementById('menu');
+        if (!menu) return;
+
+        // Don't add them twice
+        if (document.getElementById('cloudSaveListing')) return;
+
+        var subsections = menu.getElementsByClassName('subsection');
+
+        for (var i = 0; i < subsections.length; i++) {
+            var title = subsections[i].getElementsByClassName('title')[0];
+
+            if (title && title.textContent === 'General') {
+
+                var listing = document.createElement('div');
+                listing.className = 'listing';
+                listing.id = 'cloudSaveListing';
+
+                listing.innerHTML =
+                    '<a class="option" onclick="alert(\'Upload Save clicked!\');">Upload Save</a>' +
+                    '<a class="option" onclick="alert(\'Import Save clicked!\');">Import Save</a>' +
+                    '<label>Save your progress to the cloud or import it from the cloud</label>';
+
+                // Put it before Wipe save
+                var listings = subsections[i].getElementsByClassName('listing');
+
+                for (var j = 0; j < listings.length; j++) {
+                    if (listings[j].textContent.indexOf('Wipe save') !== -1) {
+                        subsections[i].insertBefore(listing, listings[j]);
+                        return;
+                    }
+                }
+
+                // Fallback: put it at the end of General
+                subsections[i].appendChild(listing);
+                return;
+            }
+        }
+    }
+
+    // Cookie Clicker creates the menu after loading,
+    // so check repeatedly until it exists.
+    setInterval(addCloudButtons, 500);
+})();
+</script>
 </body>
 </html>
 
