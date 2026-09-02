@@ -220,16 +220,13 @@
 
         if (!username) return;
 
-        var bakeryName = prompt("Enter your bakery name:");
+        var bakeryName = Game.bakeryName || "Unnamed Bakery";
 
-        if (!bakeryName) return;
+bakeryName = bakeryName.trim();
 
-        bakeryName = bakeryName.trim();
-
-        if (!bakeryName) {
-            alert("Bakery name cannot be empty.");
-            return;
-        }
+if (!bakeryName) {
+    bakeryName = "Unnamed Bakery";
+}
 
         // Prevent invalid filename characters
         bakeryName = bakeryName.replace(/[\/\\:*?"<>|]/g, "_");
