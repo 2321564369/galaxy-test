@@ -104,6 +104,15 @@
 				<div id="buildingsMaster"></div>
 				<div id="rows"></div>
 				<div id="menu"></div>
+
+	<div id="cloudSaveButtons" style="margin-top:10px;">
+    <div class="button" onclick="alert('Upload clicked!')">
+        Upload Save
+    </div>
+    <div class="button" onclick="alert('Import clicked!')">
+        Import Save
+    </div>
+</div>
 			</div>
 		</div>
 
