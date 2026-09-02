@@ -137,19 +137,21 @@
 </div>
 	<script>
 (function() {
+
     function addCloudButtons() {
         var menu = document.getElementById('menu');
         if (!menu) return;
 
-        // Don't add them twice
-        if (document.getElementById('cloudSaveListing')) return;
-
         var subsections = menu.getElementsByClassName('subsection');
 
         for (var i = 0; i < subsections.length; i++) {
+
             var title = subsections[i].getElementsByClassName('title')[0];
 
-            if (title && title.textContent === 'General') {
+            if (title && title.textContent.trim() === 'General') {
+
+                // Already exists
+                if (document.getElementById('cloudSaveListing')) return;
 
                 var listing = document.createElement('div');
                 listing.className = 'listing';
@@ -160,7 +162,6 @@
                     '<a class="option" onclick="alert(\'Import Save clicked!\');">Import Save</a>' +
                     '<label>Save your progress to the cloud or import it from the cloud</label>';
 
-                // Put it before Wipe save
                 var listings = subsections[i].getElementsByClassName('listing');
 
                 for (var j = 0; j < listings.length; j++) {
@@ -170,16 +171,36 @@
                     }
                 }
 
-                // Fallback: put it at the end of General
                 subsections[i].appendChild(listing);
                 return;
             }
         }
     }
 
-    // Cookie Clicker creates the menu after loading,
-    // so check repeatedly until it exists.
-    setInterval(addCloudButtons, 500);
+    function startObserver() {
+        var menu = document.getElementById('menu');
+
+        if (!menu) {
+            setTimeout(startObserver, 100);
+            return;
+        }
+
+        // Add initially
+        addCloudButtons();
+
+        // Watch Cookie Clicker rebuilding the menu
+        var observer = new MutationObserver(function() {
+            addCloudButtons();
+        });
+
+        observer.observe(menu, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    startObserver();
+
 })();
 </script>
 </body>
