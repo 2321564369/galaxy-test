@@ -146,7 +146,7 @@
     var CLOUD_REPO = "2321564369/cookie-saves";
 
     // Your Cloudflare Worker URL goes here later
-    var CLOUD_API = "https://YOUR-WORKER.workers.dev";
+    var CLOUD_API = "https://cold-term-a393.maxwolfovik.workers.dev/";
 
 
     /* =========================================================
