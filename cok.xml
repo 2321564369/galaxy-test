@@ -660,10 +660,6 @@
 
     if (!menu) return;
 
-    /*
-     * ONLY add the buttons when Cookie Clicker
-     * is displaying the Options menu.
-     */
     if (
         typeof Game === "undefined" ||
         Game.onMenu !== "prefs"
@@ -671,10 +667,8 @@
         return;
     }
 
-
     var subsections =
         menu.getElementsByClassName("subsection");
-
 
     for (var i = 0; i < subsections.length; i++) {
 
@@ -683,10 +677,6 @@
         var title =
             subsection.querySelector(":scope > .title");
 
-
-        /*
-         * Must be the Options > General subsection.
-         */
         if (
             !title ||
             title.textContent.trim() !== "General"
@@ -695,102 +685,155 @@
         }
 
 
-        /*
-         * Don't add it twice.
-         */
-        if (
-            subsection.querySelector(
-                "#cloudSaveListing"
-            )
-        ) {
-            return;
-        }
+        /* =====================================================
+           CLOUD SAVE BUTTONS
+           ===================================================== */
 
+        if (!subsection.querySelector("#cloudSaveListing")) {
 
-        /*
-         * Create cloud save listing.
-         */
-        var listing =
-            document.createElement("div");
+            var cloudListing =
+                document.createElement("div");
 
-        listing.className = "listing";
-        listing.id = "cloudSaveListing";
+            cloudListing.className = "listing";
+            cloudListing.id = "cloudSaveListing";
 
+            cloudListing.innerHTML =
 
-        listing.innerHTML =
+                '<a class="option" onclick="uploadCloudSave();">' +
+                'Upload Save' +
+                '</a>' +
 
-    '<a class="option" ' +
-    'onclick="uploadCloudSave();">' +
-    'Upload Save' +
-    '</a>' +
+                '<a class="option" onclick="importCloudSave();">' +
+                'Import Save' +
+                '</a>' +
 
-    '<a class="option" ' +
-    'onclick="importCloudSave();">' +
-    'Import Save' +
-    '</a>' +
+                '<a class="option" onclick="changeCloudUsername();">' +
+                'Change Username' +
+                '</a>' +
 
-    '<a class="option" ' +
-    'onclick="changeCloudUsername();">' +
-    'Change Username' +
-    '</a>' +
+                '<label>' +
+                'A feature added by ANDREpicasso to save and load your Cookie Clicker save from the cloud' +
+                '</label>';
 
-    '<label>' +
-    'A feature added by ANDREpicasso to save and load your Cookie Clicker save from the cloud' +
-    '</label>' +
+            /*
+             * Put cloud buttons before Wipe save
+             */
+            var listings =
+                subsection.getElementsByClassName("listing");
 
-    '<a class="option" ' +
-    'onclick="setRickrollEnabled(!window.rickrollEnabled); ' +
-    'this.textContent = window.rickrollEnabled ? ' +
-    '\'Rickroll: ON\' : \'Rickroll: OFF\';">' +
-    (window.rickrollEnabled ? 'Rickroll: ON' : 'Rickroll: OFF') +
-    '</a>' +
+            var inserted = false;
 
-    '<label>' +
-    'Rickroll every 10 cookie clicks' +
-    '</label>';
+            for (var j = 0; j < listings.length; j++) {
 
-
-        /*
-         * Put it directly before Wipe save.
-         */
-        var listings =
-            subsection.getElementsByClassName(
-                "listing"
-            );
-
-
-        for (
-            var j = 0;
-            j < listings.length;
-            j++
-        ) {
-
-            if (
-                listings[j]
-                    .textContent
-                    .indexOf("Wipe save") !== -1
-            ) {
-
-                subsection.insertBefore(
-                    listing,
+                if (
                     listings[j]
-                );
+                        .textContent
+                        .indexOf("Wipe save") !== -1
+                ) {
 
-                return;
+                    subsection.insertBefore(
+                        cloudListing,
+                        listings[j]
+                    );
+
+                    inserted = true;
+                    break;
+                }
+            }
+
+            if (!inserted) {
+                subsection.appendChild(cloudListing);
             }
         }
 
 
-        /*
-         * If Wipe save wasn't found,
-         * add it to the end of General.
-         */
-        subsection.appendChild(listing);
+       /* =====================================================
+   RICKROLL SETTING - BOTTOM OF GENERAL LISTING
+   ===================================================== */
+
+var generalListing = null;
+
+var allGeneralListings =
+    subsection.getElementsByClassName("listing");
+
+for (var g = 0; g < allGeneralListings.length; g++) {
+
+    /*
+     * Find the General options listing.
+     * It contains the Volume slider and Fancy graphics.
+     */
+    if (
+        allGeneralListings[g].querySelector("#volumeSlider") &&
+        allGeneralListings[g].querySelector("#fancyButton")
+    ) {
+        generalListing = allGeneralListings[g];
+        break;
+    }
+}
+
+if (
+    generalListing &&
+    !generalListing.querySelector("#rickrollToggle")
+) {
+
+    var enabled =
+        window.rickrollEnabled !== false;
+
+    var rickrollButton =
+        document.createElement("a");
+
+    rickrollButton.className = "option";
+    rickrollButton.id = "rickrollToggle";
+
+    rickrollButton.textContent =
+        enabled
+            ? "Rickroll: ON"
+            : "Rickroll: OFF";
+
+    rickrollButton.onclick = function () {
+
+        setRickrollEnabled(
+            !window.rickrollEnabled
+        );
+
+        this.textContent =
+            window.rickrollEnabled
+                ? "Rickroll: ON"
+                : "Rickroll: OFF";
+    };
+
+
+    var rickrollLabel =
+        document.createElement("label");
+
+    rickrollLabel.textContent =
+        "Rickroll every 10 cookie clicks";
+
+
+    /*
+     * Add BOTH directly to the bottom of
+     * the existing General listing.
+     */
+    generalListing.appendChild(
+        document.createElement("br")
+    );
+
+    generalListing.appendChild(
+        rickrollButton
+    );
+
+    generalListing.appendChild(
+        rickrollLabel
+    );
+
+    generalListing.appendChild(
+        document.createElement("br")
+    );
+}
 
         return;
     }
 }
-
 
     /* =========================================================
        WATCH COOKIE CLICKER'S MENU
