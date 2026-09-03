@@ -366,7 +366,7 @@
 
         try {
 
-            alert("Uploading save...");
+            
 
 
             var response =
@@ -449,9 +449,7 @@
 
         try {
 
-            alert(
-                "Finding your cloud saves..."
-            );
+           
 
 
             /* =================================================
