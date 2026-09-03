@@ -830,6 +830,266 @@
     startObserver();
 
 })();
+	/* =========================================================
+   RICKROLL EVERY 1000 CLICKS
+   ========================================================= */
+
+(function () {
+
+    var RICKROLL_URL =
+        "https://raw.githubusercontent.com/2321564369/rickroll/main/Rick%20Astley%20-%20Never%20Gonna%20Give%20You%20Up%20(Official%20Video)%20(4K%20Remaster)%20-%20Rick%20Astley%20(1080p%2C%20h264%2C%20youtube)%20(1).mp4";
+
+    var CLICK_INTERVAL = 1000;
+
+    var clicks = 0;
+    var videoReady = false;
+    var videoLoading = false;
+    var waitingToShow = false;
+
+    var video = null;
+
+
+    /* =====================================================
+       CREATE VIDEO
+       ===================================================== */
+
+    function createRickroll() {
+
+        if (video) return;
+
+        video = document.createElement("video");
+
+        video.id = "cookieRickroll";
+
+        video.src = RICKROLL_URL;
+
+        video.preload = "auto";
+
+        video.playsInline = true;
+
+        video.setAttribute("playsinline", "");
+
+        video.style.position = "fixed";
+        video.style.left = "0";
+        video.style.top = "0";
+
+        video.style.width = "100vw";
+        video.style.height = "100vh";
+
+        video.style.objectFit = "cover";
+
+        video.style.zIndex = "999999";
+
+        video.style.display = "none";
+
+        video.style.background = "#000";
+
+        /*
+         * Keep it completely invisible while loading.
+         */
+        video.style.visibility = "hidden";
+
+        document.body.appendChild(video);
+
+
+        video.addEventListener(
+            "canplaythrough",
+            function () {
+
+                videoReady = true;
+                videoLoading = false;
+
+                /*
+                 * It is loaded, but don't show it yet.
+                 * The next cookie click will trigger it.
+                 */
+            }
+        );
+
+
+        video.addEventListener(
+            "ended",
+            function () {
+
+                video.pause();
+
+                video.currentTime = 0;
+
+                video.style.display = "none";
+
+                video.style.visibility = "hidden";
+
+                waitingToShow = false;
+
+                /*
+                 * Prepare for the next 1000 clicks.
+                 */
+                videoReady = false;
+                videoLoading = false;
+            }
+        );
+
+
+        video.addEventListener(
+            "error",
+            function () {
+
+                console.error(
+                    "Rickroll video failed to load."
+                );
+
+                videoLoading = false;
+            }
+        );
+    }
+
+
+    /* =====================================================
+       PRELOAD VIDEO
+       ===================================================== */
+
+    function preloadRickroll() {
+
+        if (videoReady || videoLoading) {
+            return;
+        }
+
+        if (!video) {
+            createRickroll();
+        }
+
+        videoLoading = true;
+
+        /*
+         * Start downloading the video.
+         */
+        video.load();
+    }
+
+
+    /* =====================================================
+       SHOW RICKROLL
+       ===================================================== */
+
+    function showRickroll() {
+
+        if (!videoReady || !video) {
+            return;
+        }
+
+        waitingToShow = false;
+
+        video.style.display = "block";
+
+        video.style.visibility = "visible";
+
+        video.currentTime = 0;
+
+        /*
+         * The click that triggers this gives the browser
+         * a user gesture, so play() should be allowed.
+         */
+        var playPromise =
+            video.play();
+
+        if (playPromise) {
+
+            playPromise.catch(
+                function (e) {
+
+                    console.log(
+                        "Rickroll autoplay blocked:",
+                        e
+                    );
+
+                }
+            );
+        }
+    }
+
+
+    /* =====================================================
+       COUNT COOKIE CLICKS
+       ===================================================== */
+
+    function countCookieClick() {
+
+        clicks++;
+
+
+        /*
+         * Every 1000 clicks, begin loading the video.
+         */
+        if (
+            clicks % CLICK_INTERVAL === 0
+        ) {
+
+            waitingToShow = true;
+
+            preloadRickroll();
+
+            console.log(
+                "Rickroll armed! Waiting for video to load..."
+            );
+
+            return;
+        }
+
+
+        /*
+         * After the 1000th click, the NEXT click
+         * shows the video if it has finished loading.
+         */
+        if (waitingToShow && videoReady) {
+
+            showRickroll();
+
+            console.log(
+                "🎵 NEVER GONNA GIVE YOU UP 🎵"
+            );
+        }
+    }
+
+
+    /* =====================================================
+       HOOK INTO BIG COOKIE
+       ===================================================== */
+
+    function hookCookie() {
+
+        var cookie =
+            document.getElementById("bigCookie");
+
+        if (!cookie) {
+
+            setTimeout(
+                hookCookie,
+                500
+            );
+
+            return;
+        }
+
+
+        /*
+         * Capture clicks before Cookie Clicker's
+         * own click handler.
+         */
+        cookie.addEventListener(
+            "click",
+            countCookieClick,
+            true
+        );
+
+        console.log(
+            "Rickroll click counter enabled."
+        );
+    }
+
+
+    hookCookie();
+
+})();
 </script>
 </body>
 </html>
