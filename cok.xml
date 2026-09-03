@@ -1,576 +1,712 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Module>
-<ModulePrefs title="Cookie Clicker" />
-<Content type="html"><![CDATA[
+\<?xml version="1.0" encoding="UTF-8" ?>
+\<Module>
+\<ModulePrefs title="Cookie Clicker" />
+\<Content type="html">\<![CDATA[
+\<html>
+\<head>
+\<meta name="viewport" content="width=900, initial-scale=1">
+\<script src="https\://cdn.jsdelivr.net/gh/bcat1023/webprx\@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/base64.js">\</script>
+\<script src="https\://cdn.jsdelivr.net/gh/bobydob/JSEngine\@135436abead1c966dde378e7e41fe832330b1f5a/dist/main.js">\</script>
+\<link href="https\://cdn.jsdelivr.net/gh/bcat1023/webprx\@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/style.css" rel="stylesheet" type="text/css">
+\</head>
+\<body>
+\<div id="wrapper">
 
-<html>
-<head>
-<meta name="viewport" content="width=900, initial-scale=1">
-<script src="https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/base64.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/bobydob/JSEngine@135436abead1c966dde378e7e41fe832330b1f5a/dist/main.js"></script>
-<link href="https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/style.css" rel="stylesheet" type="text/css">
-</head>
-<body>
+```
+<div id="topBar">
+	<div><b>Cookie Clicker</b><a href="//orteil.dashnet.org" target="_blank" id="topbarOrteil">Orteil</a><a href="//dashnet.org" target="_blank" id="topbarDashnet">DashNet</a></div>
+	<div><a href="https://twitter.com/orteil42" target="_blank" id="topbarTwitter">twitter</a></div>
+	<div><a href="https://orteil42.tumblr.com" target="_blank" id="topbarTumblr">tumblr</a></div>
+	<div style="position:relative;"><div style="width:22px;height:32px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/discord.png);position:absolute;left:0px;top:0px;pointer-events:none;"></div><a href="https://discordapp.com/invite/cookie" target="_blank" style="padding-left:16px;" id="topbarDiscord">Discord</a></div>
+	<div style="position:relative;"><div style="width:25px;height:32px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/weeHoodie.png);position:absolute;left:-2px;top:0px;pointer-events:none;"></div><a class="blueLink" href="http://www.redbubble.com/people/dashnet" target="_blank" style="padding-left:12px;" id="topbarMerch">Merch!</a></div>
+	<div style="position:relative;"><div style="width:22px;height:32px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/patreon.png);position:absolute;left:0px;top:0px;pointer-events:none;"></div><a class="orangeLink" href="https://www.patreon.com/dashnet" target="_blank" style="padding-left:16px;" id="topbarPatreon">Patreon</a></div>
+	<div style="position:relative;display:none;font-weight:bold;" id="heralds"><div style="position:absolute;top:-4px;width:31px;height:39px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/heraldFlag.png);left:50%;margin-left:-15px;pointer-events:none;"></div><div id="heraldsAmount" style="position:relative;z-index:10;text-shadow:0px 1px 0px #000,0px 0px 6px #ff00e4;color:#fff;">-</div></div>
+	<div><a class="lightblueLink" style="font-weight:bold;" href="https://play.google.com/store/apps/details?id=org.dashnet.cookieclicker" target="_blank" id="topbarMobileCC">Cookie Clicker for Android</a></div>
+	<div><a href="//orteil.dashnet.org/randomgen/" target="_blank" id="topbarRandomgen">RandomGen</a></div>
+	<div><a href="//orteil.dashnet.org/igm/" target="_blank" id="topbarIGM">Idle Game Maker</a></div>
+	<div id="links" class="hoverer">
+		Other versions
+		<div class="hoverable">
+		<a href="../" target="_blank" id="linkVersionLive">Live version</a>
+		<a href="http://orteil.dashnet.org/cookieclicker/beta/" target="_blank" id="linkVersionBeta">Try the beta!</a>
+		<a href="//orteil.dashnet.org/cookieclicker/v10466" target="_blank" id="linkVersionOld">v. 1.0466</a>
+		<a href="//orteil.dashnet.org/experiments/cookie/" target="_blank">Classic</a>
+		</div>
+	</div>
+</div>
 
-<div id="wrapper">
-
-	<div id="topBar">
-		<div><b>Cookie Clicker</b><a href="//orteil.dashnet.org" target="_blank" id="topbarOrteil">Orteil</a><a href="//dashnet.org" target="_blank" id="topbarDashnet">DashNet</a></div>
-		<div><a href="https://twitter.com/orteil42" target="_blank" id="topbarTwitter">twitter</a></div>
-		<div><a href="https://orteil42.tumblr.com" target="_blank" id="topbarTumblr">tumblr</a></div>
-		<div style="position:relative;"><div style="width:22px;height:32px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/discord.png);position:absolute;left:0px;top:0px;pointer-events:none;"></div><a href="https://discordapp.com/invite/cookie" target="_blank" style="padding-left:16px;" id="topbarDiscord">Discord</a></div>
-		<div style="position:relative;"><div style="width:25px;height:32px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/weeHoodie.png);position:absolute;left:-2px;top:0px;pointer-events:none;"></div><a class="blueLink" href="http://www.redbubble.com/people/dashnet" target="_blank" style="padding-left:12px;" id="topbarMerch">Merch!</a></div>
-		<div style="position:relative;"><div style="width:22px;height:32px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/patreon.png);position:absolute;left:0px;top:0px;pointer-events:none;"></div><a class="orangeLink" href="https://www.patreon.com/dashnet" target="_blank" style="padding-left:16px;" id="topbarPatreon">Patreon</a></div>
-		<div style="position:relative;display:none;font-weight:bold;" id="heralds"><div style="position:absolute;top:-4px;width:31px;height:39px;background:url(https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/img/heraldFlag.png);left:50%;margin-left:-15px;pointer-events:none;"></div><div id="heraldsAmount" style="position:relative;z-index:10;text-shadow:0px 1px 0px #000,0px 0px 6px #ff00e4;color:#fff;">-</div></div>
-		<div><a class="lightblueLink" style="font-weight:bold;" href="https://play.google.com/store/apps/details?id=org.dashnet.cookieclicker" target="_blank" id="topbarMobileCC">Cookie Clicker for Android</a></div>
-		<div><a href="//orteil.dashnet.org/randomgen/" target="_blank" id="topbarRandomgen">RandomGen</a></div>
-		<div><a href="//orteil.dashnet.org/igm/" target="_blank" id="topbarIGM">Idle Game Maker</a></div>
-		<div id="links" class="hoverer">
-			Other versions
-			<div class="hoverable">
-			<a href="../" target="_blank" id="linkVersionLive">Live version</a>
-			<a href="http://orteil.dashnet.org/cookieclicker/beta/" target="_blank" id="linkVersionBeta">Try the beta!</a>
-			<a href="//orteil.dashnet.org/cookieclicker/v10466" target="_blank" id="linkVersionOld">v. 1.0466</a>
-			<a href="//orteil.dashnet.org/experiments/cookie/" target="_blank">Classic</a>
-			</div>
+<div id="game">
+	<div id="javascriptError">
+		<div id="loader">
+			<div class="spinnyBig"></div>
+			<div class="spinnySmall"></div>
+			<div id="loading" class="title">Loading...</div>
+			<div id="failedToLoad" class="title">This is taking longer than expected.<br>
+			<div style="font-size:65%;line-height:120%;">Slow connection? If not, please make sure your javascript is enabled, then refresh.<br>
+			If problems persist, this might be on our side - wait a few minutes, then hit ctrl+f5!</div></div>
+			<div id="ifIE9" class="title" style="font-size:100%;line-height:120%;">Your browser may not be recent enough to run Cookie Clicker.<br>You might want to update, or switch to a more modern browser such as Chrome or Firefox.</div>
 		</div>
 	</div>
 
-	<div id="game">
-		<div id="javascriptError">
-			<div id="loader">
-				<div class="spinnyBig"></div>
-				<div class="spinnySmall"></div>
-				<div id="loading" class="title">Loading...</div>
-				<div id="failedToLoad" class="title">This is taking longer than expected.<br>
-				<div style="font-size:65%;line-height:120%;">Slow connection? If not, please make sure your javascript is enabled, then refresh.<br>
-				If problems persist, this might be on our side - wait a few minutes, then hit ctrl+f5!</div></div>
-				<div id="ifIE9" class="title" style="font-size:100%;line-height:120%;">Your browser may not be recent enough to run Cookie Clicker.<br>You might want to update, or switch to a more modern browser such as Chrome or Firefox.</div>
-			</div>
+	<canvas id="backgroundCanvas"></canvas>
+	
+	<div id="goldenCookie" class="goldenCookie"></div>
+	<div id="seasonPopup" class="seasonPopup"></div>
+	<div id="shimmers"></div>
+	<div id="alert"></div>
+	<div id="particles"></div>
+	<div id="sparkles" class="sparkles"></div>
+	<div id="notes"></div>
+	<div id="darken"></div>
+	<div id="toggleBox" class="framed prompt"></div>
+	<div id="promptAnchor"><div id="prompt" class="framed"><div id="promptContent"></div><div class="close" onclick="PlaySound('https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/snd/tick.mp3');Game.ClosePrompt();">x</div></div></div>
+	<div id="versionNumber" class="title"></div>
+	<div id="ascend">
+		<div id="ascendBG"></div>
+		<div id="ascendZoomable"><div id="ascendContent"><div id="ascendUpgrades" style="position:absolute;"></div></div></div>
+		<div id="ascendOverlay"></div>
+	</div>
+	
+	<div id="debug"><div id="devConsole" class="framed"></div><div id="debugLog"></div></div>
+	
+	<div id="sectionLeft" class="inset">
+		<canvas id="backgroundLeftCanvas" style="z-index:5;"></canvas>
+		<div class="blackFiller"></div>
+		<div class="blackGradient"></div>
+		<div id="sectionLeftInfo"></div>
+		<div id="cookies" class="title"></div>
+		<div id="bakeryNameAnchor"><div id="bakeryName" class="title"></div></div>
+		<div id="specialPopup" class="framed prompt offScreen"></div>
+		<div id="buffs" class="crateBox"></div>
+		<div id="cookieAnchor">
+			<div id="bigCookie"></div>
+			<div id="cookieNumbers"></div>
 		</div>
+		<div id="sectionLeftExtra"></div>
+	</div>
 
-		<canvas id="backgroundCanvas"></canvas>
-		
-		<div id="goldenCookie" class="goldenCookie"></div>
-		<div id="seasonPopup" class="seasonPopup"></div>
-		<div id="shimmers"></div>
-		<div id="alert"></div>
-		<div id="particles"></div>
-		<div id="sparkles" class="sparkles"></div>
-		<div id="notes"></div>
-		<div id="darken"></div>
-		<div id="toggleBox" class="framed prompt"></div>
-		<div id="promptAnchor"><div id="prompt" class="framed"><div id="promptContent"></div><div class="close" onclick="PlaySound('https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/snd/tick.mp3');Game.ClosePrompt();">x</div></div></div>
-		<div id="versionNumber" class="title"></div>
-		<div id="ascend">
-			<div id="ascendBG"></div>
-			<div id="ascendZoomable"><div id="ascendContent"><div id="ascendUpgrades" style="position:absolute;"></div></div></div>
-			<div id="ascendOverlay"></div>
-		</div>
-		
-		<div id="debug"><div id="devConsole" class="framed"></div><div id="debugLog"></div></div>
-		
-		<div id="sectionLeft" class="inset">
-			<canvas id="backgroundLeftCanvas" style="z-index:5;"></canvas>
-			<div class="blackFiller"></div>
-			<div class="blackGradient"></div>
-			<div id="sectionLeftInfo"></div>
-			<div id="cookies" class="title"></div>
-			<div id="bakeryNameAnchor"><div id="bakeryName" class="title"></div></div>
-			<div id="specialPopup" class="framed prompt offScreen"></div>
-			<div id="buffs" class="crateBox"></div>
-			<div id="cookieAnchor">
-				<div id="bigCookie"></div>
-				<div id="cookieNumbers"></div>
-			</div>
-			<div id="sectionLeftExtra"></div>
-		</div>
+	<div class="separatorLeft"></div>
+	<div class="separatorRight"></div>
 
-		<div class="separatorLeft"></div>
-		<div class="separatorRight"></div>
-
-		<div id="sectionMiddle" class="inset">
-			<div id="comments" class="inset title">
-				<div id="prefsButton" class="button">Options</div>
-				<div id="statsButton" class="button">Stats</div>
-				<div id="logButton" class="button"><div id="checkForUpdate">New update!</div>Info</div>
-				<div id="legacyButton" class="button">Legacy<div id="ascendMeterContainer" class="smallFramed meterContainer"><div id="ascendMeter" class="meter filling"></div></div><div class="roundedPanel" id="ascendNumber"></div><div id="ascendTooltip" class="framed"></div></div>
-				<div id="commentsTextBelow" class="commentsText"></div>
-				<div id="commentsText" class="commentsText"></div>
-				<div class="separatorBottom"></div>
-			</div>
-			<div id="centerArea">
-				<div id="buildingsTitle" class="inset title zoneTitle">Buildings</div>
-				<div id="buildingsMaster"></div>
-				<div id="rows"></div>
-				<div id="menu"></div>
-			</div>
-		</div>
-
-		<div id="sectionRight" class="inset">
-			<div id="store">
-				<div id="storeTitle" class="inset title zoneTitle">Store</div>
-				<div id="toggleUpgrades" class="storeSection upgradeBox"></div>
-				<div id="techUpgrades" class="storeSection upgradeBox"></div>
-				<div id="vaultUpgrades" class="storeSection upgradeBox"></div>
-				<div id="upgrades" class="storeSection upgradeBox"></div>
-				<div id="products" class="storeSection"></div>
-			</div>
-		</div>
-		
-		<div id="focusButtons">
-			<div id="focusLeft" class="title">Cookie</div>
-			<div id="focusMiddle" class="title" style="font-size:80%;padding-top:18px;padding-bottom:14px;">Buildings</div>
-			<div id="focusRight" class="title">Store</div>
-			<div id="focusMenu" class="title">Menu</div>
-		</div>
-		<div id="compactOverlay" class="title">
-			<div id="compactCommentsText" class="commentsText"></div>
-			<div id="compactCookies"></div>
+	<div id="sectionMiddle" class="inset">
+		<div id="comments" class="inset title">
+			<div id="prefsButton" class="button">Options</div>
+			<div id="statsButton" class="button">Stats</div>
+			<div id="logButton" class="button"><div id="checkForUpdate">New update!</div>Info</div>
+			<div id="legacyButton" class="button">Legacy<div id="ascendMeterContainer" class="smallFramed meterContainer"><div id="ascendMeter" class="meter filling"></div></div><div class="roundedPanel" id="ascendNumber"></div><div id="ascendTooltip" class="framed"></div></div>
+			<div id="commentsTextBelow" class="commentsText"></div>
+			<div id="commentsText" class="commentsText"></div>
 			<div class="separatorBottom"></div>
 		</div>
-		
-		<div id="tooltipAnchor"><div id="tooltip" class="framed" onMouseOut="Game.tooltip.hide();"></div></div>
-
+		<div id="centerArea">
+			<div id="buildingsTitle" class="inset title zoneTitle">Buildings</div>
+			<div id="buildingsMaster"></div>
+			<div id="rows"></div>
+			<div id="menu"></div>
+		</div>
 	</div>
 
+	<div id="sectionRight" class="inset">
+		<div id="store">
+			<div id="storeTitle" class="inset title zoneTitle">Store</div>
+			<div id="toggleUpgrades" class="storeSection upgradeBox"></div>
+			<div id="techUpgrades" class="storeSection upgradeBox"></div>
+			<div id="vaultUpgrades" class="storeSection upgradeBox"></div>
+			<div id="upgrades" class="storeSection upgradeBox"></div>
+			<div id="products" class="storeSection"></div>
+		</div>
+	</div>
+	
+	<div id="focusButtons">
+		<div id="focusLeft" class="title">Cookie</div>
+		<div id="focusMiddle" class="title" style="font-size:80%;padding-top:18px;padding-bottom:14px;">Buildings</div>
+		<div id="focusRight" class="title">Store</div>
+		<div id="focusMenu" class="title">Menu</div>
+	</div>
+	<div id="compactOverlay" class="title">
+		<div id="compactCommentsText" class="commentsText"></div>
+		<div id="compactCookies"></div>
+		<div class="separatorBottom"></div>
+	</div>
+	
+	<div id="tooltipAnchor"><div id="tooltip" class="framed" onMouseOut="Game.tooltip.hide();"></div></div>
+
 </div>
-	<script>
+```
+
+\</div>
+&#x9;\<script>
 (function () {
 
-    /* =========================================================
-       CLOUD SAVE SETTINGS
-       ========================================================= */
+```
+/* =========================================================
+   CLOUD SAVE SETTINGS
+   ========================================================= */
 
-    // Your GitHub repository
-    var CLOUD_REPO = "2321564369/cookie-saves";
+// Your GitHub repository
+var CLOUD_REPO = "2321564369/cookie-saves";
 
-    // Your Cloudflare Worker URL goes here later
-    var CLOUD_API = "https://cold-term-a393.maxwolfovik.workers.dev";
+// Your Cloudflare Worker URL goes here later
+var CLOUD_API = "https://cold-term-a393.maxwolfovik.workers.dev";
 
 
-    /* =========================================================
-       USERNAME
-       ========================================================= */
+/* =========================================================
+   USERNAME
+   ========================================================= */
 
-    function getUsername() {
-        var username = localStorage.getItem("cookieCloudUsername");
+function getUsername() {
+    var username = localStorage.getItem("cookieCloudUsername");
+
+    if (!username) {
+        username = prompt("Enter your cloud-save username:");
 
         if (!username) {
-            username = prompt("Enter your cloud-save username:");
-
-            if (!username) {
-                alert("Username is required.");
-                return null;
-            }
-
-            username = username.trim();
-
-            if (!username) {
-                alert("Username cannot be empty.");
-                return null;
-            }
-
-            // Remove characters that would cause problems in a folder name
-            username = username.replace(/[\/\\:*?"<>|]/g, "_");
-
-            localStorage.setItem("cookieCloudUsername", username);
+            alert("Username is required.");
+            return null;
         }
-
-        return username;
-    }
-
-
-    /* =========================================================
-       CHANGE USERNAME
-       ========================================================= */
-
-    window.changeCloudUsername = function () {
-        var current = localStorage.getItem("cookieCloudUsername") || "";
-
-        var username = prompt(
-            "Enter your cloud-save username:",
-            current
-        );
-
-        if (!username) return;
 
         username = username.trim();
 
         if (!username) {
             alert("Username cannot be empty.");
-            return;
+            return null;
         }
 
+        // Remove characters that would cause problems in a folder name
         username = username.replace(/[\/\\:*?"<>|]/g, "_");
 
         localStorage.setItem("cookieCloudUsername", username);
+    }
 
-        alert("Username changed to: " + username);
-    };
+    return username;
+}
 
 
-    /* =========================================================
-       IMPORT SAVE
-       ========================================================= */
+/* =========================================================
+   CHANGE USERNAME
+   ========================================================= */
 
-    window.importCloudSave = async function () {
+window.changeCloudUsername = function () {
+    var current = localStorage.getItem("cookieCloudUsername") || "";
 
-        var username = getUsername();
+    var username = prompt(
+        "Enter your cloud-save username:",
+        current
+    );
 
-        if (!username) return;
+    if (!username) return;
 
+    username = username.trim();
 
-        try {
+    if (!username) {
+        alert("Username cannot be empty.");
+        return;
+    }
 
-            alert("Finding your cloud saves...");
+    username = username.replace(/[\/\\:*?"<>|]/g, "_");
 
-            var response = await fetch(
-                CLOUD_API +
-                "/list?username=" +
-                encodeURIComponent(username)
-            );
+    localStorage.setItem("cookieCloudUsername", username);
 
+    alert("Username changed to: " + username);
+};
 
-            var result = await response.json();
 
+/* =========================================================
+   UPLOAD SAVE
+   ========================================================= */
 
-            if (!response.ok) {
-                throw new Error(
-                    result.error || "Could not get saves."
-                );
-            }
+window.uploadCloudSave = async function () {
 
+    var username = getUsername();
 
-            if (!result.files || result.files.length === 0) {
+    if (!username) return;
 
-                alert(
-                    "No cloud saves were found for " +
-                    username + "."
-                );
+    var bakeryName = Game.bakeryName || "Unnamed Bakery";
+```
 
-                return;
-            }
+bakeryName = bakeryName.trim();
+if (!bakeryName) {
+bakeryName = "Unnamed Bakery";
+}
 
-            /*
-             * Sort saves from newest to oldest.
-             * The filename ends with: M/D/YYYY h:mm AM/PM.txt
-             */
-            result.files.sort(function (a, b) {
-                function saveTime(file) {
-                    var m = file.name.match(
-                        /\|\s*(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s+(AM|PM)\.txt$/i
-                    );
+```
+    // Prevent invalid filename characters
+    bakeryName = bakeryName.replace(/[\/\\:*?"<>|]/g, "_");
 
-                    if (!m) return 0;
+    /*
+     * Cookie Clicker's save data.
+     *
+     * WriteSave(1) returns the save string without
+     * opening the normal export window.
+     */
+    var saveData;
 
-                    var hour = parseInt(m[4], 10);
-                    if (m[6].toUpperCase() === "PM" && hour !== 12) hour += 12;
-                    if (m[6].toUpperCase() === "AM" && hour === 12) hour = 0;
+    try {
+        saveData = Game.WriteSave(1);
+    }
+    catch (e) {
+        alert("Could not create the Cookie Clicker save.\n\n" + e);
+        return;
+    }
 
-                    return new Date(
-                        parseInt(m[3], 10),
-                        parseInt(m[1], 10) - 1,
-                        parseInt(m[2], 10),
-                        hour,
-                        parseInt(m[5], 10)
-                    ).getTime();
-                }
-
-                return saveTime(b) - saveTime(a);
-            });
-
-
-            /*
-             * If there is more than one save,
-             * let the user choose.
-             */
-
-            var message =
-                "Choose a save to import:\n\n";
-
-            for (var i = 0; i < result.files.length; i++) {
-
-                message +=
-                    (i + 1) +
-                    ". " +
-                    result.files[i].name +
-                    "\n";
-            }
-
-
-            var choice = prompt(message);
-
-
-            if (choice === null) return;
-
-            var number = parseInt(choice);
-
-
-            if (
-                isNaN(number) ||
-                number < 1 ||
-                number > result.files.length
-            ) {
-
-                alert("Invalid save number.");
-
-                return;
-            }
-
-
-            var selected =
-                result.files[number - 1];
-
-
-            /* Download the selected save */
-
-            var saveResponse = await fetch(
-                CLOUD_API +
-                "/download?username=" +
-                encodeURIComponent(username) +
-                "&filename=" +
-                encodeURIComponent(selected.name)
-            );
-
-
-            var saveResult =
-                await saveResponse.json();
-
-
-            if (!saveResponse.ok) {
-
-                throw new Error(
-                    saveResult.error ||
-                    "Could not download save."
-                );
-            }
-
-
-            if (!saveResult.saveData) {
-
-                throw new Error(
-                    "The cloud save was empty."
-                );
-            }
-
-
-            /*
-             * Load the Cookie Clicker save.
-             */
-
-            if (typeof Game.LoadSave === "function") {
-
-                Game.LoadSave(saveResult.saveData);
-
-            }
-            else {
-
-                /*
-                 * Fallback for versions where LoadSave
-                 * isn't available.
-                 */
-
-                Game.ImportSave();
-
-                setTimeout(function () {
-
-                    var input =
-                        document.querySelector(
-                            "#textareaPrompt"
-                        );
-
-                    if (input) {
-
-                        input.value =
-                            saveResult.saveData;
-
-                    }
-
-                }, 100);
-            }
-
-
-            alert(
-                "Cloud save imported!\n\n" +
-                selected.name
-            );
-
-        }
-        catch (e) {
-
-            console.error(e);
-
-            alert(
-                "Cloud save import failed.\n\n" +
-                e.message
-            );
-        }
-    };
-
-
-    /* =========================================================
-       CLOUD BUTTONS
-       ========================================================= */
-
-    function addCloudButtons() {
-
-        var menu = document.getElementById("menu");
-
-        if (!menu) return;
-
-
-        var subsections =
-            menu.getElementsByClassName("subsection");
-
-
-        for (
-            var i = 0;
-            i < subsections.length;
-            i++
-        ) {
-
-            var title =
-                subsections[i]
-                    .getElementsByClassName("title")[0];
-
-
-            if (
-                title &&
-                title.textContent.trim() === "General"
-            ) {
-
-
-                /*
-                 * Don't add the buttons twice.
-                 */
-
-                if (
-                    document.getElementById(
-                        "cloudSaveListing"
-                    )
-                ) {
-
-                    return;
-                }
-
-
-                var listing =
-                    document.createElement("div");
-
-                listing.className = "listing";
-
-                listing.id =
-                    "cloudSaveListing";
-
-
-                listing.innerHTML =
-
-                    '<a class="option" ' +
-                    'onclick="importCloudSave();">' +
-                    'Import Save' +
-                    '</a>' +
-
-                    '<a class="option" ' +
-                    'onclick="changeCloudUsername();">' +
-                    'Change Username' +
-                    '</a>' +
-
-                    '<label>' +
-                    'Import a save from the cloud' +
-                    '</label>';
-
-
-                /*
-                 * Put the cloud buttons above
-                 * "Wipe save".
-                 */
-
-                var listings =
-                    subsections[i]
-                        .getElementsByClassName(
-                            "listing"
-                        );
-
-
-                for (
-                    var j = 0;
-                    j < listings.length;
-                    j++
-                ) {
-
-                    if (
-                        listings[j]
-                            .textContent
-                            .indexOf("Wipe save") !== -1
-                    ) {
-
-                        subsections[i].insertBefore(
-                            listing,
-                            listings[j]
-                        );
-
-                        return;
-                    }
-                }
-
-
-                subsections[i].appendChild(listing);
-
-                return;
-            }
-        }
+    if (!saveData) {
+        alert("Cookie Clicker returned an empty save.");
+        return;
     }
 
 
-    /* =========================================================
-       WATCH COOKIE CLICKER'S MENU
-       ========================================================= */
+    /* Current date/time */
 
-    function startObserver() {
+    var now = new Date();
 
-        var menu =
-            document.getElementById("menu");
+    var date =
+        (now.getMonth() + 1) + "/" +
+        now.getDate() + "/" +
+        now.getFullYear();
+
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+
+    var ampm = hours >= 12 ? "PM" : "AM";
+
+    hours = hours % 12;
+
+    if (hours === 0) hours = 12;
+
+    minutes = minutes.toString().padStart(2, "0");
+
+    var time =
+        hours + ":" +
+        minutes + " " +
+        ampm;
 
 
-        if (!menu) {
+    /* Filename */
 
-            setTimeout(
-                startObserver,
-                100
+    var filename =
+        bakeryName +
+        " | " +
+        username +
+        " | " +
+        date +
+        " " +
+        time +
+        ".txt";
+
+
+    /* Send to cloud API */
+
+    try {
+
+        alert("Uploading save...");
+
+        var response = await fetch(CLOUD_API + "/upload", {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                username: username,
+                bakeryName: bakeryName,
+                filename: filename,
+                saveData: saveData
+            })
+        });
+
+
+        var result = await response.json();
+
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || "Upload failed."
+            );
+        }
+
+
+        alert(
+            "Save uploaded successfully!\n\n" +
+            filename
+        );
+
+    }
+    catch (e) {
+
+        console.error(e);
+
+        alert(
+            "Cloud save upload failed.\n\n" +
+            e.message
+        );
+    }
+};
+
+
+/* =========================================================
+   IMPORT SAVE
+   ========================================================= */
+
+window.importCloudSave = async function () {
+
+    var username = getUsername();
+
+    if (!username) return;
+
+
+    try {
+
+        alert("Finding your cloud saves...");
+
+        var response = await fetch(
+            CLOUD_API +
+            "/list?username=" +
+            encodeURIComponent(username)
+        );
+
+
+        var result = await response.json();
+
+
+        if (!response.ok) {
+            throw new Error(
+                result.error || "Could not get saves."
+            );
+        }
+
+
+        if (!result.files || result.files.length === 0) {
+
+            alert(
+                "No cloud saves were found for " +
+                username + "."
             );
 
             return;
         }
 
+        // Sort cloud saves from newest to oldest using the date/time in the filename.
+        result.files.sort(function (a, b) {
+            function getSaveTime(name) {
+                var match = name.match(
+                    /\\|\\s*(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})\\s+(\\d{1,2}):(\\d{2})\\s+(AM|PM)\\.txt$/i
+                );
 
-        addCloudButtons();
+                if (!match) return 0;
 
+                var hour = parseInt(match[4], 10);
+                if (match[6].toUpperCase() === "PM" && hour !== 12) hour += 12;
+                if (match[6].toUpperCase() === "AM" && hour === 12) hour = 0;
 
-        var observer =
-            new MutationObserver(function () {
-
-                addCloudButtons();
-
-            });
-
-
-        observer.observe(
-            menu,
-            {
-                childList: true,
-                subtree: true
+                return new Date(
+                    parseInt(match[3], 10),
+                    parseInt(match[1], 10) - 1,
+                    parseInt(match[2], 10),
+                    hour,
+                    parseInt(match[5], 10)
+                ).getTime();
             }
+
+            return getSaveTime(b.name) - getSaveTime(a.name);
+        });
+
+
+        /*
+         * If there is more than one save,
+         * let the user choose.
+         */
+
+        var message =
+            "Choose a save to import:\n\n";
+
+        for (var i = 0; i < result.files.length; i++) {
+
+            message +=
+                (i + 1) +
+                ". " +
+                result.files[i].name +
+                "\n";
+        }
+
+
+        var choice = prompt(message);
+
+
+        if (choice === null) return;
+
+        var number = parseInt(choice);
+
+
+        if (
+            isNaN(number) ||
+            number < 1 ||
+            number > result.files.length
+        ) {
+
+            alert("Invalid save number.");
+
+            return;
+        }
+
+
+        var selected =
+            result.files[number - 1];
+
+
+        /* Download the selected save */
+
+        var saveResponse = await fetch(
+            CLOUD_API +
+            "/download?username=" +
+            encodeURIComponent(username) +
+            "&filename=" +
+            encodeURIComponent(selected.name)
         );
+
+
+        var saveResult =
+            await saveResponse.json();
+
+
+        if (!saveResponse.ok) {
+
+            throw new Error(
+                saveResult.error ||
+                "Could not download save."
+            );
+        }
+
+
+        if (!saveResult.saveData) {
+
+            throw new Error(
+                "The cloud save was empty."
+            );
+        }
+
+
+        /*
+         * Load the Cookie Clicker save.
+         */
+
+        if (typeof Game.LoadSave === "function") {
+
+            Game.LoadSave(saveResult.saveData);
+
+        }
+        else {
+
+            /*
+             * Fallback for versions where LoadSave
+             * isn't available.
+             */
+
+            Game.ImportSave();
+
+            setTimeout(function () {
+
+                var input =
+                    document.querySelector(
+                        "#textareaPrompt"
+                    );
+
+                if (input) {
+
+                    input.value =
+                        saveResult.saveData;
+
+                }
+
+            }, 100);
+        }
+
+
+        alert(
+            "Cloud save imported!\n\n" +
+            selected.name
+        );
+
+    }
+    catch (e) {
+
+        console.error(e);
+
+        alert(
+            "Cloud save import failed.\n\n" +
+            e.message
+        );
+    }
+};
+
+
+/* =========================================================
+   CLOUD BUTTONS
+   ========================================================= */
+
+function addCloudButtons() {
+
+    var menu = document.getElementById("menu");
+
+    if (!menu) return;
+
+
+    var subsections =
+        menu.getElementsByClassName("subsection");
+
+
+    for (
+        var i = 0;
+        i < subsections.length;
+        i++
+    ) {
+
+        var title =
+            subsections[i]
+                .getElementsByClassName("title")[0];
+
+
+        if (
+            title &&
+            title.textContent.trim() === "General"
+        ) {
+
+
+            /*
+             * Don't add the buttons twice.
+             */
+
+            if (
+                document.getElementById(
+                    "cloudSaveListing"
+                )
+            ) {
+
+                return;
+            }
+
+
+            var listing =
+                document.createElement("div");
+
+            listing.className = "listing";
+
+            listing.id =
+                "cloudSaveListing";
+
+
+            listing.innerHTML =
+
+                '<a class="option" ' +
+                'onclick="uploadCloudSave();">' +
+                'Upload Save' +
+                '</a>' +
+
+                '<a class="option" ' +
+                'onclick="importCloudSave();">' +
+                'Import Save' +
+                '</a>' +
+
+                '<a class="option" ' +
+                'onclick="changeCloudUsername();">' +
+                'Change Username' +
+                '</a>' +
+
+                '<label>' +
+                'BETA feature added by ANDREpicasso to upload your save file to cloud note: may not work yet' +
+                '</label>';
+
+
+            /*
+             * Put the cloud buttons above
+             * "Wipe save".
+             */
+
+            var listings =
+                subsections[i]
+                    .getElementsByClassName(
+                        "listing"
+                    );
+
+
+            for (
+                var j = 0;
+                j < listings.length;
+                j++
+            ) {
+
+                if (
+                    listings[j]
+                        .textContent
+                        .indexOf("Wipe save") !== -1
+                ) {
+
+                    subsections[i].insertBefore(
+                        listing,
+                        listings[j]
+                    );
+
+                    return;
+                }
+            }
+
+
+            subsections[i].appendChild(listing);
+
+            return;
+        }
+    }
+}
+
+
+/* =========================================================
+   WATCH COOKIE CLICKER'S MENU
+   ========================================================= */
+
+function startObserver() {
+
+    var menu =
+        document.getElementById("menu");
+
+
+    if (!menu) {
+
+        setTimeout(
+            startObserver,
+            100
+        );
+
+        return;
     }
 
 
-    startObserver();
+    addCloudButtons();
+
+
+    var observer =
+        new MutationObserver(function () {
+
+            addCloudButtons();
+
+        });
+
+
+    observer.observe(
+        menu,
+        {
+            childList: true,
+            subtree: true
+        }
+    );
+}
+
+
+startObserver();
+```
 
 })();
-</script>
-</body>
-</html>
-
-]]></Content>
-</Module>
+\</script>
+\</body>
+\</html>
+]]>\</Content>
+\</Module>
