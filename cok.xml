@@ -1,18 +1,17 @@
-\<?xml version="1.0" encoding="UTF-8" ?>
-\<Module>
-\<ModulePrefs title="Cookie Clicker" />
-\<Content type="html">\<![CDATA[
-\<html>
-\<head>
-\<meta name="viewport" content="width=900, initial-scale=1">
-\<script src="https\://cdn.jsdelivr.net/gh/bcat1023/webprx\@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/base64.js">\</script>
-\<script src="https\://cdn.jsdelivr.net/gh/bobydob/JSEngine\@135436abead1c966dde378e7e41fe832330b1f5a/dist/main.js">\</script>
-\<link href="https\://cdn.jsdelivr.net/gh/bcat1023/webprx\@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/style.css" rel="stylesheet" type="text/css">
-\</head>
-\<body>
-\<div id="wrapper">
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title="Cookie Clicker" />
+<Content type="html"><![CDATA[
+<html>
+<head>
+<meta name="viewport" content="width=900, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/base64.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/bobydob/JSEngine@135436abead1c966dde378e7e41fe832330b1f5a/dist/main.js"></script>
+<link href="https://cdn.jsdelivr.net/gh/bcat1023/webprx@8b966f57aeceb9616de5f15455d811ab76df9c8f/gfiles/cookies/old/style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="wrapper">
 
-```
 <div id="topBar">
 	<div><b>Cookie Clicker</b><a href="//orteil.dashnet.org" target="_blank" id="topbarOrteil">Orteil</a><a href="//dashnet.org" target="_blank" id="topbarDashnet">DashNet</a></div>
 	<div><a href="https://twitter.com/orteil42" target="_blank" id="topbarTwitter">twitter</a></div>
@@ -132,13 +131,11 @@
 	<div id="tooltipAnchor"><div id="tooltip" class="framed" onMouseOut="Game.tooltip.hide();"></div></div>
 
 </div>
-```
 
-\</div>
-&#x9;\<script>
+</div>
+	<script>
 (function () {
 
-```
 /* =========================================================
    CLOUD SAVE SETTINGS
    ========================================================= */
@@ -222,14 +219,12 @@ window.uploadCloudSave = async function () {
     if (!username) return;
 
     var bakeryName = Game.bakeryName || "Unnamed Bakery";
-```
 
 bakeryName = bakeryName.trim();
 if (!bakeryName) {
 bakeryName = "Unnamed Bakery";
 }
 
-```
     // Prevent invalid filename characters
     bakeryName = bakeryName.replace(/[\/\\:*?"<>|]/g, "_");
 
@@ -385,31 +380,6 @@ window.importCloudSave = async function () {
 
             return;
         }
-
-        // Sort cloud saves from newest to oldest using the date/time in the filename.
-        result.files.sort(function (a, b) {
-            function getSaveTime(name) {
-                var match = name.match(
-                    /\\|\\s*(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})\\s+(\\d{1,2}):(\\d{2})\\s+(AM|PM)\\.txt$/i
-                );
-
-                if (!match) return 0;
-
-                var hour = parseInt(match[4], 10);
-                if (match[6].toUpperCase() === "PM" && hour !== 12) hour += 12;
-                if (match[6].toUpperCase() === "AM" && hour === 12) hour = 0;
-
-                return new Date(
-                    parseInt(match[3], 10),
-                    parseInt(match[1], 10) - 1,
-                    parseInt(match[2], 10),
-                    hour,
-                    parseInt(match[5], 10)
-                ).getTime();
-            }
-
-            return getSaveTime(b.name) - getSaveTime(a.name);
-        });
 
 
         /*
@@ -702,11 +672,10 @@ function startObserver() {
 
 
 startObserver();
-```
 
 })();
-\</script>
-\</body>
-\</html>
-]]>\</Content>
-\</Module>
+</script>
+</body>
+</html>
+]]></Content>
+</Module>
