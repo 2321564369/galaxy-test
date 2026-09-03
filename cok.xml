@@ -139,14 +139,17 @@
 (function () {
 
     /* =========================================================
-       CLOUD SAVE SETTINGS
+       SUPABASE SETTINGS
        ========================================================= */
 
-    // Your GitHub repository
-    var CLOUD_REPO = "2321564369/cookie-saves";
+    var SUPABASE_URL =
+        "https://fkkdkjrlatziipfdqbye.supabase.co";
 
-    // Your Cloudflare Worker URL goes here later
-    var CLOUD_API = "https://cold-term-a393.maxwolfovik.workers.dev";
+    var SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZra2RranJsYXR6aWlwZmRxYnllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0NjIyOTcsImV4cCI6MjEwNDAzODI5N30.gfppFfuVV3j59kJmYukGrn-WVYfRBBKBERyXBQ1opNk";
+
+    var SUPABASE_SAVES =
+        SUPABASE_URL + "/rest/v1/saves";
 
 
     /* =========================================================
@@ -154,10 +157,15 @@
        ========================================================= */
 
     function getUsername() {
-        var username = localStorage.getItem("cookieCloudUsername");
+
+        var username =
+            localStorage.getItem("cookieCloudUsername");
 
         if (!username) {
-            username = prompt("Enter your cloud-save username:");
+
+            username = prompt(
+                "Enter your cloud-save username:"
+            );
 
             if (!username) {
                 alert("Username is required.");
@@ -171,10 +179,16 @@
                 return null;
             }
 
-            // Remove characters that would cause problems in a folder name
-            username = username.replace(/[\/\\:*?"<>|]/g, "_");
+            username =
+                username.replace(
+                    /[\/\\:*?"<>|]/g,
+                    "_"
+                );
 
-            localStorage.setItem("cookieCloudUsername", username);
+            localStorage.setItem(
+                "cookieCloudUsername",
+                username
+            );
         }
 
         return username;
@@ -186,7 +200,11 @@
        ========================================================= */
 
     window.changeCloudUsername = function () {
-        var current = localStorage.getItem("cookieCloudUsername") || "";
+
+        var current =
+            localStorage.getItem(
+                "cookieCloudUsername"
+            ) || "";
 
         var username = prompt(
             "Enter your cloud-save username:",
@@ -202,11 +220,21 @@
             return;
         }
 
-        username = username.replace(/[\/\\:*?"<>|]/g, "_");
+        username =
+            username.replace(
+                /[\/\\:*?"<>|]/g,
+                "_"
+            );
 
-        localStorage.setItem("cookieCloudUsername", username);
+        localStorage.setItem(
+            "cookieCloudUsername",
+            username
+        );
 
-        alert("Username changed to: " + username);
+        alert(
+            "Username changed to: " +
+            username
+        );
     };
 
 
@@ -220,66 +248,106 @@
 
         if (!username) return;
 
-        var bakeryName = Game.bakeryName || "Unnamed Bakery";
 
-        bakeryName = bakeryName.trim();
+        /* Bakery name */
+
+        var bakeryName =
+            Game.bakeryName ||
+            "Unnamed Bakery";
+
+        bakeryName =
+            bakeryName.trim();
 
         if (!bakeryName) {
-            bakeryName = "Unnamed Bakery";
+            bakeryName =
+                "Unnamed Bakery";
         }
 
-        // Prevent invalid filename characters
-        bakeryName = bakeryName.replace(/[\/\\:*?"<>|]/g, "_");
+        bakeryName =
+            bakeryName.replace(
+                /[\/\\:*?"<>|]/g,
+                "_"
+            );
 
-        /*
-         * Cookie Clicker's save data.
-         *
-         * WriteSave(1) returns the save string without
-         * opening the normal export window.
-         */
+
+        /* Get Cookie Clicker save */
+
         var saveData;
 
         try {
-            saveData = Game.WriteSave(1);
+
+            saveData =
+                Game.WriteSave(1);
+
         }
         catch (e) {
-            alert("Could not create the Cookie Clicker save.\n\n" + e);
+
+            alert(
+                "Could not create the Cookie Clicker save.\n\n" +
+                e
+            );
+
             return;
         }
+
 
         if (!saveData) {
-            alert("Cookie Clicker returned an empty save.");
+
+            alert(
+                "Cookie Clicker returned an empty save."
+            );
+
             return;
         }
 
 
-        /* Current date/time */
+        /* =====================================================
+           DATE / TIME
+           ===================================================== */
 
         var now = new Date();
 
         var date =
-            (now.getMonth() + 1) + "/" +
-            now.getDate() + "/" +
+            (now.getMonth() + 1) +
+            "/" +
+            now.getDate() +
+            "/" +
             now.getFullYear();
 
-        var hours = now.getHours();
-        var minutes = now.getMinutes();
+        var hours =
+            now.getHours();
 
-        var ampm = hours >= 12 ? "PM" : "AM";
+        var minutes =
+            now.getMinutes();
 
-        hours = hours % 12;
+        var ampm =
+            hours >= 12
+                ? "PM"
+                : "AM";
 
-        if (hours === 0) hours = 12;
+        hours =
+            hours % 12;
 
-        minutes = minutes.toString().padStart(2, "0");
+        if (hours === 0) {
+            hours = 12;
+        }
+
+        minutes =
+            minutes
+                .toString()
+                .padStart(2, "0");
 
         var time =
-            hours + ":" +
-            minutes + " " +
+            hours +
+            ":" +
+            minutes +
+            " " +
             ampm;
 
 
-        /* Filename */
+        /* =====================================================
+           FILENAME
+           ===================================================== */
 
         var filename =
             bakeryName +
@@ -292,34 +360,59 @@
             ".txt";
 
 
-        /* Send to cloud API */
+        /* =====================================================
+           UPLOAD TO SUPABASE
+           ===================================================== */
 
         try {
 
-            
-
-            var response = await fetch(CLOUD_API + "/upload", {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    username: username,
-                    bakeryName: bakeryName,
-                    filename: filename,
-                    saveData: saveData
-                })
-            });
+            alert("Uploading save...");
 
 
-            var result = await response.json();
+            var response =
+                await fetch(
+                    SUPABASE_SAVES,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "apikey":
+                                SUPABASE_KEY,
+
+                            "Authorization":
+                                "Bearer " +
+                                SUPABASE_KEY,
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Prefer":
+                                "return=minimal"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                username:
+                                    username,
+
+                                filename:
+                                    filename,
+
+                                save_data:
+                                    saveData
+                            })
+                    }
+                );
 
 
             if (!response.ok) {
+
+                var errorText =
+                    await response.text();
+
                 throw new Error(
-                    result.error || "Upload failed."
+                    errorText ||
+                    "Supabase upload failed."
                 );
             }
 
@@ -348,181 +441,202 @@
 
     window.importCloudSave = async function () {
 
-        var username = getUsername();
+        var username =
+            getUsername();
 
         if (!username) return;
 
 
         try {
 
-            
-
-            var response = await fetch(
-                CLOUD_API +
-                "/list?username=" +
-                encodeURIComponent(username)
+            alert(
+                "Finding your cloud saves..."
             );
 
 
-            var result = await response.json();
+            /* =================================================
+               GET SAVES FOR THIS USER
+
+               Sorted newest -> oldest
+               ================================================= */
+
+            var url =
+                SUPABASE_SAVES +
+                "?select=id,filename,save_data,created_at" +
+                "&username=eq." +
+                encodeURIComponent(username) +
+                "&order=created_at.desc";
+
+
+            var response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+
+                        headers: {
+                            "apikey":
+                                SUPABASE_KEY,
+
+                            "Authorization":
+                                "Bearer " +
+                                SUPABASE_KEY
+                        }
+                    }
+                );
 
 
             if (!response.ok) {
+
+                var errorText =
+                    await response.text();
+
                 throw new Error(
-                    result.error || "Could not get saves."
+                    errorText ||
+                    "Could not get saves."
                 );
             }
 
 
-            if (!result.files || result.files.length === 0) {
+            var saves =
+                await response.json();
+
+
+            /* =================================================
+               NO SAVES
+               ================================================= */
+
+            if (
+                !saves ||
+                saves.length === 0
+            ) {
 
                 alert(
                     "No cloud saves were found for " +
-                    username + "."
+                    username +
+                    "."
                 );
 
                 return;
             }
 
-            // Sort cloud saves from newest to oldest using the date/time in the filename.
-            result.files.sort(function (a, b) {
-                function getSaveTime(name) {
-                    var match = name.match(
-                        /\|\s*(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s+(AM|PM)\.txt$/i
-                    );
 
-                    if (!match) return 0;
+            /* =================================================
+               BUILD SAVE LIST
 
-                    var hour = parseInt(match[4], 10);
-                    if (match[6].toUpperCase() === "PM" && hour !== 12) hour += 12;
-                    if (match[6].toUpperCase() === "AM" && hour === 12) hour = 0;
-
-                    return new Date(
-                        parseInt(match[3], 10),
-                        parseInt(match[1], 10) - 1,
-                        parseInt(match[2], 10),
-                        hour,
-                        parseInt(match[5], 10)
-                    ).getTime();
-                }
-
-                return getSaveTime(b.name) - getSaveTime(a.name);
-            });
-
-
-            /*
-             * If there is more than one save,
-             * let the user choose.
-             */
+               Supabase already returns these
+               newest -> oldest.
+               ================================================= */
 
             var message =
                 "Choose a save to import:\n\n";
 
-            for (var i = 0; i < result.files.length; i++) {
+
+            for (
+                var i = 0;
+                i < saves.length;
+                i++
+            ) {
 
                 message +=
                     (i + 1) +
                     ". " +
-                    result.files[i].name +
+                    saves[i].filename +
                     "\n";
             }
 
 
-            var choice = prompt(message);
+            var choice =
+                prompt(message);
 
 
-            if (choice === null) return;
+            if (choice === null) {
+                return;
+            }
 
-            var number = parseInt(choice);
+
+            var number =
+                parseInt(choice, 10);
 
 
             if (
                 isNaN(number) ||
                 number < 1 ||
-                number > result.files.length
+                number > saves.length
             ) {
 
-                alert("Invalid save number.");
+                alert(
+                    "Invalid save number."
+                );
 
                 return;
             }
 
 
             var selected =
-                result.files[number - 1];
+                saves[number - 1];
 
 
-            /* Download the selected save */
+            /* =================================================
+               CHECK SAVE DATA
+               ================================================= */
 
-            var saveResponse = await fetch(
-                CLOUD_API +
-                "/download?username=" +
-                encodeURIComponent(username) +
-                "&filename=" +
-                encodeURIComponent(selected.name)
-            );
+            if (!selected.save_data) {
 
-
-            var saveResult =
-                await saveResponse.json();
-
-
-            if (!saveResponse.ok) {
-
-                throw new Error(
-                    saveResult.error ||
-                    "Could not download save."
-                );
-            }
-
-
-            if (!saveResult.saveData) {
-
-                throw new Error(
+                alert(
                     "The cloud save was empty."
                 );
+
+                return;
             }
 
 
-            /*
-             * Load the Cookie Clicker save.
-             */
+            /* =================================================
+               LOAD COOKIE CLICKER SAVE
+               ================================================= */
 
-            if (typeof Game.LoadSave === "function") {
+            if (
+                typeof Game.LoadSave ===
+                "function"
+            ) {
 
-                Game.LoadSave(saveResult.saveData);
+                Game.LoadSave(
+                    selected.save_data
+                );
 
             }
             else {
 
                 /*
-                 * Fallback for versions where LoadSave
-                 * isn't available.
+                 * Fallback for versions where
+                 * LoadSave isn't available.
                  */
 
                 Game.ImportSave();
 
-                setTimeout(function () {
+                setTimeout(
+                    function () {
 
-                    var input =
-                        document.querySelector(
-                            "#textareaPrompt"
-                        );
+                        var input =
+                            document.querySelector(
+                                "#textareaPrompt"
+                            );
 
-                    if (input) {
+                        if (input) {
 
-                        input.value =
-                            saveResult.saveData;
+                            input.value =
+                                selected.save_data;
+                        }
 
-                    }
-
-                }, 100);
+                    },
+                    100
+                );
             }
 
 
             alert(
-                "Cloud save imported!\n\n" +
-                selected.name
+                "Save imported successfully!\n\n" +
+                selected.filename
             );
 
         }
@@ -544,13 +658,16 @@
 
     function addCloudButtons() {
 
-        var menu = document.getElementById("menu");
+        var menu =
+            document.getElementById("menu");
 
         if (!menu) return;
 
 
         var subsections =
-            menu.getElementsByClassName("subsection");
+            menu.getElementsByClassName(
+                "subsection"
+            );
 
 
         for (
@@ -561,12 +678,15 @@
 
             var title =
                 subsections[i]
-                    .getElementsByClassName("title")[0];
+                    .getElementsByClassName(
+                        "title"
+                    )[0];
 
 
             if (
                 title &&
-                title.textContent.trim() === "General"
+                title.textContent.trim() ===
+                "General"
             ) {
 
 
@@ -585,9 +705,12 @@
 
 
                 var listing =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
-                listing.className = "listing";
+                listing.className =
+                    "listing";
 
                 listing.id =
                     "cloudSaveListing";
@@ -611,7 +734,7 @@
                     '</a>' +
 
                     '<label>' +
-                    'BETA feature added by ANDREpicasso to upload your save file to a safe place (github)' +
+                    'Save and load your Cookie Clicker save from the cloud' +
                     '</label>';
 
 
@@ -636,20 +759,26 @@
                     if (
                         listings[j]
                             .textContent
-                            .indexOf("Wipe save") !== -1
+                            .indexOf(
+                                "Wipe save"
+                            ) !== -1
                     ) {
 
-                        subsections[i].insertBefore(
-                            listing,
-                            listings[j]
-                        );
+                        subsections[i]
+                            .insertBefore(
+                                listing,
+                                listings[j]
+                            );
 
                         return;
                     }
                 }
 
 
-                subsections[i].appendChild(listing);
+                subsections[i]
+                    .appendChild(
+                        listing
+                    );
 
                 return;
             }
@@ -664,7 +793,9 @@
     function startObserver() {
 
         var menu =
-            document.getElementById("menu");
+            document.getElementById(
+                "menu"
+            );
 
 
         if (!menu) {
@@ -682,11 +813,13 @@
 
 
         var observer =
-            new MutationObserver(function () {
+            new MutationObserver(
+                function () {
 
-                addCloudButtons();
+                    addCloudButtons();
 
-            });
+                }
+            );
 
 
         observer.observe(
