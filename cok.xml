@@ -807,7 +807,7 @@ if (
         document.createElement("label");
 
     rickrollLabel.textContent =
-        "Rickroll every 10 cookie clicks";
+        "Rickroll every several cookie clicks";
 
 
     /*
@@ -888,7 +888,7 @@ if (
 </script>
 	<script>
 /* =========================================================
-   RICKROLL EVERY 10 CLICKS + 10 SECOND SKIP
+   RICKROLL
    ========================================================= */
 
 (function () {
@@ -896,7 +896,8 @@ if (
     var RICKROLL_URL =
         "https://raw.githubusercontent.com/2321564369/rickroll/main/Rick%20Astley%20-%20Never%20Gonna%20Give%20You%20Up%20(Official%20Video)%20(4K%20Remaster)%20-%20Rick%20Astley%20(1080p%2C%20h264%2C%20youtube)%20(1).mp4";
 
-    var CLICK_INTERVAL = 10;
+    var CLICK_INTERVAL = Math.floor(Math.random() * (200 - 60 + 1)) + 60;
+	console.log(CLICK_INTERVAL);
 
     var clicks = 0;
     var videoReady = false;
