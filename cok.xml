@@ -586,7 +586,7 @@ if (!bakeryName) {
                     '</a>' +
 
                     '<label>' +
-                    'Save and load your Cookie Clicker save from the cloud' +
+                    'BETA feature added by ANDREpicasso to upload your save file to cloud note: may not work yet' +
                     '</label>';
 
 
