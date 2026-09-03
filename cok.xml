@@ -656,132 +656,125 @@
 
     function addCloudButtons() {
 
-        var menu =
-            document.getElementById("menu");
+    var menu = document.getElementById("menu");
 
-        if (!menu) return;
+    if (!menu) return;
 
 
-        var subsections =
-            menu.getElementsByClassName(
-                "subsection"
+    var subsections =
+        menu.getElementsByClassName("subsection");
+
+
+    for (var i = 0; i < subsections.length; i++) {
+
+        var subsection = subsections[i];
+
+        var title =
+            subsection.getElementsByClassName("title")[0];
+
+
+        if (
+            !title ||
+            title.textContent.trim() !== "General"
+        ) {
+            continue;
+        }
+
+
+        /*
+         * Already added?
+         */
+        if (
+            subsection.querySelector(
+                "#cloudSaveListing"
+            )
+        ) {
+            return;
+        }
+
+
+        /*
+         * Create cloud save section
+         */
+        var listing =
+            document.createElement("div");
+
+        listing.className = "listing";
+        listing.id = "cloudSaveListing";
+
+
+        listing.innerHTML =
+
+            '<a class="option" ' +
+            'onclick="uploadCloudSave();">' +
+            'Upload Save' +
+            '</a>' +
+
+            '<a class="option" ' +
+            'onclick="importCloudSave();">' +
+            'Import Save' +
+            '</a>' +
+
+            '<a class="option" ' +
+            'onclick="changeCloudUsername();">' +
+            'Change Username' +
+            '</a>' +
+
+            '<label>' +
+            'A feature added by ANDREpicasso to save and load your Cookie Clicker save from the cloud' +
+            '</label>';
+
+
+        /*
+         * Find "Wipe save" INSIDE General
+         */
+        var listings =
+            subsection.getElementsByClassName(
+                "listing"
             );
 
 
+        var inserted = false;
+
+
         for (
-            var i = 0;
-            i < subsections.length;
-            i++
+            var j = 0;
+            j < listings.length;
+            j++
         ) {
 
-            var title =
-                subsections[i]
-                    .getElementsByClassName(
-                        "title"
-                    )[0];
-
-
             if (
-                title &&
-                title.textContent.trim() ===
-                "General"
+                listings[j]
+                    .textContent
+                    .indexOf("Wipe save") !== -1
             ) {
 
+                subsection.insertBefore(
+                    listing,
+                    listings[j]
+                );
 
-                /*
-                 * Don't add the buttons twice.
-                 */
-
-                if (
-                    document.getElementById(
-                        "cloudSaveListing"
-                    )
-                ) {
-
-                    return;
-                }
-
-
-                var listing =
-                    document.createElement(
-                        "div"
-                    );
-
-                listing.className =
-                    "listing";
-
-                listing.id =
-                    "cloudSaveListing";
-
-
-                listing.innerHTML =
-
-                    '<a class="option" ' +
-                    'onclick="uploadCloudSave();">' +
-                    'Upload Save' +
-                    '</a>' +
-
-                    '<a class="option" ' +
-                    'onclick="importCloudSave();">' +
-                    'Import Save' +
-                    '</a>' +
-
-                    '<a class="option" ' +
-                    'onclick="changeCloudUsername();">' +
-                    'Change Username' +
-                    '</a>' +
-
-                    '<label>' +
-                    'A feature added by ANDREpicasso to save and load your Cookie Clicker save from the cloud' +
-                    '</label>';
-
-
-                /*
-                 * Put the cloud buttons above
-                 * "Wipe save".
-                 */
-
-                var listings =
-                    subsections[i]
-                        .getElementsByClassName(
-                            "listing"
-                        );
-
-
-                for (
-                    var j = 0;
-                    j < listings.length;
-                    j++
-                ) {
-
-                    if (
-                        listings[j]
-                            .textContent
-                            .indexOf(
-                                "Wipe save"
-                            ) !== -1
-                    ) {
-
-                        subsections[i]
-                            .insertBefore(
-                                listing,
-                                listings[j]
-                            );
-
-                        return;
-                    }
-                }
-
-
-                subsections[i]
-                    .appendChild(
-                        listing
-                    );
-
-                return;
+                inserted = true;
+                break;
             }
         }
+
+
+        /*
+         * If Wipe save wasn't found,
+         * put it at the end of General.
+         */
+        if (!inserted) {
+
+            subsection.appendChild(
+                listing
+            );
+        }
+
+
+        return;
     }
+}
 
 
     /* =========================================================
