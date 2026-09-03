@@ -660,6 +660,17 @@
 
     if (!menu) return;
 
+    /*
+     * ONLY add the buttons when Cookie Clicker
+     * is displaying the Options menu.
+     */
+    if (
+        typeof Game === "undefined" ||
+        Game.onMenu !== "prefs"
+    ) {
+        return;
+    }
+
 
     var subsections =
         menu.getElementsByClassName("subsection");
@@ -670,9 +681,12 @@
         var subsection = subsections[i];
 
         var title =
-            subsection.getElementsByClassName("title")[0];
+            subsection.querySelector(":scope > .title");
 
 
+        /*
+         * Must be the Options > General subsection.
+         */
         if (
             !title ||
             title.textContent.trim() !== "General"
@@ -682,7 +696,7 @@
 
 
         /*
-         * Already added?
+         * Don't add it twice.
          */
         if (
             subsection.querySelector(
@@ -694,7 +708,7 @@
 
 
         /*
-         * Create cloud save section
+         * Create cloud save listing.
          */
         var listing =
             document.createElement("div");
@@ -726,15 +740,12 @@
 
 
         /*
-         * Find "Wipe save" INSIDE General
+         * Put it directly before Wipe save.
          */
         var listings =
             subsection.getElementsByClassName(
                 "listing"
             );
-
-
-        var inserted = false;
 
 
         for (
@@ -754,23 +765,16 @@
                     listings[j]
                 );
 
-                inserted = true;
-                break;
+                return;
             }
         }
 
 
         /*
          * If Wipe save wasn't found,
-         * put it at the end of General.
+         * add it to the end of General.
          */
-        if (!inserted) {
-
-            subsection.appendChild(
-                listing
-            );
-        }
-
+        subsection.appendChild(listing);
 
         return;
     }
