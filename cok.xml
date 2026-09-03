@@ -807,7 +807,7 @@ if (
         document.createElement("label");
 
     rickrollLabel.textContent =
-        "Rickroll every several cookie clicks";
+        "Rickroll every several cookie clicks|ToTaLy not added by ANDREpicasso";
 
 
     /*
