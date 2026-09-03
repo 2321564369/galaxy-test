@@ -296,7 +296,7 @@
 
         try {
 
-            alert("Uploading save...");
+            
 
             var response = await fetch(CLOUD_API + "/upload", {
                 method: "POST",
@@ -355,7 +355,7 @@
 
         try {
 
-            alert("Finding your cloud saves...");
+            
 
             var response = await fetch(
                 CLOUD_API +
