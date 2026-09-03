@@ -211,138 +211,6 @@
 
 
     /* =========================================================
-       UPLOAD SAVE
-       ========================================================= */
-
-    window.uploadCloudSave = async function () {
-
-        var username = getUsername();
-
-        if (!username) return;
-
-        var bakeryName = Game.bakeryName || "Unnamed Bakery";
-
-bakeryName = bakeryName.trim();
-
-if (!bakeryName) {
-    bakeryName = "Unnamed Bakery";
-}
-
-        // Prevent invalid filename characters
-        bakeryName = bakeryName.replace(/[\/\\:*?"<>|]/g, "_");
-
-        /*
-         * Cookie Clicker's save data.
-         *
-         * WriteSave(1) returns the save string without
-         * opening the normal export window.
-         */
-        var saveData;
-
-        try {
-            saveData = Game.WriteSave(1);
-        }
-        catch (e) {
-            alert("Could not create the Cookie Clicker save.\n\n" + e);
-            return;
-        }
-
-        if (!saveData) {
-            alert("Cookie Clicker returned an empty save.");
-            return;
-        }
-
-
-        /* Current date/time */
-
-        var now = new Date();
-
-        var date =
-            (now.getMonth() + 1) + "/" +
-            now.getDate() + "/" +
-            now.getFullYear();
-
-        var hours = now.getHours();
-        var minutes = now.getMinutes();
-
-        var ampm = hours >= 12 ? "PM" : "AM";
-
-        hours = hours % 12;
-
-        if (hours === 0) hours = 12;
-
-        minutes = minutes.toString().padStart(2, "0");
-
-        var time =
-            hours + ":" +
-            minutes + " " +
-            ampm;
-
-
-        /* Filename */
-
-        var filename =
-            bakeryName +
-            " | " +
-            username +
-            " | " +
-            date +
-            " " +
-            time +
-            ".txt";
-
-
-        /* Send to cloud API */
-
-        try {
-
-            alert("Uploading save...");
-
-            var response = await fetch(CLOUD_API + "/upload", {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    username: username,
-                    bakeryName: bakeryName,
-                    filename: filename,
-                    saveData: saveData
-                })
-            });
-
-
-            var result = await response.json();
-
-
-            if (!response.ok) {
-                throw new Error(
-                    result.error || "Upload failed."
-                );
-            }
-
-
-            alert(
-                "Save uploaded successfully!\n\n" +
-                filename
-            );
-
-        }
-        catch (e) {
-
-            console.error(e);
-
-            alert(
-                "Cloud save upload failed.\n\n" +
-                e.message
-            );
-        }
-    };
-
-
-    /* =========================================================
        IMPORT SAVE
        ========================================================= */
 
@@ -383,6 +251,34 @@ if (!bakeryName) {
 
                 return;
             }
+
+            /*
+             * Sort saves from newest to oldest.
+             * The filename ends with: M/D/YYYY h:mm AM/PM.txt
+             */
+            result.files.sort(function (a, b) {
+                function saveTime(file) {
+                    var m = file.name.match(
+                        /\|\s*(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s+(AM|PM)\.txt$/i
+                    );
+
+                    if (!m) return 0;
+
+                    var hour = parseInt(m[4], 10);
+                    if (m[6].toUpperCase() === "PM" && hour !== 12) hour += 12;
+                    if (m[6].toUpperCase() === "AM" && hour === 12) hour = 0;
+
+                    return new Date(
+                        parseInt(m[3], 10),
+                        parseInt(m[1], 10) - 1,
+                        parseInt(m[2], 10),
+                        hour,
+                        parseInt(m[5], 10)
+                    ).getTime();
+                }
+
+                return saveTime(b) - saveTime(a);
+            });
 
 
             /*
@@ -571,11 +467,6 @@ if (!bakeryName) {
                 listing.innerHTML =
 
                     '<a class="option" ' +
-                    'onclick="uploadCloudSave();">' +
-                    'Upload Save' +
-                    '</a>' +
-
-                    '<a class="option" ' +
                     'onclick="importCloudSave();">' +
                     'Import Save' +
                     '</a>' +
@@ -586,7 +477,7 @@ if (!bakeryName) {
                     '</a>' +
 
                     '<label>' +
-                    'BETA feature added by ANDREpicasso to upload your save file to cloud note: may not work yet' +
+                    'Import a save from the cloud' +
                     '</label>';
 
 
