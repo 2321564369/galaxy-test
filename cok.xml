@@ -719,24 +719,35 @@
 
         listing.innerHTML =
 
-            '<a class="option" ' +
-            'onclick="uploadCloudSave();">' +
-            'Upload Save' +
-            '</a>' +
+    '<a class="option" ' +
+    'onclick="uploadCloudSave();">' +
+    'Upload Save' +
+    '</a>' +
 
-            '<a class="option" ' +
-            'onclick="importCloudSave();">' +
-            'Import Save' +
-            '</a>' +
+    '<a class="option" ' +
+    'onclick="importCloudSave();">' +
+    'Import Save' +
+    '</a>' +
 
-            '<a class="option" ' +
-            'onclick="changeCloudUsername();">' +
-            'Change Username' +
-            '</a>' +
+    '<a class="option" ' +
+    'onclick="changeCloudUsername();">' +
+    'Change Username' +
+    '</a>' +
 
-            '<label>' +
-            'A feature added by ANDREpicasso to save and load your Cookie Clicker save from the cloud' +
-            '</label>';
+    '<label>' +
+    'A feature added by ANDREpicasso to save and load your Cookie Clicker save from the cloud' +
+    '</label>' +
+
+    '<a class="option" ' +
+    'onclick="setRickrollEnabled(!window.rickrollEnabled); ' +
+    'this.textContent = window.rickrollEnabled ? ' +
+    '\'Rickroll: ON\' : \'Rickroll: OFF\';">' +
+    (window.rickrollEnabled ? 'Rickroll: ON' : 'Rickroll: OFF') +
+    '</a>' +
+
+    '<label>' +
+    'Rickroll every 10 cookie clicks' +
+    '</label>';
 
 
         /*
@@ -830,8 +841,11 @@
     startObserver();
 
 })();
-	/* =========================================================
-   RICKROLL EVERY 1000 CLICKS
+	
+</script>
+	<script>
+/* =========================================================
+   RICKROLL EVERY 10 CLICKS + 10 SECOND SKIP
    ========================================================= */
 
 (function () {
@@ -847,6 +861,45 @@
     var waitingToShow = false;
 
     var video = null;
+    var skipButton = null;
+    var skipTimer = null;
+    var skipSeconds = 10;
+
+
+    /* =====================================================
+       RICKROLL ENABLED SETTING
+       ===================================================== */
+
+    window.rickrollEnabled =
+        localStorage.getItem("cookieRickrollEnabled") !== "false";
+
+
+    window.setRickrollEnabled = function (enabled) {
+
+        window.rickrollEnabled = enabled;
+
+        localStorage.setItem(
+            "cookieRickrollEnabled",
+            enabled ? "true" : "false"
+        );
+
+        if (!enabled) {
+
+            waitingToShow = false;
+            clicks = 0;
+
+            if (video) {
+                video.pause();
+                video.style.display = "none";
+                video.style.visibility = "hidden";
+            }
+
+            if (skipTimer) {
+                clearInterval(skipTimer);
+                skipTimer = null;
+            }
+        }
+    };
 
 
     /* =====================================================
@@ -862,9 +915,7 @@
         video.id = "cookieRickroll";
 
         video.src = RICKROLL_URL;
-
         video.preload = "auto";
-
         video.playsInline = true;
 
         video.setAttribute("playsinline", "");
@@ -881,13 +932,9 @@
         video.style.zIndex = "999999";
 
         video.style.display = "none";
+        video.style.visibility = "hidden";
 
         video.style.background = "#000";
-
-        /*
-         * Keep it completely invisible while loading.
-         */
-        video.style.visibility = "hidden";
 
         document.body.appendChild(video);
 
@@ -898,11 +945,6 @@
 
                 videoReady = true;
                 videoLoading = false;
-
-                /*
-                 * It is loaded, but don't show it yet.
-                 * The next cookie click will trigger it.
-                 */
             }
         );
 
@@ -911,21 +953,7 @@
             "ended",
             function () {
 
-                video.pause();
-
-                video.currentTime = 0;
-
-                video.style.display = "none";
-
-                video.style.visibility = "hidden";
-
-                waitingToShow = false;
-
-                /*
-                 * Prepare for the next 1000 clicks.
-                 */
-                videoReady = false;
-                videoLoading = false;
+                skipRickroll();
             }
         );
 
@@ -945,10 +973,144 @@
 
 
     /* =====================================================
+       CREATE SKIP BUTTON
+       ===================================================== */
+
+    function createSkipButton() {
+
+        if (skipButton) return;
+
+        skipButton = document.createElement("button");
+
+        skipButton.id = "rickrollSkipButton";
+
+        skipButton.style.position = "fixed";
+        skipButton.style.right = "25px";
+        skipButton.style.bottom = "25px";
+
+        skipButton.style.zIndex = "1000000";
+
+        skipButton.style.padding = "12px 20px";
+
+        skipButton.style.fontSize = "18px";
+        skipButton.style.fontWeight = "bold";
+
+        skipButton.style.border = "none";
+        skipButton.style.borderRadius = "6px";
+
+        skipButton.style.background = "rgba(0,0,0,0.8)";
+        skipButton.style.color = "#fff";
+
+        skipButton.style.cursor = "pointer";
+
+        skipButton.textContent =
+            "Skip in " + skipSeconds;
+
+        skipButton.disabled = true;
+
+        skipButton.onclick = function () {
+
+            if (skipSeconds <= 0) {
+                skipRickroll();
+            }
+        };
+
+        document.body.appendChild(skipButton);
+    }
+
+
+    /* =====================================================
+       START SKIP COUNTDOWN
+       ===================================================== */
+
+    function startSkipCountdown() {
+
+        createSkipButton();
+
+        skipSeconds = 10;
+
+        skipButton.disabled = true;
+
+        skipButton.textContent =
+            "Skip in " + skipSeconds;
+
+        if (skipTimer) {
+            clearInterval(skipTimer);
+        }
+
+        skipTimer = setInterval(
+            function () {
+
+                skipSeconds--;
+
+                if (skipSeconds <= 0) {
+
+                    clearInterval(skipTimer);
+                    skipTimer = null;
+
+                    skipButton.disabled = false;
+
+                    skipButton.textContent =
+                        "Skip";
+
+                } else {
+
+                    skipButton.textContent =
+                        "Skip in " + skipSeconds;
+                }
+
+            },
+            1000
+        );
+    }
+
+
+    /* =====================================================
+       SKIP RICKROLL
+       ===================================================== */
+
+    function skipRickroll() {
+
+        if (skipTimer) {
+
+            clearInterval(skipTimer);
+            skipTimer = null;
+        }
+
+        if (video) {
+
+            video.pause();
+
+            video.currentTime = 0;
+
+            video.style.display = "none";
+            video.style.visibility = "hidden";
+        }
+
+        if (skipButton) {
+
+            skipButton.style.display = "none";
+        }
+
+        waitingToShow = false;
+
+        /*
+         * Keep video loaded for next time.
+         */
+        videoReady = true;
+        videoLoading = false;
+    }
+
+
+    /* =====================================================
        PRELOAD VIDEO
        ===================================================== */
 
     function preloadRickroll() {
+
+        if (!window.rickrollEnabled) {
+            return;
+        }
 
         if (videoReady || videoLoading) {
             return;
@@ -960,9 +1122,6 @@
 
         videoLoading = true;
 
-        /*
-         * Start downloading the video.
-         */
         video.load();
     }
 
@@ -973,6 +1132,10 @@
 
     function showRickroll() {
 
+        if (!window.rickrollEnabled) {
+            return;
+        }
+
         if (!videoReady || !video) {
             return;
         }
@@ -980,17 +1143,17 @@
         waitingToShow = false;
 
         video.style.display = "block";
-
         video.style.visibility = "visible";
 
         video.currentTime = 0;
 
-        /*
-         * The click that triggers this gives the browser
-         * a user gesture, so play() should be allowed.
-         */
-        var playPromise =
-            video.play();
+        if (skipButton) {
+            skipButton.style.display = "block";
+        }
+
+        startSkipCountdown();
+
+        var playPromise = video.play();
 
         if (playPromise) {
 
@@ -1014,11 +1177,14 @@
 
     function countCookieClick() {
 
+        if (!window.rickrollEnabled) {
+            return;
+        }
+
         clicks++;
 
-
         /*
-         * Every 1000 clicks, begin loading the video.
+         * Every 10 clicks, preload the video.
          */
         if (
             clicks % CLICK_INTERVAL === 0
@@ -1029,16 +1195,15 @@
             preloadRickroll();
 
             console.log(
-                "Rickroll armed! Waiting for video to load..."
+                "Rickroll armed!"
             );
 
             return;
         }
 
-
         /*
-         * After the 1000th click, the NEXT click
-         * shows the video if it has finished loading.
+         * Next click after the 10th
+         * shows the video.
          */
         if (waitingToShow && videoReady) {
 
@@ -1070,11 +1235,6 @@
             return;
         }
 
-
-        /*
-         * Capture clicks before Cookie Clicker's
-         * own click handler.
-         */
         cookie.addEventListener(
             "click",
             countCookieClick,
