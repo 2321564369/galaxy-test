@@ -17263,7 +17263,7 @@ window.onload=function()
 			
 			var launchSteps=[
 				function(next){
-					LoadLang('loc/EN.js?v='+Game.version,next);
+					LoadLang('https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/EN.js?v='+Game.version,next);
 				},
 				function(next){
 					LoadLang('loc/'+lang+'.js?v='+Game.version,next);
