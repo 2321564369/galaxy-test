@@ -690,7 +690,7 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 	bottom:0px;
 	overflow:hidden;
 }
-.onWeb #game{top:32px;}
+.onWeb #game{top:0px;}
 .offWeb #game{top:0px;}
 #sectionLeft
 {
