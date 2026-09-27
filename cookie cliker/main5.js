@@ -1335,10 +1335,9 @@ if (App && new URL(window.location.href).searchParams.get('modless')) Game.modle
 Game.local=LOCAL;
 if (App) Game.local=true;
 Game.resPath='';
-if (!App && !Game.local && window.location.href.indexOf('orteil.dashnet.org')!=-1)
+if (!App && !Game.local)
 {
-	Game.resPath=('//'+location.host+location.pathname).replace('orteil.dashnet.org','cdn.dashnet.org');
-	if (Game.resPath.slice(-1)!='/') Game.resPath+='/';
+	Game.resPath = 'https://cdn.dashnet.org/cookieclicker/';
 }
 
 
