@@ -67,7 +67,7 @@ body
 	touch-action: manipulation;
 	
 	color:#fff;
-	background:#000 url(img/darkNoise.jpg);
+	background:#000 url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 	font-family:Tahoma,Arial,sans-serif;
 	font-size:13px;
 	
@@ -417,7 +417,7 @@ a.option.neato:active
 	top:0px;
 	width:100%;
 	height:32px;
-	background:url(img/darkNoiseTopBar.jpg) repeat-x bottom;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/darkNoiseTopBar.jpg) repeat-x bottom;
 	color:#ccc;
 }
 #topBar>div
@@ -465,7 +465,7 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 {
 	content:'';width:13px;height:32px;
 	position:absolute;right:-7px;top:0px;
-	background:url(img/topbarDiv.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/topbarDiv.png);
 	border:none;
 	z-index:-1;
 	pointer-events:none;
@@ -512,7 +512,7 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 	max-height:0px;
 	overflow:hidden;
 	box-shadow:0px 0px 0px 1px #000,0px 2px 4px 2px rgba(0,0,0,0.5),0px 0px 0px 1px rgba(0,0,0,0.5);
-	background:url(img/darkNoise.jpg);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 	border-radius:0px 0px 8px 8px;
 }
 .hoverer:hover>.hoverheader
@@ -553,8 +553,8 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 	left:0;
 	height:100%;
 	width:100%;
-	background:#111 url(img/darkNoise.jpg);
-	background:url(img/shadedBorders.png) left top/100% 100%,#111 url(img/darkNoise.jpg);
+	background:#111 url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/shadedBorders.png) left top/100% 100%,#111 url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 	text-align:center;
 	z-index:1000000000;
 	line-height:150%;
@@ -629,12 +629,12 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 }
 .spinnyBig
 {
-	background:url(img/spinnyBig.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/spinnyBig.png);
 	animation-duration:5s;
 }
 .spinnySmall
 {
-	background:url(img/spinnySmall.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/spinnySmall.png);
 	animation-duration:9s;
 }
 @keyframes loadSpin
@@ -675,7 +675,7 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 	position:absolute;
 	left:0px;
 	top:0px;
-	background:url(img/tinyglobe.gif);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/tinyglobe.gif);
 	pointer-events:none;
 	display:block;
 	transform:scale(0.75);
@@ -727,8 +727,8 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 }
 #game.onMenu #centerArea
 {
-	background:#000 url(img/darkNoise.jpg);
-	background-image:url(img/shadedBorders.png),url(img/darkNoise.jpg);
+	background:#000 url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
+	background-image:url(https://orteil.dashnet.org/cookieclicker/img/shadedBorders.png),url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 	background-size:100% 100%,auto;
 	background-color:#000;
 }
@@ -740,13 +740,13 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 	right:0px;
 	overflow-x:hidden;
 	overflow-y:scroll;
-	/*background:url(img/panelBG.png);*/
+	/*background:url(https://orteil.dashnet.org/cookieclicker/img/panelBG.png);*/
 	background:rgba(0,0,0,0.5);
 }
 
 #sectionLeft .blackGradient
 {
-	background:url(img/blackGradient.png) repeat-x bottom;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/blackGradient.png) repeat-x bottom;
 	position:absolute;
 	left:0px;
 	right:0px;
@@ -808,8 +808,8 @@ a.orangeLink:hover,#topBar a.orangeLink:hover
 .framed,a.option,.sliderBox,.smallFramed
 {
 	border:1px solid #e2dd48;
-	background:#000 url(img/darkNoise.jpg);
-	background-image:/*linear-gradient(rgba(255,255,255,0.05),rgba(0,0,0,0.4)),*/url(img/shadedBordersSoft.png),url(img/darkNoise.jpg);
+	background:#000 url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
+	background-image:/*linear-gradient(rgba(255,255,255,0.05),rgba(0,0,0,0.4)),*/url(https://orteil.dashnet.org/cookieclicker/img/shadedBordersSoft.png),url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 	background-size:/*100% 100%,*/100% 100%,auto;
 	background-color:#000;
 	border-radius:2px;
@@ -902,7 +902,7 @@ a.option.smallFancyButton
 	padding:4px 8px;
 	margin:4px;
 	border:3px solid transparent;
-	border-image:url(img/frameBorder.png) 3 round;
+	border-image:url(https://orteil.dashnet.org/cookieclicker/img/frameBorder.png) 3 round;
 	border-radius:2px;
 	box-shadow:0px 0px 1px 2px rgba(0,0,0,0.5),0px 2px 4px rgba(0,0,0,0.25),0px 0px 6px 1px rgba(0,0,0,0.5) inset;
 	-webkit-transition: opacity 0.1s ease-out;
@@ -1237,7 +1237,7 @@ q:after
 	position:absolute;
 	left:0px;
 	top:2px;
-	background:url(img/money.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/money.png);
 	width:16px;
 	height:16px;
 }
@@ -1253,17 +1253,17 @@ q:after
 	position:absolute;
 	left:0px;
 	top:0px;
-	background:url(img/money.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/money.png);
 	width:16px;
 	height:16px;
 }
 .heavenly.price:before
 {
-	background:url(img/heavenlyMoney.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/heavenlyMoney.png);
 }
 .lump.price:before
 {
-	background:url(img/sugarLump.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/sugarLump.png);
 }
 .price.plain
 {
@@ -1288,9 +1288,9 @@ q:after
 	position:absolute;
 	left:-128px;
 	top:-128px;
-	/*background:url(img/perfectCookie.png);
+	/*background:url(https://orteil.dashnet.org/cookieclicker/img/perfectCookie.png);
 	background-size:256px 256px;*/
-	background:url(img/empty.png);/* somehow necessary; an empty div with no background seems to be click-through */
+	background:url(https://orteil.dashnet.org/cookieclicker/img/empty.png);/* somehow necessary; an empty div with no background seems to be click-through */
 	cursor:pointer;
 	z-index:10000;
 	border-radius:128px;
@@ -1300,7 +1300,7 @@ q:after
 }
 .elderWrath #bigCookie
 {
-	background:url(img/imperfectCookie.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/imperfectCookie.png);
 	background-size:256px 256px;
 }
 #cookieNumbers{position:absolute;top:-80px;}
@@ -1321,7 +1321,7 @@ q:after
 	width:32px;
 	height:32px;
 	position:absolute;
-	background:url(img/cursor.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/cursor.png);
 }
 .cookieParticle
 {
@@ -1330,7 +1330,7 @@ q:after
 	margin-left:-32px;
 	margin-top:-32px;
 	position:absolute;
-	background:url(img/smallCookies.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/smallCookies.png);
 	opacity:0;
 }
 #particles {position:absolute;left:0px;top:0px;z-index:100000000000;}
@@ -1458,8 +1458,8 @@ q:after
 {
 	width:16px;
 	height:100%;
-	background:url(img/panelVertical.png?v=2) repeat-y;
-	background:url(img/panelGradientTop.png) no-repeat top left,url(img/panelGradientBottom.png) no-repeat bottom left,url(img/panelVertical.png?v=2) repeat-y;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/panelVertical.png?v=2) repeat-y;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/panelGradientTop.png) no-repeat top left,url(https://orteil.dashnet.org/cookieclicker/img/panelGradientBottom.png) no-repeat bottom left,url(https://orteil.dashnet.org/cookieclicker/img/panelVertical.png?v=2) repeat-y;
 	position:absolute;
 	top:0px;
 	bottom:0px;
@@ -1477,8 +1477,8 @@ q:after
 {
 	width:100%;
 	height:16px;
-	background:url(img/panelHorizontal.png?v=2) repeat-x;
-	background:url(img/panelGradientLeft.png) no-repeat top left,url(img/panelGradientRight.png) no-repeat top right,url(img/panelHorizontal.png?v=2) repeat-x;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/panelHorizontal.png?v=2) repeat-x;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/panelGradientLeft.png) no-repeat top left,url(https://orteil.dashnet.org/cookieclicker/img/panelGradientRight.png) no-repeat top right,url(https://orteil.dashnet.org/cookieclicker/img/panelHorizontal.png?v=2) repeat-x;
 	position:absolute;
 	left:0px;
 	bottom:0px;
@@ -1486,7 +1486,7 @@ q:after
 
 .panelButton
 {
-	background:url(img/panelMenu3.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/panelMenu3.png);
 	background-position:0px 0px;
 	position:absolute;
 	z-index:100;
@@ -1540,7 +1540,7 @@ q:after
 	top:10px;
 	width:48px;
 	height:38px;
-	background:url(img/pointGlow.gif);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/pointGlow.gif);
 	animation:pointGlowBump 0.6s infinite ease-in-out;
 }
 @keyframes pointGlowBump{
@@ -1580,7 +1580,7 @@ q:after
 
 .roundedPanel
 {
-	background:url(img/roundedPanelBGS.png) repeat-x 0px 0px;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/roundedPanelBGS.png) repeat-x 0px 0px;
 	position:relative;
 	padding:9px 0px;
 	height:20px;
@@ -1593,15 +1593,15 @@ q:after
 }
 .roundedPanel:before
 {
-	background:url(img/bracketPanelLeftS.png) no-repeat;left:-16px;width:16px;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/bracketPanelLeftS.png) no-repeat;left:-16px;width:16px;
 }
 .roundedPanel:after
 {
-	background:url(img/bracketPanelRightS.png) no-repeat;right:-18px;width:18px;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/bracketPanelRightS.png) no-repeat;right:-18px;width:18px;
 }
 /*.roundedPanel
 {
-	background:url(img/roundedPanelBG.png) repeat-x 0px 0px;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/roundedPanelBG.png) repeat-x 0px 0px;
 	position:relative;
 }
 .roundedPanel:before,.roundedPanel:after
@@ -1612,11 +1612,11 @@ q:after
 }
 .roundedPanel:before
 {
-	background:url(img/roundedPanelLeft.png) no-repeat;left:-17px;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/roundedPanelLeft.png) no-repeat;left:-17px;
 }
 .roundedPanel:after
 {
-	background:url(img/roundedPanelRight.png) no-repeat;right:-17px;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/roundedPanelRight.png) no-repeat;right:-17px;
 }*/
 #ascendNumber
 {
@@ -1713,7 +1713,7 @@ q:after
 }
 .meter
 {
-	background:url(img/prestigeBar.jpg) 0px 0px;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/prestigeBar.jpg) 0px 0px;
 	position:absolute;
 	left:0px;
 	/*right:100%;*/
@@ -1732,7 +1732,7 @@ q:after
 	top:0px;
 	content:'';
 	display:block;
-	background:url(img/prestigeBarCap.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/prestigeBarCap.png);
 }
 #ascendMeterContainer
 {
@@ -1784,7 +1784,7 @@ from {background-position:0px -24px;}
 	top:0px;
 	bottom:0px;
 	/*box-shadow:0px 0px 24px #000 inset;
-	background:#000 url(img/darkNoise.jpg);*/
+	background:#000 url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);*/
 }
 
 #comments
@@ -1795,7 +1795,7 @@ from {background-position:0px -24px;}
 	padding-bottom:32px;
 	font-size:16px;
 	height:64px;
-	background:url(img/shadedBorders.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/shadedBorders.png);
 	background-size:100% 96px;
 	/*overflow:hidden;*/
 }
@@ -1997,7 +1997,7 @@ from {top:20px;opacity:0;}
 {
 	min-height:24px;
 	background:#999;
-	background:url(img/darkNoise.jpg);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 	box-shadow:0px 0px 4px #000 inset;
 	position:relative;
 	text-align:center;
@@ -2036,7 +2036,7 @@ from {top:20px;opacity:0;}
 	width:100%;
 	top:0px;
 	left:0px;
-	background:#000 url(img/mapBG.jpg) fixed;
+	background:#000 url(https://orteil.dashnet.org/cookieclicker/img/mapBG.jpg) fixed;
 	display:none;
 }
 .row.onMinigame .rowCanvas,.row.onMinigame .onlyOnCanvas{display:none;}
@@ -2065,7 +2065,7 @@ from {top:20px;opacity:0;}
 	padding:8px;
 	font-size:12px;
 	line-height:125%;
-	background:url(img/infoBG.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/infoBG.png);
 	color:#666;
 	z-index:100000;
 }
@@ -2076,7 +2076,7 @@ from {top:20px;opacity:0;}
 	position:absolute;
 	right:-16px;
 	top:0px;
-	background:url(img/infoBGfade.png) repeat-y;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/infoBGfade.png) repeat-y;
 	display:block;
 	content:'';
 }
@@ -2120,7 +2120,7 @@ from {top:20px;opacity:0;}
 {
 	display:block;
 	height:64px;
-	background:url(img/blackGradientSmallTop.png) repeat-x top;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/blackGradientSmallTop.png) repeat-x top;
 	content:'';
 	pointer-events:none;
 	position:absolute;
@@ -2132,7 +2132,7 @@ from {top:20px;opacity:0;}
 {
 	position:relative;
 	width:284px;
-	background:url(img/blackGradientSmallTop.png) repeat-x top;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/blackGradientSmallTop.png) repeat-x top;
 }
 #buildingsTitle
 {
@@ -2144,8 +2144,8 @@ from {top:20px;opacity:0;}
 	width:300px;
 	position:relative;
 	overflow-y:hidden;
-	background:url(img/panelHorizontal.png?v=2) repeat-x top;
-	background:url(img/panelGradientLeft.png) no-repeat top left,url(img/panelGradientRight.png) no-repeat top right,url(img/panelHorizontal.png?v=2) repeat-x;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/panelHorizontal.png?v=2) repeat-x top;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/panelGradientLeft.png) no-repeat top left,url(https://orteil.dashnet.org/cookieclicker/img/panelGradientRight.png) no-repeat top right,url(https://orteil.dashnet.org/cookieclicker/img/panelHorizontal.png?v=2) repeat-x;
 	padding-top:16px;
 }
 .storeSection:hover
@@ -2274,7 +2274,7 @@ from {top:20px;opacity:0;}
 	width:60px;
 	height:60px;
 	display:block;
-	background:url(img/upgradeFrame.png?v=2);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/upgradeFrame.png?v=2);
 	background-position:0px 0px;
 	z-index:10;
 }
@@ -2298,8 +2298,8 @@ from {top:20px;opacity:0;}
 	width:96px;
 	height:96px;
 	display:block;
-	//background:url(img/upgradeHighlight.png);
-	background:url(img/upgradeHighlight.jpg);
+	//background:url(https://orteil.dashnet.org/cookieclicker/img/upgradeHighlight.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/upgradeHighlight.jpg);
 	mix-blend-mode:screen;
 	z-index:100;
 	pointer-events:none;
@@ -2316,7 +2316,7 @@ from {top:20px;opacity:0;}
 	width:12px;
 	height:12px;
 	display:block;
-	background:url(img/upgradeSelector.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/upgradeSelector.png);
 	z-index:20;
 }
 
@@ -2332,7 +2332,7 @@ from {top:20px;opacity:0;}
 	top:0px;
 	width:48px;
 	height:48px;
-	background:url(img/pieFill.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/pieFill.png);
 	/*background-size:864px 384px;*/
 	/*background-size:864px 384px;*/
 	z-index:1000;
@@ -2346,7 +2346,7 @@ from {top:20px;opacity:0;}
 	top:-20px;
 	width:88px;
 	height:88px;
-	background-image:url(img/ascendSlot.png);
+	background-image:url(https://orteil.dashnet.org/cookieclicker/img/ascendSlot.png);
 	background-position:88px 0px;
 }
 /*.crate.heavenly:after
@@ -2375,7 +2375,7 @@ from {top:20px;opacity:0;}
 }
 .icon,.crate,.usesIcon
 {
-	/*background-image:url(img/icons.png?v=20);*/
+	/*background-image:url(https://orteil.dashnet.org/cookieclicker/img/icons.png?v=20);*/
 }
 .icon,.crate,.shadowFilter
 {
@@ -2435,8 +2435,8 @@ from {top:20px;opacity:0;}
 }
 .parentLink
 {
-	/*background:url(img/linkPulse.png);*/
-	background:url(img/linkPulse.gif);
+	/*background:url(https://orteil.dashnet.org/cookieclicker/img/linkPulse.png);*/
+	background:url(https://orteil.dashnet.org/cookieclicker/img/linkPulse.gif);
 	width:0px;
 	height:8px;
 	position:absolute;
@@ -2470,7 +2470,7 @@ from {background-position:0px 0px;}
 	height:64px;
 	cursor:pointer;
 	opacity:0.6;
-	background:url(img/storeTile.jpg);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/storeTile.jpg);
 	position:relative;
 	-webkit-transition: opacity 0.25s ease-out, margin-bottom 0.1s ease-out;
 	-moz-transition: opacity 0.25s ease-out, margin-bottom 0.1s ease-out;
@@ -2664,7 +2664,7 @@ from {background-position:0px 0px;}
 	position:absolute;
 	right:8px;
 	bottom:0px;
-	background:url(img/levelUp.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/levelUp.png);
 	width:33px;
 	height:19px;
 	opacity:0.75;
@@ -2684,7 +2684,7 @@ from {background-position:0px 0px;}
 .storePre
 {
 	background:#999;
-	background:url(img/darkNoise.jpg);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 	box-shadow:0px 0px 4px #000 inset;
 	width:300px;
 	padding:4px 0px;
@@ -2780,14 +2780,14 @@ from {background-position:0px 0px;}
 {
 	width:96px;
 	height:96px;
-	background:url(img/goldCookie.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/goldCookie.png);
 }
 
 .seasonPopup
 {
 	width:256px;
 	height:256px;
-	background:url(img/goldCookie.png) center center no-repeat;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/goldCookie.png) center center no-repeat;
 }
 .goldenCookie:hover,.seasonPopup:hover
 {
@@ -2799,7 +2799,7 @@ from {background-position:0px 0px;}
 {
 	width:128px;
 	height:128px;
-	background:url(img/sparkles.jpg);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/sparkles.jpg);
 	position:absolute;
 	z-index:10000000000;
 	display:none;
@@ -2872,12 +2872,12 @@ from {background-position:0px 0px;}
 }
 #prompt h3:before,.prompt h3:before,.winged:before
 {
-	background:url(img/featherLeft.png) no-repeat;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/featherLeft.png) no-repeat;
 	left:-39px;
 }
 #prompt h3:after,.prompt h3:after,.winged:after
 {
-	background:url(img/featherRight.png) no-repeat;
+	background:url(https://orteil.dashnet.org/cookieclicker/img/featherRight.png) no-repeat;
 	right:-39px;
 }
 #prompt textarea,#prompt input
@@ -2963,9 +2963,9 @@ p
 {opacity:0;}
 #game.ascendIntro,#ascend
 {
-	/*background:url(img/starbg.jpg);
+	/*background:url(https://orteil.dashnet.org/cookieclicker/img/starbg.jpg);
 	background-size:1024px 1024px;*/
-	/*background:url(img/starbg.jpg),url(img/starbg.jpg);
+	/*background:url(https://orteil.dashnet.org/cookieclicker/img/starbg.jpg),url(https://orteil.dashnet.org/cookieclicker/img/starbg.jpg);
 	background-size:1024px 1024px,2048px 2048px;
 	background-blend-mode:hard-light;*/
 }
@@ -2993,7 +2993,7 @@ p
 	top:0px;
 	width:100%;
 	height:100%;
-	background:url(img/shadedBorders.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/shadedBorders.png);
 	background-size:100% 100%;
 }
 #ascendZoomable
@@ -3060,7 +3060,7 @@ p
 
 #ascendBox
 {
-	background:url(img/ascendBox.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/ascendBox.png);
 	width:344px;
 	height:162px;
 	position:absolute;
@@ -3077,7 +3077,7 @@ p
 
 #ascendInfo
 {
-	background:url(img/ascendInfo.png);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/ascendInfo.png);
 	width:308px;
 	height:94px;
 	position:absolute;
@@ -3359,7 +3359,7 @@ NEW AD DISPLAY
 	right:0px;
 	overflow-x:hidden;
 	width:160px;
-	background:url(img/darkNoise.jpg);
+	background:url(https://orteil.dashnet.org/cookieclicker/img/darkNoise.jpg);
 }
 .separatorRight
 {
