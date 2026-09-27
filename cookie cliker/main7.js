@@ -170,7 +170,7 @@ var ajax=function(url,callback)
 }
 
 var DataDir='';//'//orteil.dashnet.org/data/';
-DataDir=window.location.origin+'/data/';
+DataDir='https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/';
 
 var getJson=function(url,callback,error)
 {
@@ -9109,7 +9109,7 @@ Game.Launch=function()
 			Game.UnlockTiered(this);
 			if (this.amount>=Game.SpecialGrandmaUnlock && Game.Objects['Grandma'].amount>0) Game.Unlock(this.grandma.name);
 		});
-		Game.last.minigameUrl='minigameGarden.js';
+		Game.last.minigameUrl='https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/minigameGarden.js';
 		Game.last.minigameName=loc("Garden");
 		
 		new Game.Object('Mine','mine|mines|mined|[X] mile deeper|[X] miles deeper','Mines out cookie dough and chocolate chips.',4,3,{base:'mine',xV:16,yV:16,w:64,rows:2,x:0,y:24},10000,function(me){
@@ -9143,7 +9143,7 @@ Game.Launch=function()
 			Game.UnlockTiered(this);
 			if (this.amount>=Game.SpecialGrandmaUnlock && Game.Objects['Grandma'].amount>0) Game.Unlock(this.grandma.name);
 		});
-		Game.last.minigameUrl='minigameMarket.js';
+		Game.last.minigameUrl='https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/minigameMarket.js';
 		Game.last.minigameName=loc("Stock Market");
 		
 		new Game.Object('Temple','temple|temples|discovered|[X] sacred artifact retrieved|[X] sacred artifacts retrieved','Full of precious, ancient chocolate.',7,16,{base:'temple',xV:8,yV:4,w:72,rows:2,x:0,y:-5},0,function(me){
@@ -9155,7 +9155,7 @@ Game.Launch=function()
 			Game.UnlockTiered(this);
 			if (this.amount>=Game.SpecialGrandmaUnlock && Game.Objects['Grandma'].amount>0) Game.Unlock(this.grandma.name);
 		});
-		Game.last.minigameUrl='minigamePantheon.js';
+		Game.last.minigameUrl='https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/minigamePantheon.js';
 		Game.last.minigameName=loc("Pantheon");
 		
 		new Game.Object('Wizard tower','wizard tower|wizard towers|summoned|Incantations have [X] more syllable|Incantations have [X] more syllables','Summons cookies with magic spells.',8,17,{base:'wizardtower',xV:16,yV:16,w:48,rows:2,x:0,y:20},0,function(me){
@@ -9168,7 +9168,7 @@ Game.Launch=function()
 			if (this.amount>=Game.SpecialGrandmaUnlock && Game.Objects['Grandma'].amount>0) Game.Unlock(this.grandma.name);
 		});
 		Game.last.displayName='<span style="font-size:90%;letter-spacing:-1px;position:relative;bottom:2px;">Wizard tower</span>';//shrink
-		Game.last.minigameUrl='minigameGrimoire.js';
+		Game.last.minigameUrl='https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/minigameGrimoire.js';
 		Game.last.minigameName=loc("Grimoire");
 		
 		new Game.Object('Shipment','shipment|shipments|shipped|[X] galaxy fully explored|[X] galaxies fully explored','Brings in fresh cookies from the cookie planet.',9,5,{base:'shipment',xV:16,yV:16,w:64,rows:1,x:0,y:0},40000,function(me){
