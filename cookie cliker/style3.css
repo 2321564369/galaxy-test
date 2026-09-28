@@ -23,6 +23,12 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }*/
+@font-face {
+    font-family: "Merriweather";
+    src: url("https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/normal.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+}
 div,span,h1,h2,h3,h4,h5,h6,p{margin:0;padding:0;}
 body {
 	line-height: 1;
