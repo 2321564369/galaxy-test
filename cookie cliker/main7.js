@@ -1337,7 +1337,7 @@ if (App) Game.local=true;
 Game.resPath='';
 if (!App && !Game.local)
 {
-	Game.resPath = 'https://cdn.dashnet.org/cookieclicker/';
+	Game.resPath = 'https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/';
 }
 
 
