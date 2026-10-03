@@ -911,6 +911,11 @@ if (
 })();
 	
 </script>
-	
+		<script>
+(function wait(){
+  if (window.Game && Game.ready) Game.LoadMod('https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/cookie%20cliker/numbers2.js');
+  else setTimeout(wait, 500);
+})();
+</script>
 </body>
 </html>
