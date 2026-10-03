@@ -1,38 +1,27 @@
 // Golden Timer — minimal Cookie Monster-style mod.
 // Features (each with its own on/off switch in Options):
 //   1. Golden cookie timer bar
-//   2. "No e+" — shows huge numbers as "1.75 undecillion" instead of "1.75e+35"
+//   2. Full numbers — shows every digit (1,750,000,...) instead of 1.75e+35 or "1.75 undecillion"
 
 var GoldenTimerMod = {
   timerOn: true,
   noEOn: true,
   origBeautify: null,
 
-  // ---------- number names ----------
-  _small: ['million','billion','trillion','quadrillion','quintillion','sextillion','septillion','octillion','nonillion'],
-  _units: ['','un','duo','tre','quattuor','quin','sex','septen','octo','novem'],
-  _tens:  ['','dec','vigint','trigint','quadragint','quinquagint','sexagint','septuagint','octogint','nonagint'],
-
-  // n = 1 -> million, 2 -> billion, ... 10 -> decillion ...
-  nameFor: function (n) {
-    var M = GoldenTimerMod;
-    if (n < 1 || n > 99) return null;
-    if (n < 10) return M._small[n - 1];
-    return M._units[n % 10] + M._tens[Math.floor(n / 10)] + 'illion';
-  },
-
-  // turns 1.75e+35 into "1.75 undecillion"
-  bigFormat: function (val) {
-    var M = GoldenTimerMod;
-    var neg = val < 0, a = Math.abs(val);
-    if (!isFinite(a) || a < 1e6) return null;
-    var idx = Math.floor(Math.log(a) / Math.LN10 / 3);       // groups of 1000
-    var m = a / Math.pow(10, idx * 3);
-    var r = Math.round(m * 1000) / 1000;
-    if (r >= 1000) { r = 1; idx++; }
-    var name = M.nameFor(idx - 1);
-    if (!name) return null;                                    // past centillion -> leave as is
-    return (neg ? '-' : '') + r + ' ' + name;
+  // ---------- full digits ----------
+  // 1.75e+35 -> 175,000,000,000,000,000,000,000,000,000,000,000
+  fullDigits: function (val) {
+    var neg = val < 0, a = Math.abs(val), s;
+    if (a < 1e21) {
+      s = Math.floor(a).toString();
+    } else {
+      var parts = a.toExponential().split('e');
+      var digits = parts[0].replace('.', '');
+      var exp = parseInt(parts[1], 10);
+      while (digits.length < exp + 1) digits += '0';
+      s = digits;
+    }
+    return (neg ? '-' : '') + s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   },
 
   init: function () {
@@ -65,9 +54,8 @@ var GoldenTimerMod = {
     M.origBeautify = window.Beautify || Game.Beautify;
     var wrapped = function (val, floats) {
       var out = M.origBeautify.apply(this, arguments);
-      if (M.noEOn && typeof out === 'string' && out.indexOf('e+') !== -1) {
-        var fixed = M.bigFormat(val);
-        if (fixed) return fixed;
+      if (M.noEOn && typeof val === 'number' && isFinite(val) && Math.abs(val) >= 1e6) {
+        return M.fullDigits(val);
       }
       return out;
     };
@@ -80,7 +68,7 @@ var GoldenTimerMod = {
       d.className = 'listing';
       d.innerHTML =
         M.optionHtml('timerOn', 'Golden cookie timer', 'Shows when the next golden cookie can appear and how long the current one lasts.') +
-        M.optionHtml('noEOn', 'Replace e+ notation', 'Shows huge numbers as "1.75 undecillion" instead of "1.75e+35".');
+        M.optionHtml('noEOn', 'Full numbers (no e+, no names)', 'Always shows every digit with commas, ignoring the Short numbers setting.');
       var sub = l('menu').childNodes[2];
       sub.insertBefore(d, sub.childNodes[sub.childNodes.length - 1]);
     });
