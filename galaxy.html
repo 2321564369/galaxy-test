@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Galaxy · Unblocked Hub</title>
+<title>Galaxy · Educational Hub</title>
 <script src="https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/ruffle/ruffle.js"></script>
 <style>
 /* ---------- ABSTRACT COSMIC RESET ---------- */
@@ -134,7 +134,7 @@ header p {
   margin: 0.8rem auto;
   text-align: center;
 }
-#gameCounter {
+#lessonCounter {
   background: rgba(0,0,0,0.5);
   backdrop-filter: blur(8px);
   padding: 0.4rem 1.6rem;
@@ -177,19 +177,19 @@ header p {
    comes from recursively partitioning the whole canvas into rectangles
    (like slicing a cake) — this guarantees 100% coverage with zero gaps,
    while letting both width AND height vary per tile, randomized fresh
-   on every page load. See splitLayout() / renderGames() in the script. */
-.games-grid {
+   on every page load. See splitLayout() / renderlessons() in the script. */
+.lessons-grid {
   position: relative;
   width: 100%;
 }
 
-.game-tile {
+.lesson-tile {
   position: absolute;
   padding: 0.4rem;
   box-sizing: border-box;
 }
 
-.game-tile-inner {
+.lesson-tile-inner {
   position: relative;
   width: 100%;
   height: 100%;
@@ -203,15 +203,15 @@ header p {
   transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-.game-tile:hover {
+.lesson-tile:hover {
   z-index: 20;
 }
-.game-tile:hover .game-tile-inner {
+.lesson-tile:hover .lesson-tile-inner {
   transform: scale(1.045);
   border-color: var(--accent);
   box-shadow: 0 24px 40px -8px black, 0 0 0 2px rgba(192,132,252,0.4);
 }
-.game-tile:hover .tile-thumb {
+.lesson-tile:hover .tile-thumb {
   transform: scale(1.08);
 }
 
@@ -380,14 +380,14 @@ header p {
 
 <header>
   <h1>Galaxy</h1>
-  <p>NOT Free, Unblocked, Kinda Updated.</p>
+  <p>NOT Free, Educational, Kinda Updated.</p>
   <p class="version">v 1.8.5</p>
   <div class="countdown-wrapper">
     <div class="countdown-label">Time till freedom(T1):</div>
     <div class="seven-segment" id="digitalCountdown">00:00:00:00</div>
   </div>
   <div class="counter-wrap">
-    <div id="gameCounter">🎮 0 Games Available</div>
+    <div id="lessonCounter">🎮 0 lessons Available</div>
   </div>
   <div class="cloak-wrapper">
     <button id="cloakBtn">Open in about:blank</button>
@@ -395,11 +395,11 @@ header p {
 </header>
 
 <div class="control-panel">
-  <input type="text" id="searchGames" class="search-box" placeholder="🔍 Search game...">
+  <input type="text" id="searchlessons" class="search-box" placeholder="🔍 Search lesson...">
 </div>
 
 <div class="container">
-  <div id="gamesGrid" class="games-grid"></div>
+  <div id="lessonsGrid" class="lessons-grid"></div>
 </div>
 
 <footer class="site-footer">
@@ -413,7 +413,7 @@ header p {
     </div>
     <div class="footer-right">
       <span>© 2026</span><br>
-      <span>All games belong to their creators</span>
+      <span>All lessons belong to their creators</span>
     </div>
   </div>
 </footer>
@@ -423,56 +423,54 @@ header p {
 const BACKGROUND_IMAGE_URL = "https://github.com/2321564369/galaxy-test/blob/main/81af94cb-74da-47c1-9dc1-7bfd46fd586f.jpg?raw=true";
 const RICKROLL_URL = "https://cdn.jsdelivr.net/gh/2321564369/rickroll@main/Rick%20Astley%20-%20Never%20Gonna%20Give%20You%20Up%20(Official%20Video)%20(4K%20Remaster)%20-%20Rick%20Astley%20(1080p%2C%20h264%2C%20youtube)%20(2).mp4";
 
-// ========== GAME DATABASE ==========
+// ========== lesson DATABASE ==========
 const FILE_SYSTEM = [
   {
     folder: [
-      { title: "Cookie Clicker", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/cookie%20cliker/cok.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzmP53ErJrSbT72ndRYaiOnrj2-71v0ed2Q&s", id: "GameurlCookie" },
-      { title: "Music", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/g-music2/refs/heads/main/index.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoBhWLpSRnkjxJXHl2sTV8i0kNVDejmoS40w&s", id: "music" },
-      { title: "Half-Life", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/halflife.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxKkA393D99Kic5bQFzROXUHLYTiNWKZ592b06nQWVPtby77BF460y3bWE:https://m.media-amazon.com/images/I/91FVVPFykKL._AC_UF894,1000_QL80_.jpg&s=10", id: "hl" },
-      { title: "99 Balls", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/99BALZ.html", image: "https://play-lh.googleusercontent.com/u1Bz9XfoUWz4H4c4KKDME5qcowu7-s3Z6l7q4K-trJ2U878CPLUuVBupu6SYMZxkfdpHpm6X488YpmbtdYTcx78=w240-h480-rw", id: "balz" },
-      { title: "Tomb of the Mask", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/tomb.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuS_NuJfok_yPFoHBicFhHCw_nuxdY7Zw7iWXZ7bAi3I9H-WVg:https://play-lh.googleusercontent.com/TW8BAesuyZi4_7X73cdO4TFWVAoqA7P9qhWt7-EzhkVlR6-iEx65AAiuFSYnaGqU6AmG5LmQqKCCbbd3OlFR&s", id: "tomb" },
-      { title: "Slope", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/slope.html", image: "https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs", id: "slop" },
-      { title: "Hollow Knight", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/hollowknight.html", image: "https://upload.wikimedia.org/wikipedia/en/d/de/Hollow_Knight_2026_cover_art.jpg", id: "hollow" },
-      { title: "Buckshot Roulete", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/bucksoth.html", image: "https://i.ytimg.com/vi/zaWPFbX7Q8A/sddefault.jpg", id: "bukshot" },
-      { title: "Block Blast", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/blockblast/index.html", base: "https://games.engineering.com/blockblastgame/", image: "https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E", id: "blockblast" },
-      { title: "Bitlife", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/bitlife.html", image: "https://play-lh.googleusercontent.com/fUM-UyywXxjC8soxAZdIlxJrlRRXmql8wkE426SHzft4lJycSKVd2jCYQQX1BEG9Xw", id: "bitlife" },
-      { title: "Balatro", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/balatro.html", image: "https://faang-cse391-25wi-b0b5d120fce8ff214d99c92141153a1ec83cf32798b76.pages.cs.washington.edu/assets/images/balatro.jpg", id: "balatro" },
+      { title: "Cookie Clicker", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/cookie%20cliker/cok.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNzmP53ErJrSbT72ndRYaiOnrj2-71v0ed2Q&s", id: "lessonurlCookie" },
+      { title: "Music", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/g-music2/refs/heads/main/index.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoBhWLpSRnkjxJXHl2sTV8i0kNVDejmoS40w&s", id: "music" },
+      { title: "Half-Life", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/halflife.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxKkA393D99Kic5bQFzROXUHLYTiNWKZ592b06nQWVPtby77BF460y3bWE:https://m.media-amazon.com/images/I/91FVVPFykKL._AC_UF894,1000_QL80_.jpg&s=10", id: "hl" },
+      { title: "99 Balls", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/99BALZ.html", image: "https://play-lh.googleusercontent.com/u1Bz9XfoUWz4H4c4KKDME5qcowu7-s3Z6l7q4K-trJ2U878CPLUuVBupu6SYMZxkfdpHpm6X488YpmbtdYTcx78=w240-h480-rw", id: "balz" },
+      { title: "Tomb of the Mask", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/tomb.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuS_NuJfok_yPFoHBicFhHCw_nuxdY7Zw7iWXZ7bAi3I9H-WVg:https://play-lh.googleusercontent.com/TW8BAesuyZi4_7X73cdO4TFWVAoqA7P9qhWt7-EzhkVlR6-iEx65AAiuFSYnaGqU6AmG5LmQqKCCbbd3OlFR&s", id: "tomb" },
+      { title: "Slope", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/slope.html", image: "https://play-lh.googleusercontent.com/uJn2i9h7KxYQarC_c3K4qH6o7gLtflFnhD_dN14MNkzHJ1NeNFzCL69jpB5mT0vCoQs", id: "slop" },
+      { title: "Hollow Knight", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/hollowknight.html", image: "https://upload.wikimedia.org/wikipedia/en/d/de/Hollow_Knight_2026_cover_art.jpg", id: "hollow" },
+      { title: "Buckshot Roulete", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/bucksoth.html", image: "https://i.ytimg.com/vi/zaWPFbX7Q8A/sddefault.jpg", id: "bukshot" },
+      { title: "Block Blast", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/blockblast/index.html", base: "https://lessons.engineering.com/blockblastlesson/", image: "https://play-lh.googleusercontent.com/R0qgNDYYHbRhw6JFsdEbDMqONplEvJx0m0W9wzYVvY3eNF1c2rfBWYjQxW0sLEzFe1E", id: "blockblast" },
+      { title: "Bitlife", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/bitlife.html", image: "https://play-lh.googleusercontent.com/fUM-UyywXxjC8soxAZdIlxJrlRRXmql8wkE426SHzft4lJycSKVd2jCYQQX1BEG9Xw", id: "bitlife" },
+      { title: "Balatro", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/balatro.html", image: "https://faang-cse391-25wi-b0b5d120fce8ff214d99c92141153a1ec83cf32798b76.pages.cs.washington.edu/assets/images/balatro.jpg", id: "balatro" },
       { title: "The Binding Of Isaac: Wrath Of The Lamb", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/RobiFet/CMinterview@a4017231eca9f2173ad7ec0e63b01e4786b4ad6b/web/src/BiWrath.swf", image: "https://m.media-amazon.com/images/M/MV5BOWY5M2EyYTgtZGE3MC00ZjgyLTk3NWEtMGRiNTAwYmRkMWRlXkEyXkFqcGc@._V1_.jpg", id: "BIW" },
-      { title: "Slow Roads", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbzqDA2SnuVZ3DRelxxbUxSV9Z1RJz_gQfDRx06WUpgppWgrdDEErtZ1Lev9O6j2w9ioBQ/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxV3JrbIR8D1Z8P7jI4UsXshCxnzAntjArfg&s", id: "SlowRoads" },
-      { title: "Paper.io 2", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/cach-ehm/papper@main/paper-io-2.xml", image: "https://play-lh.googleusercontent.com/SWTpYqsX9RN2YirCDnAjQ8qsbgn4UrHkRRGsjwuASnHMVqssIvWKzq82mP82y_ffBSE", id: "Paperio2" },
-      { title: "Basket Random", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/ishere@main/basrand.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM9vz6EnZ_cuKpfzDXOpbhS5xqGuzP2UIdHQ&s", id: "basketrand" },
-      { title: "Soccer Random", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/awaiblecomponent/ss65@main/soc.xml", image: "https://play-lh.googleusercontent.com/G1PIlb6HWKSaDre0XpUcmKGps9T4iamsSlwrogB3EJzYv4bz0M2am4D17MtGzndaOOU", id: "soccerrand" },
-      { title: "Survival Race", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/organ-nizator/ohh@main/sur.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHlcBjYjoBIzGV2geb6fCBpUMXIsSV1uIPrg&s", id: "surrace" },
-      { title: "Pico-8", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbxOVZK3wbs-BQK-bc9zgzX3eC8X-6r-6hnO-Ye59dQJ1BcOeUsfiVUDKD40oWFzyeaeaw/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNmshUSHMXXe_iI4z8PisDUhUaRGfD1R-gEA&s", id: "pico8" },
-      { title: "FootBall Bros", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/classrooms-1/ohanganamaranes@main/tara.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRejzLiTOObgVmmZ-6OpFH6CWmoiCcWVQAAvA&s", id: "footbros" },
-      { title: "PolyTrack", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbzuhv-wKflC3QgCI_d8xsy90ngRlqgKj-qfICMuzhimGuYwWXFI5tPWwwfjrYk-biJu/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTte4SgbR4TxuCyscMmjBTxUkOuuPfTKPNaww&s", id: "poltrak" },
-      { title: "Cluster Rush", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbw6e8fflbfydV7kom5id09nKaM6ix0hLlXHbs3XHOnxzrndUgPtHUHENrwKomI2Hpk3/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2O6z48xNLkY0rTHVy0VL66Woh9W9zZq1l9Q&s", id: "clusterrush" },
-      { title: "Brawl Stars", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/zort@main/1yz.xml", image: "https://i1.sndcdn.com/artworks-000636775027-qr4yrz-t500x500.jpg", id: "brwalers" },
-      { title: "Geometry Dash", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbydNb9Y8FIM3D0vcweKtYCYbjJcSXghedO6MN0aWbP5qIwamjjSkBDirvuMHR_6sc4/exec", image: "https://i1.sndcdn.com/artworks-TLJ6E8sjNKHCNZ8y-xkXuvg-t500x500.jpg", id: "gdash" },
-      { title: "Clash Royale", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/ertemr33/vahvah@main/1.xml", image: "https://play-lh.googleusercontent.com/gnSC6s8-6Tjc4uhvDW7nfrSJxpbhllzYhgX8y374N1LYvWBStn2YhozS9XXaz1T_Pi2q", id: "clashroyl" },
-      { title: "Drift Boss", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbwAOi2tPbjzeWDkigfZMIPEGubYxz2la_qjxJyydNZyjwgbqsv9mv05g7tdmLHdvdaw/exec", image: "https://play-lh.googleusercontent.com/Zu0LoruCtIG45qs6iffZkWqGTuzEWflNoH8TNRtfMJ2NGgJxQGfw8kqSrxKtXGjPqeqFLNsnubW6EnPUJvOi8g", id: "drifbos" },
-      { title: "FNAF 2", type: "game_url", action: "launchURLGame", file: "https://storage.googleapis.com/freezenova/all/2024/more2/five-nights-at-freddys-2/pre-gg.html", image: "https://m.media-amazon.com/images/I/81HBpJd2h8L.png", id: "fnaf2" },
-      { title: "Fnaf", type: "game_url", action: "launchURLGame", file: "https://storage.googleapis.com/freezenova/all/2024/more2/five-nights-at-freddys/pre-gg.html", image: "https://play-lh.googleusercontent.com/myJ2kwywsCRglKkZuHBq6Aku9PX7HB75v-8KbnTK9JOPU6z0hpD9xtvjiTGqrn-e4eI", id: "fnaf" },
+      { title: "Slow Roads", type: "lesson_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbzqDA2SnuVZ3DRelxxbUxSV9Z1RJz_gQfDRx06WUpgppWgrdDEErtZ1Lev9O6j2w9ioBQ/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxV3JrbIR8D1Z8P7jI4UsXshCxnzAntjArfg&s", id: "SlowRoads" },
+      { title: "Paper.io 2", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/cach-ehm/papper@main/paper-io-2.xml", image: "https://play-lh.googleusercontent.com/SWTpYqsX9RN2YirCDnAjQ8qsbgn4UrHkRRGsjwuASnHMVqssIvWKzq82mP82y_ffBSE", id: "Paperio2" },
+      { title: "Basket Random", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/ishere@main/basrand.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM9vz6EnZ_cuKpfzDXOpbhS5xqGuzP2UIdHQ&s", id: "basketrand" },
+      { title: "Soccer Random", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/awaiblecomponent/ss65@main/soc.xml", image: "https://play-lh.googleusercontent.com/G1PIlb6HWKSaDre0XpUcmKGps9T4iamsSlwrogB3EJzYv4bz0M2am4D17MtGzndaOOU", id: "soccerrand" },
+      { title: "Survival Race", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/organ-nizator/ohh@main/sur.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHlcBjYjoBIzGV2geb6fCBpUMXIsSV1uIPrg&s", id: "surrace" },
+      { title: "Pico-8", type: "lesson_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbxOVZK3wbs-BQK-bc9zgzX3eC8X-6r-6hnO-Ye59dQJ1BcOeUsfiVUDKD40oWFzyeaeaw/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNmshUSHMXXe_iI4z8PisDUhUaRGfD1R-gEA&s", id: "pico8" },
+      { title: "FootBall Bros", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/classrooms-1/ohanganamaranes@main/tara.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRejzLiTOObgVmmZ-6OpFH6CWmoiCcWVQAAvA&s", id: "footbros" },
+      { title: "PolyTrack", type: "lesson_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbzuhv-wKflC3QgCI_d8xsy90ngRlqgKj-qfICMuzhimGuYwWXFI5tPWwwfjrYk-biJu/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTte4SgbR4TxuCyscMmjBTxUkOuuPfTKPNaww&s", id: "poltrak" },
+      { title: "Cluster Rush", type: "lesson_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbw6e8fflbfydV7kom5id09nKaM6ix0hLlXHbs3XHOnxzrndUgPtHUHENrwKomI2Hpk3/exec", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2O6z48xNLkY0rTHVy0VL66Woh9W9zZq1l9Q&s", id: "clusterrush" },
+      { title: "Brawl Stars", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/ragdoi-archers/zort@main/1yz.xml", image: "https://i1.sndcdn.com/artworks-000636775027-qr4yrz-t500x500.jpg", id: "brwalers" },
+      { title: "Geometry Dash", type: "lesson_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbydNb9Y8FIM3D0vcweKtYCYbjJcSXghedO6MN0aWbP5qIwamjjSkBDirvuMHR_6sc4/exec", image: "https://i1.sndcdn.com/artworks-TLJ6E8sjNKHCNZ8y-xkXuvg-t500x500.jpg", id: "gdash" },
+      { title: "Clash Royale", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/ertemr33/vahvah@main/1.xml", image: "https://play-lh.googleusercontent.com/gnSC6s8-6Tjc4uhvDW7nfrSJxpbhllzYhgX8y374N1LYvWBStn2YhozS9XXaz1T_Pi2q", id: "clashroyl" },
+      { title: "Drift Boss", type: "lesson_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbwAOi2tPbjzeWDkigfZMIPEGubYxz2la_qjxJyydNZyjwgbqsv9mv05g7tdmLHdvdaw/exec", image: "https://play-lh.googleusercontent.com/Zu0LoruCtIG45qs6iffZkWqGTuzEWflNoH8TNRtfMJ2NGgJxQGfw8kqSrxKtXGjPqeqFLNsnubW6EnPUJvOi8g", id: "drifbos" },
       { title: "Portal Flash", type: "file_url", action: "launchSWF", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/main/portal-the-flash-version%20(2).swf", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSA0IcNCQbbGLgV2P61zDa4Lj1baSTHtrSYRQ&s", id: "portal-flash" },
       { title: "Impossible Quiz", type: "file_url", action: "launchSWF", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/main/impossible_quiz1%20(1).swf", image: "https://www.metacritic.com/a/img/catalog/provider/6/12/6-1-159569-52.jpg", id: "impquz" },
-      { title: "Worlds Hardest Game", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/filesmabex/z3x4@main/wordes-hardest-gae.swf", image: "https://play-lh.googleusercontent.com/WoyHFBEgzmhlM0VCsmH3zPqPFquIYZHQLCbcpVOBKgY4ku7Xb3XIB7rMWwZ6oLsAACA", id: "woldhg1" },
+      { title: "Worlds Hardest lesson", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/filesmabex/z3x4@main/wordes-hardest-gae.swf", image: "https://play-lh.googleusercontent.com/WoyHFBEgzmhlM0VCsmH3zPqPFquIYZHQLCbcpVOBKgY4ku7Xb3XIB7rMWwZ6oLsAACA", id: "woldhg1" },
       { title: "Bloxors", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/illusionTBA/React-Ruffle@f37551ff7c55cc61002445a0f1e334742f6832e4/public/swf/Bloxors.swf", image: "https://kotaku.com/igdb/image/upload/t_cover_big/co7d3c.jpg", id: "bloxor" },
-      { title: "Stick War", type: "game_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbw6ZtLTvS_AkT86pJbNZK61tdfDTo_tio_QIXcEZfx8QPlr1ty-Sm0bMSbUyJYc6rGRRA/exec", image: "https://imgs.crazygames.com/auto-covers/stick-war_1x1.jpg?format=auto&quality=100&metadata=none&width=1200", id: "stkwar" },
-      { title: "SandBloxels", type: "game_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/sandbloxels.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCo1suWbjCP-5FA5u2lAFeowEX3oNqjLpXGYzwd5faHMNN67E:https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3664820/642b7904abc85160b4d64e3aad815d3ff3856643/ss_642b7904abc85160b4d64e3aad815d3ff3856643.1920x1080.jpg%3Ft%3D1772994627&s", id: "sand" },
-      { title: "Minecraft 1.8", type: "file_url", action: "launchLocalGame", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/eaglercraft18.html", image: "https://assets-prd.ignimgs.com/2021/12/14/minecraft-1639513933156.jpg?crop=1%3A1%2Csmart&width=348&height=348&format=jpg&auto=webp&quality=80", id: "mc1.8" },
-      { title: "2048", type: "file_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbwgo9fzGlgbzqpBKfXrw7gGGvg8cYPPL-ycgd_y9jKePSDVnk_zr_keYn8v-0eUJQd5/exec", image: "https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg", id: "2048" },
-      { title: "Getting over it Scratch", type: "file_url", action: "launchURLGame", file: "https://scratch.mit.edu/projects/389464290/embed", image: "https://store-images.s-microsoft.com/image/apps.24904.14077711198622072.87de44b8-a3b1-4457-9a12-07ae7d1d2d1d.ef7241f7-4fd0-472a-806a-eb1ad2ed6960?h=253", id: "getover" },
+      { title: "Stick War", type: "lesson_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbw6ZtLTvS_AkT86pJbNZK61tdfDTo_tio_QIXcEZfx8QPlr1ty-Sm0bMSbUyJYc6rGRRA/exec", image: "https://imgs.crazylessons.com/auto-covers/stick-war_1x1.jpg?format=auto&quality=100&metadata=none&width=1200", id: "stkwar" },
+      { title: "SandBloxels", type: "lesson_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/sandbloxels.html", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCo1suWbjCP-5FA5u2lAFeowEX3oNqjLpXGYzwd5faHMNN67E:https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3664820/642b7904abc85160b4d64e3aad815d3ff3856643/ss_642b7904abc85160b4d64e3aad815d3ff3856643.1920x1080.jpg%3Ft%3D1772994627&s", id: "sand" },
+      { title: "Minecraft 1.8", type: "file_url", action: "launchLocallesson", file: "https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/eaglercraft18.html", image: "https://assets-prd.ignimgs.com/2021/12/14/minecraft-1639513933156.jpg?crop=1%3A1%2Csmart&width=348&height=348&format=jpg&auto=webp&quality=80", id: "mc1.8" },
+      { title: "2048", type: "file_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbwgo9fzGlgbzqpBKfXrw7gGGvg8cYPPL-ycgd_y9jKePSDVnk_zr_keYn8v-0eUJQd5/exec", image: "https://upload.wikimedia.org/wikipedia/commons/1/18/2048_logo.svg", id: "2048" },
+      { title: "Getting over it Scratch", type: "file_url", action: "launchURLlesson", file: "https://scratch.mit.edu/projects/389464290/embed", image: "https://store-images.s-microsoft.com/image/apps.24904.14077711198622072.87de44b8-a3b1-4457-9a12-07ae7d1d2d1d.ef7241f7-4fd0-472a-806a-eb1ad2ed6960?h=253", id: "getover" },
       { title: "Tetris-N-Blox", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/lunasoldstuff/homework@cb988c0932d22789877a65d7a3fada7ed088cee2/nblox.swf", image: "https://play-lh.googleusercontent.com/w-lUGr-eaAwxLUl7OW5v7jLG-CE8H2Z75D6lkkm8Tro21ZLCk7fvVIjVM7ZG0u0ZLBws=w240-h480-rw", id: "tetris" },
-      { title: "Fan Made Amongus", type: "file_url", action: "launchLocalGame", file: "https://cdn.jsdelivr.net/gh/gahaden/ags@a17bbae7f756eae92fbe0d28f2812f7f42687c1b/au.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnxcwYuNqDzmEj7UNMGDPk2LJFd4Mmr-Le085OTOyPzIEY5ps:https://www.webwise.ie/wp-content/uploads/2020/12/IMG1207.jpg&s", id: "amongus" },
-      { title: "Kart Bros", type: "file_url", action: "launchURLGame", file: "https://script.google.com/macros/s/AKfycbxb8isaXXwqY7h3OqafbfonnaOEmyfyK8ZQoMvgT-HGwUSfpJoK5Aim1Ca3fvKvEqxj/exec", image: "https://store-images.s-microsoft.com/image/apps.24904.14077711198622072.87de44b8-a3b1-4457-9a12-07ae7d1d2d1d.ef7241f7-4fd0-472a-806a-eb1ad2ed6960?h=253", id: "kartbros" },
+      { title: "Fan Made Amongus", type: "file_url", action: "launchLocallesson", file: "https://cdn.jsdelivr.net/gh/gahaden/ags@a17bbae7f756eae92fbe0d28f2812f7f42687c1b/au.xml", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnxcwYuNqDzmEj7UNMGDPk2LJFd4Mmr-Le085OTOyPzIEY5ps:https://www.webwise.ie/wp-content/uploads/2020/12/IMG1207.jpg&s", id: "amongus" },
+      { title: "Kart Bros", type: "file_url", action: "launchURLlesson", file: "https://script.google.com/macros/s/AKfycbxb8isaXXwqY7h3OqafbfonnaOEmyfyK8ZQoMvgT-HGwUSfpJoK5Aim1Ca3fvKvEqxj/exec", image: "https://store-images.s-microsoft.com/image/apps.24904.14077711198622072.87de44b8-a3b1-4457-9a12-07ae7d1d2d1d.ef7241f7-4fd0-472a-806a-eb1ad2ed6960?h=253", id: "kartbros" },
       { title: "Run 3", type: "file_url", action: "launchSWF", file: "https://cdn.jsdelivr.net/gh/OctoLinkYT/totallyclasswork@2c857f3792882ad19e6f192ef4a0966cb7029658/gmes/run3/run3.swf", image: "https://m.media-amazon.com/images/I/51r+FWiIjhL._UXNaN_FMjpg_QL85_.jpg", id: "run3" }
     ]
   }
 ];
 
 // ---------- LAUNCHERS ----------
-async function launchLocalGame(url, baseUrl) {
+async function launchLocallesson(url, baseUrl) {
   const ext = url.split(".").pop().toLowerCase();
   if (ext === "xml" || ext === "html" || ext === "htm") {
     try {
@@ -484,9 +482,9 @@ async function launchLocalGame(url, baseUrl) {
       const w = window.open("about:blank", "_blank");
       if (!w) { alert("Popup blocked! Please allow popups for this site."); return; }
 
-      // Only games that explicitly pass a baseUrl (via the optional
+      // Only lessons that explicitly pass a baseUrl (via the optional
       // "base" field on their FILE_SYSTEM entry) get a <base> tag
-      // injected — every other game's fetched HTML is untouched.
+      // injected — every other lesson's fetched HTML is untouched.
       const baseTag = baseUrl ? `<base href="${baseUrl}">` : "";
 
       if (isFullHtml) {
@@ -497,24 +495,24 @@ async function launchLocalGame(url, baseUrl) {
         w.document.write(withBase);
         w.document.close();
       } else {
-        const wrappedHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">${baseTag}<title>Galaxy Game</title><style>body{margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;}*{box-sizing:border-box;}</style></head><body>${content}</body></html>`;
+        const wrappedHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8">${baseTag}<title>Galaxy lesson</title><style>body{margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;}*{box-sizing:border-box;}</style></head><body>${content}</body></html>`;
         w.document.open();
         w.document.write(wrappedHtml);
         w.document.close();
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to load game. Check URL or network.");
+      alert("Failed to load lesson. Check URL or network.");
     }
   } else {
     alert("Only .xml, .html, .htm files are supported in this launcher.");
   }
 }
 
-function launchURLGame(url) {
+function launchURLlesson(url) {
   const w = window.open("about:blank", "_blank");
   if (!w) { alert("Popup blocked! allow popups"); return; }
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Galaxy · Game</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;}iframe{border:none;width:100%;height:100%;}</style></head><body><iframe src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-fullscreen allow-modals"></iframe></body></html>`;
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Galaxy · lesson</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;}iframe{border:none;width:100%;height:100%;}</style></head><body><iframe src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups allow-fullscreen allow-modals"></iframe></body></html>`;
   w.document.open(); w.document.write(html); w.document.close();
 }
 
@@ -527,23 +525,23 @@ function launchSWF(url, title) {
 
 // ---------- RANDOM MOSAIC LAYOUT ----------
 // Generated fresh once per page load: a shuffled order + a random
-// "weight" per game (bigger weight = bigger tile). Filtering/resizing
+// "weight" per lesson (bigger weight = bigger tile). Filtering/resizing
 // reuses this same randomization so the mosaic doesn't reshuffle
 // mid-session — only a fresh page load produces a new layout.
-let GAME_ORDER = null;
-let GAME_WEIGHTS = null;
+let lesson_ORDER = null;
+let lesson_WEIGHTS = null;
 
 function initRandomLayout() {
   const all = FILE_SYSTEM[0].folder;
-  GAME_ORDER = [...all];
-  GAME_WEIGHTS = {};
-  GAME_ORDER.forEach(g => {
+  lesson_ORDER = [...all];
+  lesson_WEIGHTS = {};
+  lesson_ORDER.forEach(g => {
     const r = Math.random();
     let w;
     if (r < 0.15) w = 2.2 + Math.random() * 0.9;      // occasional big tile
     else if (r < 0.45) w = 1.3 + Math.random() * 0.5; // medium tile
     else w = 0.7 + Math.random() * 0.5;               // small tile
-    GAME_WEIGHTS[g.id] = w;
+    lesson_WEIGHTS[g.id] = w;
   });
 }
 
@@ -554,7 +552,7 @@ function initRandomLayout() {
 function splitLayout(items, x, y, w, h) {
   if (items.length === 1) return [{ item: items[0], x, y, w, h }];
 
-  const weights = items.map(it => GAME_WEIGHTS[it.id] || 1);
+  const weights = items.map(it => lesson_WEIGHTS[it.id] || 1);
   const total = weights.reduce((a, b) => a + b, 0);
 
   let cum = 0;
@@ -569,8 +567,8 @@ function splitLayout(items, x, y, w, h) {
 
   const groupA = items.slice(0, splitIndex);
   const groupB = items.slice(splitIndex);
-  const weightA = groupA.reduce((s, it) => s + (GAME_WEIGHTS[it.id] || 1), 0);
-  const weightB = groupB.reduce((s, it) => s + (GAME_WEIGHTS[it.id] || 1), 0);
+  const weightA = groupA.reduce((s, it) => s + (lesson_WEIGHTS[it.id] || 1), 0);
+  const weightB = groupB.reduce((s, it) => s + (lesson_WEIGHTS[it.id] || 1), 0);
   const ratio = weightA / (weightA + weightB);
 
   if (w >= h) {
@@ -584,27 +582,27 @@ function splitLayout(items, x, y, w, h) {
   }
 }
 
-function renderGames(filterText = "") {
-  const grid = document.getElementById("gamesGrid");
+function renderlessons(filterText = "") {
+  const grid = document.getElementById("lessonsGrid");
   if (!grid) return;
-  if (!GAME_ORDER) initRandomLayout();
+  if (!lesson_ORDER) initRandomLayout();
 
-  const matches = GAME_ORDER.filter(g => g.title.toLowerCase().includes(filterText.toLowerCase()));
+  const matches = lesson_ORDER.filter(g => g.title.toLowerCase().includes(filterText.toLowerCase()));
   grid.innerHTML = "";
 
   if (matches.length === 0) {
     grid.style.height = "auto";
     grid.innerHTML = `
       <div style="text-align:center; padding: 3rem 1rem; color:#cbd5e6;">
-        <p style="font-size:1.2rem; margin-bottom:0.8rem;">😕 No games match "${filterText}"</p>
+        <p style="font-size:1.2rem; margin-bottom:0.8rem;">😕 No lessons match "${filterText}"</p>
         <button id="clearSearchBtn" style="background:var(--accent);border:none;border-radius:2rem;padding:0.5rem 1.4rem;color:#020018;font-weight:700;cursor:pointer;">Clear search</button>
       </div>`;
     const clearBtn = document.getElementById("clearSearchBtn");
     if (clearBtn) {
       clearBtn.onclick = () => {
-        const searchInput = document.getElementById("searchGames");
+        const searchInput = document.getElementById("searchlessons");
         if (searchInput) searchInput.value = "";
-        renderGames("");
+        renderlessons("");
       };
     }
     updateCounter(filterText, 0);
@@ -621,16 +619,16 @@ function renderGames(filterText = "") {
   else if (containerWidth < 1100) targetCols = 4;
 
   const baseUnit = containerWidth / targetCols;
-  const totalWeight = matches.reduce((s, g) => s + (GAME_WEIGHTS[g.id] || 1), 0);
+  const totalWeight = matches.reduce((s, g) => s + (lesson_WEIGHTS[g.id] || 1), 0);
   const containerHeight = (totalWeight * baseUnit * baseUnit) / containerWidth;
 
   grid.style.height = containerHeight + "px";
 
   const rects = splitLayout(matches, 0, 0, containerWidth, containerHeight);
 
-  rects.forEach(({ item: game, x, y, w, h }) => {
+  rects.forEach(({ item: lesson, x, y, w, h }) => {
     const tile = document.createElement("div");
-    tile.className = "game-tile";
+    tile.className = "lesson-tile";
     tile.style.left = x + "px";
     tile.style.top = y + "px";
     tile.style.width = w + "px";
@@ -641,24 +639,24 @@ function renderGames(filterText = "") {
     const btnFont = w < 130 ? "0.7rem" : "0.85rem";
 
     tile.innerHTML = `
-      <div class="game-tile-inner">
-        <img class="tile-thumb" src="${game.image}" alt="${game.title}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/300x300/0a0620/c084fc?text=%F0%9F%8E%AE'">
+      <div class="lesson-tile-inner">
+        <img class="tile-thumb" src="${lesson.image}" alt="${lesson.title}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/300x300/0a0620/c084fc?text=%F0%9F%8E%AE'">
         <div class="tile-scrim"></div>
         <div class="tile-content">
-          <h3 style="font-size:${fontSize}rem;">${game.title}</h3>
-          <button id="${game.id}" style="padding:${btnPad}; font-size:${btnFont};">▶ PLAY</button>
+          <h3 style="font-size:${fontSize}rem;">${lesson.title}</h3>
+          <button id="${lesson.id}" style="padding:${btnPad}; font-size:${btnFont};">▶ PLAY</button>
         </div>
       </div>
     `;
     grid.appendChild(tile);
-    const btn = document.getElementById(game.id);
+    const btn = document.getElementById(lesson.id);
     if (btn) {
       btn.onclick = (e) => {
         e.stopPropagation();
-        if (game.action === "launchLocalGame") launchLocalGame(game.file, game.base);
-        else if (game.action === "launchURLGame") launchURLGame(game.file);
-        else if (game.action === "launchSWF") launchSWF(game.file, game.title);
-        else alert(`${game.title} is currently unstable`);
+        if (lesson.action === "launchLocallesson") launchLocallesson(lesson.file, lesson.base);
+        else if (lesson.action === "launchURLlesson") launchURLlesson(lesson.file);
+        else if (lesson.action === "launchSWF") launchSWF(lesson.file, lesson.title);
+        else alert(`${lesson.title} is currently unstable`);
       };
     }
   });
@@ -667,18 +665,18 @@ function renderGames(filterText = "") {
 }
 
 function updateCounter(filterText, visible) {
-  const totalGames = FILE_SYSTEM[0].folder.length;
-  const counterEl = document.getElementById("gameCounter");
-  if (filterText === "") animateCounter(counterEl, totalGames);
-  else counterEl.innerHTML = `🎮 ${visible} / ${totalGames} Games (filtered)`;
+  const totallessons = FILE_SYSTEM[0].folder.length;
+  const counterEl = document.getElementById("lessonCounter");
+  if (filterText === "") animateCounter(counterEl, totallessons);
+  else counterEl.innerHTML = `🎮 ${visible} / ${totallessons} lessons (filtered)`;
 }
 
 let resizeTimer;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    const searchInput = document.getElementById("searchGames");
-    renderGames(searchInput ? searchInput.value : "");
+    const searchInput = document.getElementById("searchlessons");
+    renderlessons(searchInput ? searchInput.value : "");
   }, 150);
 });
 
@@ -689,9 +687,9 @@ function animateCounter(el, end, duration = 800) {
   function step(now) {
     let p = Math.min((now - startTime) / duration, 1);
     let val = Math.floor(p * end);
-    el.textContent = `🎮 ${val} Games Available`;
+    el.textContent = `🎮 ${val} lessons Available`;
     if (p < 1) requestAnimationFrame(step);
-    else el.textContent = `🎮 ${end} Games Available`;
+    else el.textContent = `🎮 ${end} lessons Available`;
   }
   requestAnimationFrame(step);
 }
@@ -703,11 +701,11 @@ function setBackgroundFromUrl(url) {
 }
 
 function rickroll() {
-  launchURLGame(RICKROLL_URL);
+  launchURLlesson(RICKROLL_URL);
 }
 
 // ---------- COUNTDOWN ----------
-const TARGET_DATE = "2026-06-02T03:00:00";
+const TARGET_DATE = "2026-12-04T15:00:00";
 let countdownInterval;
 function updateDigitalCountdown() {
   const target = new Date(TARGET_DATE).getTime();
@@ -728,10 +726,10 @@ function updateDigitalCountdown() {
 
 // ---------- INIT ----------
 document.addEventListener("DOMContentLoaded", () => {
-  renderGames("");
-  const searchInput = document.getElementById("searchGames");
+  renderlessons("");
+  const searchInput = document.getElementById("searchlessons");
   if (searchInput) {
-    searchInput.addEventListener("input", (e) => renderGames(e.target.value));
+    searchInput.addEventListener("input", (e) => renderlessons(e.target.value));
   }
   setBackgroundFromUrl(BACKGROUND_IMAGE_URL);
 
@@ -754,7 +752,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("keydown", e => {
   if (e.ctrlKey && e.code === "BracketLeft") {
     e.preventDefault();
-    launchLocalGame('https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/chat.html');
+    launchLocallesson('https://raw.githubusercontent.com/2321564369/galaxy-test/refs/heads/main/chat.html');
   }
 });
 </script>
