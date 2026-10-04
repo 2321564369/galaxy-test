@@ -293,7 +293,9 @@ const F = "messages.json";
 // (oldest messages are dropped first when it fills up).
 const MAX_IMG_CHARS = 280000;
 const MAX_FILE_CHARS = 650000;
-const IMG_OK = /^data:image\/(png|jpeg|gif|webp);base64,[A-Za-z0-9+\/=]+$/;
+const IMG_OK = /^data:image\/(png|jpeg|gif|webp);base64,[A-Za-z0-9+\/=]+/;
+const IMG_BAD = /[^A-Za-z0-9+\/=:;,]/;
+function isImg(s) { return typeof s === "string" && IMG_OK.test(s) && !IMG_BAD.test(s); }
 
 const c = document.getElementById("c");
 const i = document.getElementById("i");
@@ -324,8 +326,8 @@ function userHue(name) {
   for (let k = 0; k < s.length; k++) h = (h * 31 + s.charCodeAt(k)) >>> 0;
   return (h * 137) % 360;
 }
-function userColor(name) { return `hsl(${userHue(name)},85%,70%)`; }
-function userBg(name) { return `hsla(${userHue(name)},85%,70%,0.12)`; }
+function userColor(name) { return ("hsl(" + (userHue(name)) + ",85%,70%)"); }
+function userBg(name) { return ("hsla(" + (userHue(name)) + ",85%,70%,0.12)"); }
 
 function paintPill() {
   userPill.style.setProperty("--uc", userColor(n));
@@ -403,7 +405,7 @@ async function attachFile(file) {
     previewNote.textContent = pendingImg.note;
   } catch (err) {
     clearAttachment();
-    c.innerHTML += `<div class="msg error">❌ ${escapeHtml(err.message)}</div>`;
+    c.innerHTML += ("<div class=\"msg error\">❌ " + (escapeHtml(err.message)) + "</div>");
     c.scrollTop = c.scrollHeight;
   }
 }
@@ -455,14 +457,14 @@ document.addEventListener("keydown", e => {
 
 // ---------- GITHUB STORAGE ----------
 function getApiUrl() {
-  return `https://api.github.com/repos/O/{R}/contents/F?t={Date.now()}`;
+  return ("https://api.github.com/repos/" + (O) + "/" + (R) + "/contents/" + (F) + "?t=" + (Date.now()));
 }
 
 async function getMessages() {
   try {
     const response = await fetch(getApiUrl(), {
       headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Authorization': ("token " + (GITHUB_TOKEN)),
         'Accept': 'application/vnd.github.v3+json'
       }
     });
@@ -474,12 +476,12 @@ async function getMessages() {
     if (response.status === 401) {
       statusEl.innerHTML = '🔴 Token Invalid!';
       statusEl.className = 'offline';
-      c.innerHTML = `<div class="msg error">❌ Invalid GitHub token. Please check your token.</div>`;
+      c.innerHTML = ("<div class=\"msg error\">❌ Invalid GitHub token. Please check your token.</div>");
       return { messages: [], sha: null };
     }
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      throw new Error(("HTTP " + (response.status)));
     }
 
     const data = await response.json();
@@ -504,7 +506,7 @@ async function saveMessages(messages, sha) {
     const response = await fetch(getApiUrl(), {
       method: "PUT",
       headers: {
-        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Authorization': ("token " + (GITHUB_TOKEN)),
         'Content-Type': 'application/json',
         'Accept': 'application/vnd.github.v3+json'
       },
@@ -517,7 +519,7 @@ async function saveMessages(messages, sha) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      throw new Error(("HTTP " + (response.status)));
     }
 
     return await response.json();
@@ -555,7 +557,7 @@ async function send() {
     if (!pendingImg && (text.toLowerCase() === "wipe_chat" || text.toLowerCase() === "/clear")) {
       if (confirm('Clear all messages?')) {
         await saveMessages([], sha);
-        c.innerHTML = `<div class="msg system">🗑️ Chat cleared by ${escapeHtml(n)}</div>`;
+        c.innerHTML = ("<div class=\"msg system\">🗑️ Chat cleared by " + (escapeHtml(n)) + "</div>");
         lastLen = 0;
         lastSig = null;
         i.value = "";
@@ -568,9 +570,9 @@ async function send() {
     if (!pendingImg && (text.toLowerCase() === "/users" || text.toLowerCase() === "/who")) {
       const users = [...new Set(messages.map(msg => msg.u))];
       const list = users.map(name =>
-        `<span style="color:userColor(name);font-weight:700">{escapeHtml(name)}</span>`
+        ("<span style=\"color:" + (userColor(name)) + ";font-weight:700\">" + (escapeHtml(name)) + "</span>")
       ).join(', ') || 'No users yet';
-      c.innerHTML += `<div class="msg system">👥 Users: ${list}</div>`;
+      c.innerHTML += ("<div class=\"msg system\">👥 Users: " + (list) + "</div>");
       c.scrollTop = c.scrollHeight;
       i.value = "";
       return;
@@ -587,7 +589,7 @@ async function send() {
 
   } catch (error) {
     console.error('Send error:', error);
-    c.innerHTML += `<div class="msg error">❌ Failed to send message: ${escapeHtml(error.message)}</div>`;
+    c.innerHTML += ("<div class=\"msg error\">❌ Failed to send message: " + (escapeHtml(error.message)) + "</div>");
     c.scrollTop = c.scrollHeight;
   } finally {
     sending = false;
@@ -607,7 +609,7 @@ function renderMessages(messages) {
   lastSig = sig;
 
   if (!count) {
-    c.innerHTML = `<div class="msg system">💬 No messages yet. Say hello!</div>`;
+    c.innerHTML = ("<div class=\"msg system\">💬 No messages yet. Say hello!</div>");
     msgCountEl.textContent = '0 messages';
     return;
   }
@@ -620,20 +622,16 @@ function renderMessages(messages) {
     const time = new Date(msg.d).toLocaleTimeString();
     const isNew = !isFirstLoad && idx >= messages.length - newMessages.length;
     const isOwn = msg.u === n;
-    const pic = (typeof msg.img === "string" && IMG_OK.test(msg.img))
-      ? `<img class="pic" src="${msg.img}" alt="image from ${escapeHtml(msg.u)}">`
+    const pic = isImg(msg.img)
+      ? ("<img class=\"pic\" src=\"" + (msg.img) + "\" alt=\"image from " + (escapeHtml(msg.u)) + "\">")
       : "";
-    const body = msg.t ? `<div class="msg-text">${escapeHtml(msg.t)}</div>` : "";
+    const body = msg.t ? ("<div class=\"msg-text\">" + (escapeHtml(msg.t)) + "</div>") : "";
 
-    return `<div class="msg ${isNew ? 'new' : ''} isOwn?'own':''"style="--uc:{userColor(msg.u)};--ub:${userBg(msg.u)}">
-      <span class="msg-user">${escapeHtml(msg.u)}</span>
-      <span class="msg-time">${time}</span>
-      body{pic}
-    </div>`;
+    return ("<div class=\"msg " + (isNew ? 'new' : '') + " " + (isOwn ? 'own' : '') + "\" style=\"--uc:" + (userColor(msg.u)) + ";--ub:" + (userBg(msg.u)) + "\">\n      <span class=\"msg-user\">" + (escapeHtml(msg.u)) + "</span>\n      <span class=\"msg-time\">" + (time) + "</span>\n      " + (body) + (pic) + "\n    </div>");
   }).join("");
 
   c.scrollTop = c.scrollHeight;
-  msgCountEl.textContent = `${messages.length} messages`;
+  msgCountEl.textContent = ("" + (messages.length) + " messages");
   statusEl.innerHTML = '🟢 Connected';
   statusEl.className = 'online';
 
@@ -641,7 +639,7 @@ function renderMessages(messages) {
   if (!isFirstLoad && "Notification" in window && Notification.permission === "granted" && document.hidden) {
     newMessages.forEach(msg => {
       if (msg.u !== n) {
-        new Notification(`${msg.u} says:`, {
+        new Notification(("" + (msg.u) + " says:"), {
           body: msg.t || "📷 Sent an image",
           icon: '💬'
         });
@@ -696,5 +694,3 @@ console.log('💬 Galaxy Chat loaded! Commands: /clear, /users');
 
 </body>
 </html>
-
-
