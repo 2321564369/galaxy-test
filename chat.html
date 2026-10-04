@@ -8,16 +8,17 @@
 <style>
 :root{
   --bg:#030014;
-  --card:rgba(8,4,28,0.25);
   --accent:#c084fc;
   --accent2:#60a5fa;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-  font-family:'Segoe UI';
+  font-family:'Segoe UI','Poppins',system-ui,sans-serif;
   background:var(--bg);
   color:#f0f3ff;
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
 body::before{
@@ -25,61 +26,90 @@ body::before{
   position:fixed;
   inset:0;
   background:url("https://raw.githubusercontent.com/2321564369/galaxy-test/main/81af94cb-74da-47c1-9dc1-7bfd46fd586f.jpg") center/cover;
-  z-index:-2;
+  z-index:-3;
 }
 body::after{
   content:"";
   position:fixed;
   inset:0;
-  background:rgba(3,0,20,0.3);
-  backdrop-filter:blur(2px);
-  z-index:-1;
+  background:rgba(3,0,20,0.45);
+  backdrop-filter:blur(1px);
+  z-index:-2;
 }
 
-.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.2;}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.2;pointer-events:none;z-index:-1;animation:drift 22s infinite alternate;}
 .orb1{width:500px;height:500px;background:#a855f7;top:-150px;left:-100px;}
-.orb2{width:600px;height:600px;background:#3b82f6;bottom:-200px;right:-120px;}
-.orb3{width:350px;height:350px;background:#ec489a;top:50%;left:80%;}
+.orb2{width:600px;height:600px;background:#3b82f6;bottom:-200px;right:-120px;animation-duration:28s;opacity:.15;}
+.orb3{width:350px;height:350px;background:#ec489a;top:50%;left:80%;opacity:.1;}
+@keyframes drift{
+  0%{transform:translate(0,0) scale(1);}
+  100%{transform:translate(50px,-40px) scale(1.1);}
+}
 
-header{text-align:center;padding:2rem;}
+.scan-line{
+  position:fixed;inset:0;pointer-events:none;z-index:999;
+  background:repeating-linear-gradient(0deg,rgba(0,255,255,0.02) 0,rgba(0,255,255,0.02) 2px,transparent 2px,transparent 8px);
+}
+
+header{text-align:center;padding:2rem 1rem 0.5rem;}
 header h1{
-  font-size:100px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  font-size:clamp(2.6rem,9vw,5rem);
+  background:linear-gradient(135deg,var(--accent),var(--accent2),#f472b6);
   -webkit-background-clip:text;
+  background-clip:text;
   color:transparent;
+  text-shadow:0 0 15px rgba(167,139,250,0.5);
 }
 
 .wrap{max-width:900px;margin:auto;padding:1rem;}
 .box{
-  background:var(--card);
-  backdrop-filter:blur(12px);
-  border-radius:40% 60% 70% 30%;
+  background:rgba(8,4,28,0.35);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-radius:28px;
   padding:1.5rem;
   border:1px solid rgba(255,255,255,0.2);
+  box-shadow:0 12px 40px -8px rgba(0,0,0,0.6);
+}
+.box.drag{border-color:var(--accent);box-shadow:0 0 30px rgba(192,132,252,0.6);}
+
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;}
+.user{
+  padding:6px 14px;
+  border-radius:20px;
+  border:1px solid var(--uc,var(--accent));
+  color:var(--uc,var(--accent));
+  background:rgba(0,0,0,0.35);
+  font-weight:600;
+  max-width:60%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
-.row{display:flex;justify-content:space-between;margin-bottom:10px;}
-.user{padding:5px 10px;border-radius:20px;border:1px solid var(--accent);}
 button{
-  padding:6px 12px;
+  padding:8px 18px;
   border:none;
-  border-radius:20px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:30px;
+  background:linear-gradient(95deg,var(--accent),var(--accent2));
   cursor:pointer;
-  color:white;
-  font-weight:bold;
-  transition:transform 0.2s;
+  color:#020018;
+  font-weight:700;
+  box-shadow:0 4px 10px rgba(0,0,0,0.4);
+  transition:transform .15s ease,filter .15s ease;
 }
-button:hover{transform:scale(1.05);}
+button:hover{transform:scale(0.97);filter:brightness(1.1);}
+button:disabled{opacity:.5;cursor:default;transform:none;}
+button.attach{padding:8px 14px;font-size:1.05rem;}
 
 .chat{
-  height:350px;
+  height:380px;
   overflow-y:auto;
-  background:rgba(0,0,0,0.3);
+  background:rgba(0,0,0,0.35);
+  border:1px solid rgba(255,255,255,0.08);
   border-radius:20px;
-  padding:10px;
+  padding:12px;
 }
-
 .chat::-webkit-scrollbar{width:8px;}
 .chat::-webkit-scrollbar-track{background:transparent;}
 .chat::-webkit-scrollbar-thumb{
@@ -88,87 +118,108 @@ button:hover{transform:scale(1.05);}
 }
 
 .msg{
+  --uc:var(--accent);
+  --ub:rgba(255,255,255,0.05);
   margin-bottom:10px;
-  padding:8px 12px;
-  border-radius:15px;
-  background:rgba(255,255,255,0.05);
-  border-left: 3px solid var(--accent);
+  padding:9px 14px;
+  border-radius:16px;
+  background:var(--ub);
+  border:1px solid rgba(255,255,255,0.06);
+  border-left:4px solid var(--uc);
   word-wrap:break-word;
+  max-width:88%;
+}
+.msg.own{
+  margin-left:auto;
+  border-left:1px solid rgba(255,255,255,0.06);
+  border-right:4px solid var(--uc);
 }
 
-.msg.own {
-  border-left-color: var(--accent2);
-  background: rgba(96, 165, 250, 0.1);
+.msg.system{
+  max-width:100%;
+  border-left-color:#fbbf24;
+  background:rgba(251,191,36,0.1);
+  text-align:center;
+  color:#fbbf24;
+}
+.msg.error{
+  max-width:100%;
+  border-left-color:#ef4444;
+  background:rgba(239,68,68,0.1);
+  color:#ef4444;
 }
 
-.msg.system {
-  border-left-color: #fbbf24;
-  background: rgba(251, 191, 36, 0.1);
-  text-align: center;
-  color: #fbbf24;
-}
-
-.msg.error {
-  border-left-color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
-}
-
-.msg.new{
-  animation:fadeIn .35s ease;
-}
-
+.msg.new{animation:fadeIn .35s ease;}
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(10px);}
   to{opacity:1;transform:translateY(0);}
 }
 
-.msg-user {
-  color: var(--accent);
-  font-weight:bold;
+.msg-user{color:var(--uc);font-weight:700;}
+.msg-time{font-size:0.8em;opacity:0.6;margin-left:8px;}
+.msg-text{margin-top:4px;white-space:pre-wrap;}
+.msg img.pic{
+  display:block;
+  max-width:100%;
+  max-height:260px;
+  margin-top:6px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.12);
+  cursor:zoom-in;
 }
 
-.msg-time {
-  font-size: 0.8em;
-  opacity: 0.6;
-  margin-left: 8px;
+.preview{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  padding:6px 10px;
+  border-radius:16px;
+  background:rgba(0,0,0,0.4);
+  border:1px solid rgba(96,165,250,0.4);
+  font-size:.85em;
 }
+.preview[hidden]{display:none;}
+.preview img{height:48px;max-width:80px;object-fit:cover;border-radius:8px;}
+.preview span{flex:1;opacity:.85;}
+.preview button{padding:4px 10px;}
 
-.msg-text {
-  margin-top: 4px;
-}
-
-.input{display:flex;margin-top:10px;gap:10px;}
-input{
+.input{display:flex;margin-top:12px;gap:10px;}
+input[type=text]{
   flex:1;
-  padding:10px 15px;
-  border-radius:20px;
-  border:1px solid var(--accent2);
-  background:rgba(0,0,0,0.6);
+  padding:11px 18px;
+  border-radius:30px;
+  border:1px solid rgba(96,165,250,0.5);
+  background:rgba(10,6,30,0.7);
   color:white;
-  outline: none;
-  transition: border-color 0.3s;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
 }
-input:focus {
-  border-color: var(--accent);
+input[type=text]:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 18px rgba(192,132,252,0.5);
 }
+input[type=file]{display:none;}
 
-.status-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 10px;
-  margin-top: 10px;
-  font-size: 0.8em;
-  opacity: 0.7;
+.status-bar{
+  display:flex;
+  justify-content:space-between;
+  padding:5px 10px;
+  margin-top:10px;
+  font-size:0.8em;
+  opacity:0.75;
 }
+.status-bar .online{color:#4ade80;}
+.status-bar .offline{color:#f87171;}
 
-.status-bar .online {
-  color: #4ade80;
+.lb{
+  position:fixed;inset:0;z-index:2000;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(3,0,20,0.9);
+  cursor:zoom-out;
 }
-
-.status-bar .offline {
-  color: #f87171;
-}
+.lb[hidden]{display:none;}
+.lb img{max-width:94vw;max-height:94vh;border-radius:14px;box-shadow:0 0 40px rgba(192,132,252,0.4);}
 </style>
 </head>
 
@@ -177,22 +228,31 @@ input:focus {
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="orb orb3"></div>
+<div class="scan-line"></div>
 
 <header><h1>Galaxy Chat</h1></header>
 
 <div class="wrap">
-<div class="box">
+<div class="box" id="box">
 
 <div class="row">
-<div class="user">💬 <span id="u"></span></div>
+<div class="user" id="userPill">💬 <span id="u"></span></div>
 <button onclick="setName()">Change Name</button>
 </div>
 
 <div id="c" class="chat"></div>
 
+<div class="preview" id="preview" hidden>
+  <img id="previewImg" alt="">
+  <span id="previewNote">Image ready</span>
+  <button onclick="clearAttachment()">✕</button>
+</div>
+
 <div class="input">
-<input id="i" placeholder="Type message..." maxlength="500">
-<button onclick="send()">Send</button>
+<button class="attach" title="Attach image or GIF" onclick="document.getElementById('f').click()">📎</button>
+<input type="file" id="f" accept="image/*">
+<input type="text" id="i" placeholder="Type message... (paste or drop images too)" maxlength="500">
+<button id="sendBtn" onclick="send()">Send</button>
 </div>
 
 <div class="status-bar">
@@ -203,8 +263,9 @@ input:focus {
 </div>
 </div>
 
-<script>
+<div class="lb" id="lb" hidden><img id="lbImg" alt=""></div>
 
+<script>
 
 const A = "fjN<q9UETGO:8YY\\WY=jJ6oTusWhmuoS{";
 const B = "M~u~MXrVWvUz~4{E8OTr:oRZMwc^7hhue:8^6]=4EV;]";
@@ -222,24 +283,54 @@ function getToken() {
 
 const GITHUB_TOKEN = getToken();
 
-// Verify token in console
-console.log('Token length:', GITHUB_TOKEN.length);
-console.log('Token starts with:', GITHUB_TOKEN.substring(0, 20));
-
 const O = "2321564369";
 const R = "galaxy-test";
 const F = "messages.json";
 
+// ---------- IMAGE LIMITS ----------
+// GitHub's contents API only returns files up to 1 MB, so each image is
+// shrunk to MAX_IMG_CHARS and the whole chat file is capped at MAX_FILE_CHARS
+// (oldest messages are dropped first when it fills up).
+const MAX_IMG_CHARS = 280000;
+const MAX_FILE_CHARS = 650000;
+const IMG_OK = /^data:image\/(png|jpeg|gif|webp);base64,[A-Za-z0-9+\/=]+$/;
+
 const c = document.getElementById("c");
 const i = document.getElementById("i");
 const u = document.getElementById("u");
+const userPill = document.getElementById("userPill");
 const statusEl = document.getElementById("status");
 const msgCountEl = document.getElementById("msgCount");
+const fileEl = document.getElementById("f");
+const previewEl = document.getElementById("preview");
+const previewImg = document.getElementById("previewImg");
+const previewNote = document.getElementById("previewNote");
+const sendBtn = document.getElementById("sendBtn");
+const lb = document.getElementById("lb");
+const lbImg = document.getElementById("lbImg");
 
 let lastLen = 0;
+let lastSig = null;
+let pendingImg = null;
+let sending = false;
 let n = localStorage.getItem("n") || prompt("Enter your name:") || "user";
 localStorage.setItem("n", n);
 u.textContent = n;
+
+// ---------- PER-USER COLORS ----------
+function userHue(name) {
+  const s = String(name).trim().toLowerCase();
+  let h = 0;
+  for (let k = 0; k < s.length; k++) h = (h * 31 + s.charCodeAt(k)) >>> 0;
+  return (h * 137) % 360;
+}
+function userColor(name) { return `hsl(${userHue(name)},85%,70%)`; }
+function userBg(name) { return `hsla(${userHue(name)},85%,70%,0.12)`; }
+
+function paintPill() {
+  userPill.style.setProperty("--uc", userColor(n));
+}
+paintPill();
 
 function setName() {
   let v = prompt("New name:", n);
@@ -247,11 +338,124 @@ function setName() {
     n = v.trim();
     localStorage.setItem("n", n);
     u.textContent = n;
+    paintPill();
+    lastLen = 0;
+    lastSig = null;
+    loadMessages();
   }
 }
 
+// ---------- IMAGE HANDLING ----------
+function readAsDataURL(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(new Error("Could not read file"));
+    r.readAsDataURL(file);
+  });
+}
+function loadImg(src) {
+  return new Promise((res, rej) => {
+    const im = new Image();
+    im.onload = () => res(im);
+    im.onerror = () => rej(new Error("Could not open image"));
+    im.src = src;
+  });
+}
+
+// Small GIFs are kept as-is so they stay animated. Everything else is
+// redrawn on a canvas and re-encoded as a smaller JPEG.
+async function processImage(file) {
+  const original = await readAsDataURL(file);
+  if (file.type === "image/gif" && original.length <= MAX_IMG_CHARS) {
+    return { url: original, note: "GIF ready" };
+  }
+  const im = await loadImg(original);
+  let note = file.type === "image/gif"
+    ? "GIF too big to stay animated, sending a still"
+    : "Image ready";
+  let maxSide = 720, q = 0.72;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const s = Math.min(1, maxSide / Math.max(im.width, im.height));
+    const cv = document.createElement("canvas");
+    cv.width = Math.max(1, Math.round(im.width * s));
+    cv.height = Math.max(1, Math.round(im.height * s));
+    const ctx = cv.getContext("2d");
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(im, 0, 0, cv.width, cv.height);
+    const out = cv.toDataURL("image/jpeg", q);
+    if (out.length <= MAX_IMG_CHARS) return { url: out, note };
+    maxSide = Math.round(maxSide * 0.75);
+    q = Math.max(0.45, q - 0.08);
+  }
+  throw new Error("Image is too large to send");
+}
+
+async function attachFile(file) {
+  if (!file || !file.type.startsWith("image/")) return;
+  try {
+    previewNote.textContent = "Processing...";
+    previewImg.removeAttribute("src");
+    previewEl.hidden = false;
+    pendingImg = await processImage(file);
+    previewImg.src = pendingImg.url;
+    previewNote.textContent = pendingImg.note;
+  } catch (err) {
+    clearAttachment();
+    c.innerHTML += `<div class="msg error">❌ ${escapeHtml(err.message)}</div>`;
+    c.scrollTop = c.scrollHeight;
+  }
+}
+function clearAttachment() {
+  pendingImg = null;
+  fileEl.value = "";
+  previewEl.hidden = true;
+  previewImg.removeAttribute("src");
+}
+
+fileEl.addEventListener("change", () => attachFile(fileEl.files[0]));
+
+i.addEventListener("paste", e => {
+  const items = (e.clipboardData && e.clipboardData.items) || [];
+  for (const it of items) {
+    if (it.type.startsWith("image/")) {
+      e.preventDefault();
+      attachFile(it.getAsFile());
+      break;
+    }
+  }
+});
+
+const boxEl = document.getElementById("box");
+["dragenter", "dragover"].forEach(t => boxEl.addEventListener(t, e => {
+  e.preventDefault();
+  boxEl.classList.add("drag");
+}));
+["dragleave", "drop"].forEach(t => boxEl.addEventListener(t, e => {
+  e.preventDefault();
+  boxEl.classList.remove("drag");
+}));
+boxEl.addEventListener("drop", e => {
+  const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) attachFile(f);
+});
+
+// Click an image in the chat to view it full size
+c.addEventListener("click", e => {
+  if (e.target.matches && e.target.matches("img.pic")) {
+    lbImg.src = e.target.src;
+    lb.hidden = false;
+  }
+});
+lb.addEventListener("click", () => { lb.hidden = true; lbImg.removeAttribute("src"); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !lb.hidden) { lb.hidden = true; lbImg.removeAttribute("src"); }
+});
+
+// ---------- GITHUB STORAGE ----------
 function getApiUrl() {
-  return `https://api.github.com/repos/${O}/${R}/contents/${F}?t=${Date.now()}`;
+  return `https://api.github.com/repos/O/{R}/contents/F?t={Date.now()}`;
 }
 
 async function getMessages() {
@@ -262,29 +466,29 @@ async function getMessages() {
         'Accept': 'application/vnd.github.v3+json'
       }
     });
-    
+
     if (response.status === 404) {
       return { messages: [], sha: null };
     }
-    
+
     if (response.status === 401) {
       statusEl.innerHTML = '🔴 Token Invalid!';
       statusEl.className = 'offline';
       c.innerHTML = `<div class="msg error">❌ Invalid GitHub token. Please check your token.</div>`;
       return { messages: [], sha: null };
     }
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     const data = await response.json();
     if (!data.content) {
       return { messages: [], sha: null };
     }
-    
-    const content = atob(data.content);
-    const messages = JSON.parse(content);
+
+    const bytes = Uint8Array.from(atob(data.content.replace(/\n/g, "")), ch => ch.charCodeAt(0));
+    const messages = JSON.parse(new TextDecoder().decode(bytes));
     return { messages: messages, sha: data.sha };
   } catch (error) {
     console.error('Error fetching messages:', error);
@@ -311,11 +515,11 @@ async function saveMessages(messages, sha) {
         branch: "main"
       })
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Error saving messages:', error);
@@ -323,23 +527,37 @@ async function saveMessages(messages, sha) {
   }
 }
 
+// Drops the oldest messages until the chat file fits under the size cap
+function trimToFit(messages) {
+  let size = JSON.stringify(messages).length;
+  while (size > MAX_FILE_CHARS && messages.length > 1) {
+    const old = messages.shift();
+    size -= JSON.stringify(old).length + 1;
+  }
+}
+
 async function send() {
+  if (sending) return;
   if ("Notification" in window && Notification.permission !== "granted") {
     await Notification.requestPermission();
   }
 
   const text = i.value.trim();
-  if (!text) return;
+  if (!text && !pendingImg) return;
+
+  sending = true;
+  sendBtn.disabled = true;
 
   try {
     let { messages, sha } = await getMessages();
 
-    // Commands
-    if (text.toLowerCase() === "wipe_chat" || text.toLowerCase() === "/clear") {
+    // Commands (text only)
+    if (!pendingImg && (text.toLowerCase() === "wipe_chat" || text.toLowerCase() === "/clear")) {
       if (confirm('Clear all messages?')) {
         await saveMessages([], sha);
-        c.innerHTML = `<div class="msg system">🗑️ Chat cleared by ${n}</div>`;
+        c.innerHTML = `<div class="msg system">🗑️ Chat cleared by ${escapeHtml(n)}</div>`;
         lastLen = 0;
+        lastSig = null;
         i.value = "";
         msgCountEl.textContent = '0 messages';
         statusEl.innerHTML = '🟢 Cleared';
@@ -347,28 +565,48 @@ async function send() {
       return;
     }
 
-    if (text.toLowerCase() === "/users" || text.toLowerCase() === "/who") {
+    if (!pendingImg && (text.toLowerCase() === "/users" || text.toLowerCase() === "/who")) {
       const users = [...new Set(messages.map(msg => msg.u))];
-      c.innerHTML += `<div class="msg system">👥 Users: ${users.join(', ') || 'No users yet'}</div>`;
+      const list = users.map(name =>
+        `<span style="color:userColor(name);font-weight:700">{escapeHtml(name)}</span>`
+      ).join(', ') || 'No users yet';
+      c.innerHTML += `<div class="msg system">👥 Users: ${list}</div>`;
       c.scrollTop = c.scrollHeight;
       i.value = "";
       return;
     }
 
-    messages.push({ u: n, t: text, d: Date.now() });
+    const m = { u: n, t: text, d: Date.now() };
+    if (pendingImg) m.img = pendingImg.url;
+    messages.push(m);
+    trimToFit(messages);
     await saveMessages(messages, sha);
     i.value = "";
+    clearAttachment();
     await loadMessages();
-    
+
   } catch (error) {
     console.error('Send error:', error);
-    c.innerHTML += `<div class="msg error">❌ Failed to send message: ${error.message}</div>`;
+    c.innerHTML += `<div class="msg error">❌ Failed to send message: ${escapeHtml(error.message)}</div>`;
     c.scrollTop = c.scrollHeight;
+  } finally {
+    sending = false;
+    sendBtn.disabled = false;
   }
 }
 
 function renderMessages(messages) {
-  if (!messages || messages.length === 0) {
+  const count = messages ? messages.length : 0;
+  const last = count ? messages[count - 1].d : "";
+  // Skip redraws when nothing changed so images don't flicker and GIFs keep playing
+  const sig = count + ":" + last + ":" + n;
+  if (sig === lastSig) {
+    if (count) { statusEl.innerHTML = '🟢 Connected'; statusEl.className = 'online'; }
+    return;
+  }
+  lastSig = sig;
+
+  if (!count) {
     c.innerHTML = `<div class="msg system">💬 No messages yet. Say hello!</div>`;
     msgCountEl.textContent = '0 messages';
     return;
@@ -382,11 +620,15 @@ function renderMessages(messages) {
     const time = new Date(msg.d).toLocaleTimeString();
     const isNew = !isFirstLoad && idx >= messages.length - newMessages.length;
     const isOwn = msg.u === n;
-    
-    return `<div class="msg ${isNew ? 'new' : ''} ${isOwn ? 'own' : ''}">
+    const pic = (typeof msg.img === "string" && IMG_OK.test(msg.img))
+      ? `<img class="pic" src="${msg.img}" alt="image from ${escapeHtml(msg.u)}">`
+      : "";
+    const body = msg.t ? `<div class="msg-text">${escapeHtml(msg.t)}</div>` : "";
+
+    return `<div class="msg ${isNew ? 'new' : ''} isOwn?'own':''"style="--uc:{userColor(msg.u)};--ub:${userBg(msg.u)}">
       <span class="msg-user">${escapeHtml(msg.u)}</span>
       <span class="msg-time">${time}</span>
-      <div class="msg-text">${escapeHtml(msg.t)}</div>
+      body{pic}
     </div>`;
   }).join("");
 
@@ -400,7 +642,7 @@ function renderMessages(messages) {
     newMessages.forEach(msg => {
       if (msg.u !== n) {
         new Notification(`${msg.u} says:`, {
-          body: msg.t,
+          body: msg.t || "📷 Sent an image",
           icon: '💬'
         });
       }
@@ -449,12 +691,10 @@ window.addEventListener('offline', () => {
   statusEl.className = 'offline';
 });
 
-console.log('💬 Galaxy Chat loaded!');
-console.log('👤 User:', n);
-console.log('📡 Using GitHub API with scrambled token');
-console.log('💡 Commands: /clear, /users');
-console.log('✅ Token unscrambled successfully!');
+console.log('💬 Galaxy Chat loaded! Commands: /clear, /users');
 </script>
 
 </body>
 </html>
+
+
