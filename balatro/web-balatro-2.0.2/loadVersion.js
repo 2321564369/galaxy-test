@@ -4,6 +4,41 @@
  * @param {IDBRequest} idbRequest - A request to unwrap
  * @returns {Promise<any>} - The output of the IDBRequest
  */
+// ==============================
+// SUPABASE CLOUD SAVE
+// ==============================
+
+const SUPABASE_URL = "https://jlcmclwuuyzkjdfmqsre.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_swPFphXjtFrD30vBVD5Kmw_R6N6kRFI";
+
+let cloud_username = null;
+
+function cloudHeaders() {
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json"
+    };
+}
+
+function getCloudUsername() {
+    return cloud_username;
+}
+
+function setCloudStatus(message) {
+    const el = $("cloud-status");
+    if (el) el.innerText = message;
+}
+
+function cleanUsername(username) {
+    return username
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, "")
+        .slice(0, 32);
+}
 function unwrapIDBRequest(idbRequest) {
     return new Promise((res, rej) => {
         idbRequest.onsuccess = function(event) {
