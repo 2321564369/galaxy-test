@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <base href="https://cdn.jsdelivr.net/gh/2321564369/galaxy-test@main/balatro/web-balatro-2.0.2">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Balatro on the Web</title>
     <link rel="stylesheet" href="style.css" />
+    <script>
+      const SUPABASE_URL = "https://jlcmclwuuyzkjdfmqsre.supabase.co";
+      const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+    </script>
     <script src="lib/data.js"></script>
     <script src="lib/FileSaver.min.js"></script>
     <script src="lib/jszip.min.js"></script>
@@ -60,11 +65,44 @@
       </section>
 
       <section>
-        <h2>Save Data</h2>
-        <button disabled id="save-download">Download</button>
-        <button disabled id="save-upload">Upload</button>
-        <button disabled id="save-delete">Delete</button>
-      </section>
+  <h2>Cloud Save</h2>
+
+  <div id="cloud-login">
+    <label>
+      Username:
+      <input
+        id="cloud-username"
+        maxlength="32"
+        placeholder="Username"
+        autocomplete="off"
+      >
+    </label>
+
+    <button id="cloud-login-button">Login</button>
+  </div>
+
+  <div id="cloud-user" class="hidden">
+    Logged in as:
+    <strong id="cloud-username-display"></strong>
+    <button id="cloud-logout">Log Out</button>
+  </div>
+
+  <br>
+
+  <button disabled id="save-download">
+    Download Cloud Save
+  </button>
+
+  <button disabled id="save-upload">
+    Upload Cloud Save
+  </button>
+
+  <button disabled id="save-delete">
+    Delete Cloud Save
+  </button>
+
+  <p id="cloud-status">Not logged in</p>
+</section>
 
       <section>
         <h2>Versions</h2>
