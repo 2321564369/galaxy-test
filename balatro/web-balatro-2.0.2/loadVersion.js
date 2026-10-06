@@ -376,3 +376,284 @@ async function loadVersion(versionId) {
         progress_bar.value = 0;
     }
 }
+// ==========================================
+// BALATRO SUPABASE CLOUD SAVES
+// ==========================================
+
+let cloud_username = null;
+
+function cloudHeaders() {
+    return {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json"
+    };
+}
+
+function setCloudStatus(message) {
+    const element = document.getElementById("cloud-status");
+
+    if (element) {
+        element.textContent = message;
+    }
+}
+
+function cleanUsername(username) {
+    return username
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, "")
+        .substring(0, 32);
+}
+
+
+// ==========================================
+// LOGIN
+// ==========================================
+
+function setupCloudLogin() {
+
+    const loginButton =
+        document.getElementById("cloud-login-button");
+
+    const usernameInput =
+        document.getElementById("cloud-username");
+
+    const logoutButton =
+        document.getElementById("cloud-logout");
+
+    if (!loginButton) {
+        console.error("Cloud save UI not found.");
+        return;
+    }
+
+    loginButton.onclick = async function () {
+
+        const username =
+            cleanUsername(usernameInput.value);
+
+        if (!username) {
+            setCloudStatus("Enter a username.");
+            return;
+        }
+
+        cloud_username = username;
+
+        document
+            .getElementById("cloud-login")
+            .classList.add("hidden");
+
+        document
+            .getElementById("cloud-user")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("cloud-username-display")
+            .textContent = username;
+
+        document
+            .getElementById("save-download")
+            .disabled = false;
+
+        document
+            .getElementById("save-upload")
+            .disabled = false;
+
+        document
+            .getElementById("save-delete")
+            .disabled = false;
+
+        setCloudStatus(
+            "Logged in as " + username
+        );
+
+        try {
+
+            const response = await fetch(
+                SUPABASE_URL +
+                "/rest/v1/balatro_saves?username=eq." +
+                encodeURIComponent(username) +
+                "&select=username,updated_at",
+                {
+                    headers: cloudHeaders()
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    await response.text()
+                );
+            }
+
+            const saves = await response.json();
+
+            if (saves.length) {
+
+                setCloudStatus(
+                    "Cloud save found. Last updated: " +
+                    new Date(
+                        saves[0].updated_at
+                    ).toLocaleString()
+                );
+
+            } else {
+
+                setCloudStatus(
+                    "No cloud save yet. Upload one!"
+                );
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            setCloudStatus(
+                "Cloud connection failed."
+            );
+        }
+    };
+
+
+    logoutButton.onclick = function () {
+
+        cloud_username = null;
+
+        document
+            .getElementById("cloud-login")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("cloud-user")
+            .classList.add("hidden");
+
+        document
+            .getElementById("save-download")
+            .disabled = true;
+
+        document
+            .getElementById("save-upload")
+            .disabled = true;
+
+        document
+            .getElementById("save-delete")
+            .disabled = true;
+
+        setCloudStatus("Not logged in.");
+    };
+}
+
+
+// ==========================================
+// DOWNLOAD FROM SUPABASE
+// ==========================================
+
+async function getCloudSave() {
+
+    if (!cloud_username) {
+        throw new Error("Not logged in.");
+    }
+
+    const response = await fetch(
+        SUPABASE_URL +
+        "/rest/v1/balatro_saves?username=eq." +
+        encodeURIComponent(cloud_username) +
+        "&select=save_data,updated_at",
+        {
+            headers: cloudHeaders()
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            await response.text()
+        );
+    }
+
+    const data = await response.json();
+
+    if (!data.length) {
+        return null;
+    }
+
+    return data[0];
+}
+
+
+// ==========================================
+// UPLOAD TO SUPABASE
+// ==========================================
+
+async function uploadCloudSave(saveData) {
+
+    if (!cloud_username) {
+        throw new Error("Not logged in.");
+    }
+
+    const response = await fetch(
+        SUPABASE_URL +
+        "/rest/v1/balatro_saves",
+        {
+            method: "POST",
+
+            headers: {
+                ...cloudHeaders(),
+
+                "Prefer":
+                    "resolution=merge-duplicates"
+            },
+
+            body: JSON.stringify({
+                username: cloud_username,
+                save_data: saveData,
+                updated_at:
+                    new Date().toISOString()
+            })
+        }
+    );
+
+    if (!response.ok) {
+
+        throw new Error(
+            await response.text()
+        );
+    }
+}
+
+
+// ==========================================
+// DELETE CLOUD SAVE
+// ==========================================
+
+async function deleteCloudSave() {
+
+    if (!cloud_username) {
+        throw new Error("Not logged in.");
+    }
+
+    const response = await fetch(
+        SUPABASE_URL +
+        "/rest/v1/balatro_saves?username=eq." +
+        encodeURIComponent(cloud_username),
+        {
+            method: "DELETE",
+            headers: cloudHeaders()
+        }
+    );
+
+    if (!response.ok) {
+
+        throw new Error(
+            await response.text()
+        );
+    }
+}
+
+
+// ==========================================
+// START LOGIN SYSTEM
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    setupCloudLogin
+);
