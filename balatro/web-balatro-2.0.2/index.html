@@ -59,12 +59,38 @@
         </div>
       </section>
 
-      <section>
-        <h2>Save Data</h2>
-        <button disabled id="save-download">Download</button>
-        <button disabled id="save-upload">Upload</button>
-        <button disabled id="save-delete">Delete</button>
-      </section>
+<section>
+  <h2>Cloud Save</h2>
+
+  <div id="cloud-login">
+    <label for="cloud-username">Username:</label>
+    <input
+      type="text"
+      id="cloud-username"
+      placeholder="Enter username"
+      maxlength="32"
+      autocomplete="off"
+    >
+    <button id="cloud-login-button">Login</button>
+  </div>
+
+  <div id="cloud-user" class="hidden">
+    <p>
+      Logged in as:
+      <strong id="cloud-username-display"></strong>
+    </p>
+
+    <button id="cloud-logout">Log Out</button>
+  </div>
+
+  <hr>
+
+  <button disabled id="save-download">Download Cloud Save</button>
+  <button disabled id="save-upload">Upload Cloud Save</button>
+  <button disabled id="save-delete">Delete Cloud Save</button>
+
+  <p id="cloud-status">Not logged in</p>
+</section>
 
       <section>
         <h2>Versions</h2>
