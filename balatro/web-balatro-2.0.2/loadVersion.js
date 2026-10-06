@@ -209,9 +209,7 @@ function setupCloudLogin() {
         setCloudStatus("Not logged in");
     };
 }
-document.addEventListener("DOMContentLoaded", () => {
-    setupCloudLogin();
-});
+
 /** @type {string} - The IndexedDB ID of the currently loaded game */
 let loaded_game_id = null;
 
@@ -573,3 +571,6 @@ async function loadVersion(versionId) {
         progress_bar.value = 0;
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    setupCloudLogin();
+});
