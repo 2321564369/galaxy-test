@@ -1,52 +1,3 @@
-// ===== CAPTURE THE GAME'S ACTUAL SAVE DB =====
-// Balatro re-prefixes the mount path on every load, so the DB name
-// changes. Instead of guessing, we watch what the game opens and
-// remember the first one that actually has FILE_DATA.
-
-let game_save_db_name = null;
-
-(function () {
-    const _open = indexedDB.open.bind(indexedDB);
-
-    indexedDB.open = function (name, version) {
-        const req = _open(name, version);
-
-        if (
-            typeof name === "string" &&
-            name.startsWith("Balatro_") &&
-            name.includes("/home/web_user/love") &&
-            name !== "BalatroCacheDB"
-        ) {
-            req.addEventListener("success", () => {
-                const db = req.result;
-                const stores =
-                    Array.from(db.objectStoreNames);
-
-                console.log(
-                    "[Cloud Save] Game opened",
-                    name,
-                    "v" + db.version,
-                    "stores:", stores
-                );
-
-                if (stores.indexOf("FILE_DATA") !== -1) {
-                    if (game_save_db_name !== name) {
-                        game_save_db_name = name;
-                        console.log(
-                            "[Cloud Save] Game save DB captured:",
-                            name,
-                            "v" + db.version
-                        );
-                    }
-                }
-            });
-        }
-
-        return req;
-    };
-})();
-
-
 /**
  * 
  * @param {IDBRequest} idbRequest - A request to unwrap
@@ -157,6 +108,83 @@ async function loadVersion(versionId) {
             progress_bar.value = 0;
         };
         document.body.appendChild(s);
+    }
+
+
+    // ==========================================
+    // FIND THE ACTUAL SAVE DB
+    // ==========================================
+
+    // Pick the Balatro save DB with the highest version that actually
+    // contains FILE_DATA. Returns { name, db } or null.
+    async function findRealSaveDb() {
+
+        let list;
+        try {
+            list = await indexedDB.databases();
+        } catch (err) {
+            console.log(
+                "[Cloud Save] databases() unavailable:", err
+            );
+            return null;
+        }
+
+        const summary = list.map(
+            d => `${d.name} v${d.version}`
+        );
+        console.log("[Cloud Save] DBs:", summary);
+
+        const candidates = list
+            .filter(d =>
+                d.name &&
+                d.name.startsWith("Balatro_") &&
+                d.name.includes("/home/web_user/love") &&
+                !d.name.startsWith("BalatroCache")
+            )
+            .sort((a, b) =>
+                (b.version || 0) - (a.version || 0)
+            );
+
+        for (const info of candidates) {
+
+            if ((info.version || 0) < 2) {
+                // v1 = empty shell, skip
+                continue;
+            }
+
+            let db;
+            try {
+                db = await new Promise((resolve, reject) => {
+                    const req = indexedDB.open(info.name);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                    req.onblocked = () =>
+                        reject(new Error("blocked"));
+                });
+            } catch (err) {
+                console.log(
+                    "[Cloud Save] Cannot open",
+                    info.name, err
+                );
+                continue;
+            }
+
+            const stores = Array.from(db.objectStoreNames);
+            console.log(
+                "[Cloud Save] Candidate",
+                info.name,
+                "v" + db.version,
+                "stores:", stores
+            );
+
+            if (stores.indexOf("FILE_DATA") !== -1) {
+                return { name: info.name, db };
+            }
+
+            db.close();
+        }
+
+        return null;
     }
 
 
@@ -389,74 +417,31 @@ async function loadVersion(versionId) {
     // UPLOAD CLOUD SAVE (reusable function)
     // ==========================================
 
-    async function uploadCurrentSaveToCloud(save_data_id) {
+    async function uploadCurrentSaveToCloud() {
 
         if (!cloud_username) {
             setCloudStatus("Please log in first.");
             return;
         }
 
-        // 1. Prefer the DB the game actually opened this session.
-        // 2. Fall back to the expected name.
-        if (!save_data_id) {
-            save_data_id =
-                game_save_db_name ||
-                ("Balatro_" + loaded_game_id +
-                 "_/home/web_user/love");
-        }
-
-        console.log(
-            "[Cloud Save] Uploading from:", save_data_id
-        );
-
-        status_text.innerText =
-            "Opening Save Database";
-
+        status_text.innerText = "Finding Save Database";
         progress_bar.value = 5;
 
-        let db = null;
+        const found = await findRealSaveDb();
 
-        try {
-
-            db = await new Promise((resolve, reject) => {
-
-                const req = indexedDB.open(save_data_id);
-
-                req.onsuccess =
-                    () => resolve(req.result);
-
-                req.onerror =
-                    () => reject(req.error);
-            });
-
-        } catch (err) {
-
+        if (!found) {
             throw new Error(
-                "Cannot open '" + save_data_id +
-                "': " + err.message
+                "No Balatro save database with FILE_DATA exists yet. " +
+                "Make sure the game has saved at least once."
             );
         }
-
-        const stores =
-            Array.from(db.objectStoreNames);
 
         console.log(
-            "[Cloud Save] Opened",
-            save_data_id,
-            "v" + db.version,
-            "stores:", stores
+            "[Cloud Save] Using DB:", found.name,
+            "v" + found.db.version
         );
 
-        if (stores.indexOf("FILE_DATA") === -1) {
-
-            db.close();
-
-            throw new Error(
-                "Save database '" + save_data_id +
-                "' has no FILE_DATA (v" + db.version +
-                ", stores: " + JSON.stringify(stores) + ")."
-            );
-        }
+        const db = found.db;
 
         try {
 
@@ -522,7 +507,6 @@ async function loadVersion(versionId) {
                 });
 
             db.close();
-            db = null;
 
             const zip = new JSZip();
 
@@ -620,9 +604,7 @@ async function loadVersion(versionId) {
 
         } catch (error) {
 
-            if (db) {
-                try { db.close(); } catch (e) {}
-            }
+            try { db.close(); } catch (e) {}
 
             console.error(error);
 
