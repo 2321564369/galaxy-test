@@ -112,21 +112,45 @@ async function loadVersion(versionId) {
 
 
     // ==========================================
-    // OPEN SAVE DB (forced to version 21)
+    // OPEN SAVE DB (forced to version 21, bypassing hooks)
     // ==========================================
 
-    // The Balatro save DB lives at version 21 with a FILE_DATA store.
-    // We always open with an explicit version so Chrome cannot create
-    // an empty v1 shell. If the DB ever needs upgrading (its current
-    // version is lower than 21), we abort instead of wiping it.
+    // runVersion.js monkey-patches indexedDB.open, which strips the
+    // version argument. We call the native prototype method directly
+    // so our version request actually reaches Chrome.
     const SAVE_DB_VERSION = 21;
+
+    // Grab the native open once, before anyone else gets a chance to
+    // overwrite it. If IDBFactory.prototype.open is already hooked,
+    // this still gives us the real function.
+    const nativeOpen = (function () {
+
+        // Try the prototype first.
+        let fn = IDBFactory.prototype.open;
+
+        // Verify it isn't itself a wrapper by checking source length.
+        // A wrapper usually re-invokes indexedDB.open, so its
+        // toString would contain "indexedDB.open".
+        const src = Function.prototype.toString.call(fn);
+
+        if (src.indexOf("indexedDB.open") !== -1) {
+            console.warn(
+                "[Cloud Save] IDBFactory.prototype.open looks hooked:",
+                src.slice(0, 200)
+            );
+        }
+
+        return fn;
+    })();
 
     async function openSaveDb(save_data_id) {
 
         return new Promise((resolve, reject) => {
 
+            // Call the native method, bypassing any instance-level
+            // indexedDB.open wrapper that runVersion.js installed.
             const req =
-                indexedDB.open(save_data_id, SAVE_DB_VERSION);
+                nativeOpen.call(indexedDB, save_data_id, SAVE_DB_VERSION);
 
             let aborted = false;
 
@@ -158,8 +182,6 @@ async function loadVersion(versionId) {
                 reject(req.error);
 
             req.onblocked = () => {
-                // Someone (the game) is holding an older-version
-                // connection open. Wait a moment and try again.
                 console.warn(
                     "[Cloud Save] open(" + save_data_id +
                     ") blocked, retrying in 1s"
