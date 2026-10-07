@@ -553,6 +553,10 @@ async function loadVersion(versionId) {
         }
     }
 
+    // Expose on window so the auto-save timer (defined outside
+    // loadVersion) can call it even after a later loadVersion call.
+    window.uploadCurrentSaveToCloud = uploadCurrentSaveToCloud;
+
     save_upload.disabled = false;
 
     save_upload.onclick = uploadCurrentSaveToCloud;
@@ -682,6 +686,8 @@ function setupCloudLogin() {
 
         cloud_username = username;
 
+        startAutoCloudSave();
+
         document
             .getElementById("cloud-login")
             .classList.add("hidden");
@@ -760,6 +766,8 @@ function setupCloudLogin() {
     logoutButton.onclick = function () {
 
         cloud_username = null;
+
+        stopAutoCloudSave();
 
         document
             .getElementById("cloud-login")
@@ -897,43 +905,40 @@ async function deleteCloudSave() {
 // ==========================================
 
 let autoCloudSaveTimer = null;
-let lastCloudSaveTime = 0;
+let autoCloudSaveRunning = false;
 
-function triggerAutomaticCloudSave() {
+function startAutoCloudSave() {
 
-    if (!cloud_username || !loaded_game_id) {
-        return;
-    }
-
-    // Don't schedule another upload if one is already waiting
     if (autoCloudSaveTimer) {
-        clearTimeout(autoCloudSaveTimer);
+        clearInterval(autoCloudSaveTimer);
     }
 
-    autoCloudSaveTimer = setTimeout(async () => {
+    autoCloudSaveTimer = setInterval(async function () {
 
-        autoCloudSaveTimer = null;
+        if (!cloud_username || !loaded_game_id) {
+            return;
+        }
+
+        if (autoCloudSaveRunning) {
+            return;
+        }
+
+        // Only run if the game is actually loaded and the
+        // reusable uploader has been registered.
+        if (typeof window.uploadCurrentSaveToCloud !== "function") {
+            return;
+        }
+
+        autoCloudSaveRunning = true;
 
         try {
 
-            console.log(
-                "[Cloud Save] Automatic save..."
-            );
-
-            // The reusable uploader lives inside loadVersion(),
-            // so we call it through the same path the button uses.
-            const uploadButton =
-                document.getElementById("save-upload");
-
-            if (uploadButton && uploadButton.onclick) {
-                await uploadButton.onclick();
-            }
+            await window.uploadCurrentSaveToCloud();
 
             console.log(
-                "[Cloud Save] Automatic upload complete."
+                "[Cloud Save] Auto-saved at " +
+                new Date().toLocaleTimeString()
             );
-
-            lastCloudSaveTime = Date.now();
 
             setCloudStatus(
                 "Auto-saved • " +
@@ -943,13 +948,27 @@ function triggerAutomaticCloudSave() {
         } catch (error) {
 
             console.error(
-                "[Cloud Save] Automatic upload failed:",
+                "[Cloud Save] Auto-save failed:",
                 error
             );
 
+        } finally {
+
+            autoCloudSaveRunning = false;
+
         }
 
-    }, 5000);
+    }, 20000);
+}
+
+function stopAutoCloudSave() {
+
+    if (autoCloudSaveTimer) {
+        clearInterval(autoCloudSaveTimer);
+        autoCloudSaveTimer = null;
+    }
+
+    autoCloudSaveRunning = false;
 }
 
 
