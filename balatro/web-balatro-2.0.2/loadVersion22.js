@@ -112,79 +112,64 @@ async function loadVersion(versionId) {
 
 
     // ==========================================
-    // FIND THE ACTUAL SAVE DB
+    // OPEN SAVE DB (forced to version 21)
     // ==========================================
 
-    // Pick the Balatro save DB with the highest version that actually
-    // contains FILE_DATA. Returns { name, db } or null.
-    async function findRealSaveDb() {
+    // The Balatro save DB lives at version 21 with a FILE_DATA store.
+    // We always open with an explicit version so Chrome cannot create
+    // an empty v1 shell. If the DB ever needs upgrading (its current
+    // version is lower than 21), we abort instead of wiping it.
+    const SAVE_DB_VERSION = 21;
 
-        let list;
-        try {
-            list = await indexedDB.databases();
-        } catch (err) {
-            console.log(
-                "[Cloud Save] databases() unavailable:", err
-            );
-            return null;
-        }
+    async function openSaveDb(save_data_id) {
 
-        const summary = list.map(
-            d => `${d.name} v${d.version}`
-        );
-        console.log("[Cloud Save] DBs:", summary);
+        return new Promise((resolve, reject) => {
 
-        const candidates = list
-            .filter(d =>
-                d.name &&
-                d.name.startsWith("Balatro_") &&
-                d.name.includes("/home/web_user/love") &&
-                !d.name.startsWith("BalatroCache")
-            )
-            .sort((a, b) =>
-                (b.version || 0) - (a.version || 0)
-            );
+            const req =
+                indexedDB.open(save_data_id, SAVE_DB_VERSION);
 
-        for (const info of candidates) {
+            let aborted = false;
 
-            if ((info.version || 0) < 2) {
-                // v1 = empty shell, skip
-                continue;
-            }
-
-            let db;
-            try {
-                db = await new Promise((resolve, reject) => {
-                    const req = indexedDB.open(info.name);
-                    req.onsuccess = () => resolve(req.result);
-                    req.onerror = () => reject(req.error);
-                    req.onblocked = () =>
-                        reject(new Error("blocked"));
-                });
-            } catch (err) {
-                console.log(
-                    "[Cloud Save] Cannot open",
-                    info.name, err
+            req.onupgradeneeded = (event) => {
+                aborted = true;
+                console.warn(
+                    "[Cloud Save] " + save_data_id +
+                    " needs upgrade (was v" + event.oldVersion +
+                    ", asked v" + SAVE_DB_VERSION + ") - aborting"
                 );
-                continue;
-            }
+                try {
+                    req.transaction.abort();
+                } catch (e) {}
+            };
 
-            const stores = Array.from(db.objectStoreNames);
-            console.log(
-                "[Cloud Save] Candidate",
-                info.name,
-                "v" + db.version,
-                "stores:", stores
-            );
+            req.onsuccess = () => {
+                if (aborted) {
+                    try { req.result.close(); } catch (e) {}
+                    reject(new Error(
+                        "Save DB " + save_data_id +
+                        " was not at v" + SAVE_DB_VERSION
+                    ));
+                    return;
+                }
+                resolve(req.result);
+            };
 
-            if (stores.indexOf("FILE_DATA") !== -1) {
-                return { name: info.name, db };
-            }
+            req.onerror = () =>
+                reject(req.error);
 
-            db.close();
-        }
-
-        return null;
+            req.onblocked = () => {
+                // Someone (the game) is holding an older-version
+                // connection open. Wait a moment and try again.
+                console.warn(
+                    "[Cloud Save] open(" + save_data_id +
+                    ") blocked, retrying in 1s"
+                );
+                setTimeout(() => {
+                    openSaveDb(save_data_id)
+                        .then(resolve, reject);
+                }, 1000);
+            };
+        });
     }
 
 
@@ -248,17 +233,7 @@ async function loadVersion(versionId) {
             status_text.innerText = "Opening Save Database";
             progress_bar.value = 40;
 
-            const request =
-                indexedDB.open(save_data_id);
-
-            const db = await new Promise((resolve, reject) => {
-
-                request.onsuccess = () =>
-                    resolve(request.result);
-
-                request.onerror = () =>
-                    reject(request.error);
-            });
+            const db = await openSaveDb(save_data_id);
 
             const zip_contents = {};
 
@@ -424,24 +399,35 @@ async function loadVersion(versionId) {
             return;
         }
 
-        status_text.innerText = "Finding Save Database";
-        progress_bar.value = 5;
-
-        const found = await findRealSaveDb();
-
-        if (!found) {
-            throw new Error(
-                "No Balatro save database with FILE_DATA exists yet. " +
-                "Make sure the game has saved at least once."
-            );
-        }
+        const save_data_id =
+            "Balatro_" +
+            loaded_game_id +
+            "_/home/web_user/love";
 
         console.log(
-            "[Cloud Save] Using DB:", found.name,
-            "v" + found.db.version
+            "[Cloud Save] Uploading from:", save_data_id,
+            "v" + SAVE_DB_VERSION
         );
 
-        const db = found.db;
+        status_text.innerText = "Opening Save Database";
+        progress_bar.value = 5;
+
+        const db = await openSaveDb(save_data_id);
+
+        const stores = Array.from(db.objectStoreNames);
+
+        console.log(
+            "[Cloud Save] Opened", save_data_id,
+            "v" + db.version, "stores:", stores
+        );
+
+        if (stores.indexOf("FILE_DATA") === -1) {
+            db.close();
+            throw new Error(
+                "Save DB has no FILE_DATA (v" + db.version +
+                ", stores: " + JSON.stringify(stores) + ")."
+            );
+        }
 
         try {
 
