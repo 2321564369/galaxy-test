@@ -354,17 +354,23 @@ async function loadVersion(versionId) {
                 "_/home/web_user/love";
         }
 
-        try {
+        status_text.innerText =
+            "Opening Save Database";
 
-            status_text.innerText =
-                "Opening Save Database";
+        progress_bar.value = 5;
 
-            progress_bar.value = 5;
+        let db = null;
 
-            const request =
-                indexedDB.open(save_data_id);
+        // Retry a few times if the game hasn't finished creating
+        // FILE_DATA yet.
+        const MAX_TRIES = 5;
 
-            const db = await new Promise((resolve, reject) => {
+        for (let attempt = 1; attempt <= MAX_TRIES; attempt++) {
+
+            db = await new Promise((resolve, reject) => {
+
+                const request =
+                    indexedDB.open(save_data_id);
 
                 request.onsuccess = () =>
                     resolve(request.result);
@@ -373,12 +379,39 @@ async function loadVersion(versionId) {
                     reject(request.error);
             });
 
-            if (!db.objectStoreNames.contains("FILE_DATA")) {
-                db.close();
-                throw new Error(
-                    "Save database is not ready yet."
+            const stores =
+                Array.from(db.objectStoreNames);
+
+            console.log(
+                "[Cloud Save] Opened",
+                save_data_id,
+                "version:",
+                db.version,
+                "stores:",
+                stores
+            );
+
+            if (stores.indexOf("FILE_DATA") !== -1) {
+                break;
+            }
+
+            db.close();
+            db = null;
+
+            if (attempt < MAX_TRIES) {
+                await new Promise(r =>
+                    setTimeout(r, 1000)
                 );
             }
+        }
+
+        if (!db) {
+            throw new Error(
+                "Save database is not ready yet."
+            );
+        }
+
+        try {
 
             const tx =
                 db.transaction(
@@ -442,6 +475,7 @@ async function loadVersion(versionId) {
                 });
 
             db.close();
+            db = null;
 
             const zip = new JSZip();
 
@@ -539,6 +573,8 @@ async function loadVersion(versionId) {
 
         } catch (error) {
 
+            if (db) db.close();
+
             console.error(error);
 
             status_text.innerText =
@@ -561,7 +597,9 @@ async function loadVersion(versionId) {
 
     save_upload.disabled = false;
 
-    save_upload.onclick = uploadCurrentSaveToCloud;
+    save_upload.onclick = function() {
+        uploadCurrentSaveToCloud();
+    };
 
 
     // ==========================================
@@ -906,128 +944,6 @@ async function deleteCloudSave() {
 
 
 // ==========================================
-// FIND READY SAVE DATABASE
-// ==========================================
-
-async function findReadySaveDatabase() {
-
-    if (!loaded_game_id) {
-        return null;
-    }
-
-    const expected =
-        "Balatro_" +
-        loaded_game_id +
-        "_/home/web_user/love";
-
-    const candidates = [];
-
-    try {
-
-        const list =
-            await indexedDB.databases();
-
-        const names =
-            list
-                .map(d => d.name)
-                .filter(Boolean);
-
-        console.log(
-            "[Cloud Save] IndexedDB databases:",
-            names
-        );
-
-        if (names.includes(expected)) {
-            candidates.push(expected);
-        }
-
-        for (const name of names) {
-
-            if (name === expected) {
-                continue;
-            }
-
-            if (
-                name.includes("Balatro_") &&
-                name.includes("/home/web_user/love")
-            ) {
-                candidates.push(name);
-            }
-        }
-
-    } catch (err) {
-
-        console.log(
-            "[Cloud Save] indexedDB.databases() failed:",
-            err
-        );
-
-        candidates.push(expected);
-    }
-
-    console.log(
-        "[Cloud Save] Candidates:",
-        candidates
-    );
-
-    for (const name of candidates) {
-
-        let db;
-
-        try {
-
-            db = await new Promise((resolve, reject) => {
-
-                const req =
-                    indexedDB.open(name);
-
-                req.onsuccess =
-                    () => resolve(req.result);
-
-                req.onerror =
-                    () => reject(req.error);
-            });
-
-        } catch (err) {
-
-            console.log(
-                "[Cloud Save] Could not open",
-                name,
-                ":",
-                err
-            );
-
-            continue;
-        }
-
-        const stores =
-            Array.from(db.objectStoreNames);
-
-        db.close();
-
-        console.log(
-            "[Cloud Save]",
-            name,
-            "stores:",
-            stores
-        );
-
-        if (stores.indexOf("FILE_DATA") !== -1) {
-
-            console.log(
-                "[Cloud Save] Using DB:",
-                name
-            );
-
-            return name;
-        }
-    }
-
-    return null;
-}
-
-
-// ==========================================
 // AUTOMATIC CLOUD SAVE
 // ==========================================
 
@@ -1058,19 +974,10 @@ function startAutoSave() {
 
         try {
 
-            const dbName = await findReadySaveDatabase();
-
-            if (!dbName) {
-                console.log(
-                    "[Cloud Save] No ready save database yet."
-                );
-                return;
-            }
-
-            await window.uploadCurrentSaveToCloud(dbName);
+            await window.uploadCurrentSaveToCloud();
 
             console.log(
-                "[Cloud Save] Auto-saved (" + dbName + ") at " +
+                "[Cloud Save] Auto-saved at " +
                 new Date().toLocaleTimeString()
             );
 
@@ -1081,9 +988,9 @@ function startAutoSave() {
 
         } catch (error) {
 
-            console.error(
-                "[Cloud Save] Auto-save failed:",
-                error
+            console.warn(
+                "[Cloud Save] Auto-save skipped:",
+                error.message
             );
 
         } finally {
@@ -1091,7 +998,7 @@ function startAutoSave() {
             autoSaveRunning = false;
         }
 
-    }, 10000);
+    }, 15000);
 }
 
 
