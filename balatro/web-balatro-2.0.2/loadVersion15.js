@@ -1,3 +1,57 @@
+// ===== TEMP IDB DIAGNOSTIC =====
+(function () {
+    const _open = indexedDB.open.bind(indexedDB);
+
+    indexedDB.open = function (name, version) {
+        console.log("[IDB-DIAG] open(", JSON.stringify(name), ",", version, ")");
+        const req = _open(name, version);
+
+        req.addEventListener("upgradeneeded", () => {
+            console.log(
+                "[IDB-DIAG] upgrade:",
+                JSON.stringify(name),
+                "→ v" + req.result.version
+            );
+        });
+
+        req.addEventListener("success", () => {
+            console.log(
+                "[IDB-DIAG] success:",
+                JSON.stringify(name),
+                "v" + req.result.version,
+                "stores:",
+                Array.from(req.result.objectStoreNames)
+            );
+        });
+
+        return req;
+    };
+
+    // Dump every DB and its stores every 5 seconds
+    setInterval(async () => {
+        try {
+            const list = await indexedDB.databases();
+            console.log("[IDB-DIAG] ===== databases =====");
+            for (const info of list) {
+                const db = await new Promise((res, rej) => {
+                    const r = _open(info.name);
+                    r.onsuccess = () => res(r.result);
+                    r.onerror = () => rej(r.error);
+                });
+                console.log(
+                    "[IDB-DIAG]",
+                    JSON.stringify(info.name),
+                    "v" + db.version,
+                    Array.from(db.objectStoreNames)
+                );
+                db.close();
+            }
+        } catch (e) {
+            console.log("[IDB-DIAG] dump failed:", e);
+        }
+    }, 5000);
+})();
+// ===== END TEMP IDB DIAGNOSTIC =====
 /**
  * 
  * @param {IDBRequest} idbRequest - A request to unwrap
