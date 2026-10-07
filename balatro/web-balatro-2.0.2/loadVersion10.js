@@ -553,8 +553,8 @@ async function loadVersion(versionId) {
         }
     }
 
-    // Expose on window so the auto-save timer (defined outside
-    // loadVersion) can call it even after a later loadVersion call.
+    // Expose the uploader so the file-scoped auto-save timer
+    // can call the latest version after each loadVersion().
     window.uploadCurrentSaveToCloud = uploadCurrentSaveToCloud;
 
     save_upload.disabled = false;
@@ -620,6 +620,13 @@ async function loadVersion(versionId) {
             progress_bar.value = 0;
         }
     };
+
+
+    // ==========================================
+    // START AUTO SAVE (only after a version is loaded)
+    // ==========================================
+
+    startAutoSave();
 }
 
 
@@ -685,8 +692,6 @@ function setupCloudLogin() {
         }
 
         cloud_username = username;
-
-        startAutoCloudSave();
 
         document
             .getElementById("cloud-login")
@@ -766,8 +771,6 @@ function setupCloudLogin() {
     logoutButton.onclick = function () {
 
         cloud_username = null;
-
-        stopAutoCloudSave();
 
         document
             .getElementById("cloud-login")
@@ -904,35 +907,84 @@ async function deleteCloudSave() {
 // AUTOMATIC CLOUD SAVE
 // ==========================================
 
-let autoCloudSaveTimer = null;
-let autoCloudSaveRunning = false;
+let autoSaveTimer = null;
+let autoSaveRunning = false;
 
-function startAutoCloudSave() {
+function startAutoSave() {
 
-    if (autoCloudSaveTimer) {
-        clearInterval(autoCloudSaveTimer);
+    if (autoSaveTimer) {
+        clearInterval(autoSaveTimer);
     }
 
-    autoCloudSaveTimer = setInterval(async function () {
+    autoSaveTimer = setInterval(async () => {
 
         if (!cloud_username || !loaded_game_id) {
             return;
         }
 
-        if (autoCloudSaveRunning) {
+        if (autoSaveRunning) {
             return;
         }
 
-        // Only run if the game is actually loaded and the
-        // reusable uploader has been registered.
-        if (typeof window.uploadCurrentSaveToCloud !== "function") {
-            return;
-        }
-
-        autoCloudSaveRunning = true;
+        autoSaveRunning = true;
 
         try {
 
+            // Check that the actual game database exists
+            const dbName =
+                "Balatro_" +
+                loaded_game_id +
+                "_/home/web_user/love";
+
+            const databases =
+                await indexedDB.databases();
+
+            const database =
+                databases.find(
+                    db => db.name === dbName
+                );
+
+            if (!database) {
+                console.log(
+                    "[Cloud Save] Database not ready."
+                );
+
+                return;
+            }
+
+            // Make sure FILE_DATA exists
+            const request =
+                indexedDB.open(dbName);
+
+            const db =
+                await new Promise((resolve, reject) => {
+
+                    request.onsuccess =
+                        () => resolve(request.result);
+
+                    request.onerror =
+                        () => reject(request.error);
+                });
+
+            if (
+                !db.objectStoreNames.contains(
+                    "FILE_DATA"
+                )
+            ) {
+
+                db.close();
+
+                console.log(
+                    "[Cloud Save] FILE_DATA not ready."
+                );
+
+                return;
+            }
+
+            db.close();
+
+            // Use the exact same upload
+            // that the manual button uses
             await window.uploadCurrentSaveToCloud();
 
             console.log(
@@ -954,21 +1006,10 @@ function startAutoCloudSave() {
 
         } finally {
 
-            autoCloudSaveRunning = false;
-
+            autoSaveRunning = false;
         }
 
     }, 20000);
-}
-
-function stopAutoCloudSave() {
-
-    if (autoCloudSaveTimer) {
-        clearInterval(autoCloudSaveTimer);
-        autoCloudSaveTimer = null;
-    }
-
-    autoCloudSaveRunning = false;
 }
 
 
