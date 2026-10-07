@@ -920,51 +920,105 @@ async function findReadySaveDatabase() {
         loaded_game_id +
         "_/home/web_user/love";
 
-    let list;
-    try {
-        list = await indexedDB.databases();
-    } catch (err) {
-        // indexedDB.databases() isn't supported - just use
-        // the expected name and let the uploader handle it.
-        return expected;
-    }
-
-    // Build candidates: exact match first, then any other
-    // Balatro save DB containing the same mount path.
     const candidates = [];
 
-    for (const info of list) {
-        if (!info.name) continue;
+    try {
 
-        if (info.name === expected) {
-            candidates.unshift(info.name);
-        } else if (
-            info.name.startsWith("Balatro_") &&
-            info.name.includes("/home/web_user/love")
-        ) {
-            candidates.push(info.name);
+        const list =
+            await indexedDB.databases();
+
+        const names =
+            list
+                .map(d => d.name)
+                .filter(Boolean);
+
+        console.log(
+            "[Cloud Save] IndexedDB databases:",
+            names
+        );
+
+        if (names.includes(expected)) {
+            candidates.push(expected);
         }
+
+        for (const name of names) {
+
+            if (name === expected) {
+                continue;
+            }
+
+            if (
+                name.includes("Balatro_") &&
+                name.includes("/home/web_user/love")
+            ) {
+                candidates.push(name);
+            }
+        }
+
+    } catch (err) {
+
+        console.log(
+            "[Cloud Save] indexedDB.databases() failed:",
+            err
+        );
+
+        candidates.push(expected);
     }
 
-    // Return the first one that actually has FILE_DATA.
+    console.log(
+        "[Cloud Save] Candidates:",
+        candidates
+    );
+
     for (const name of candidates) {
 
         let db;
 
         try {
+
             db = await new Promise((resolve, reject) => {
-                const req = indexedDB.open(name);
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => reject(req.error);
+
+                const req =
+                    indexedDB.open(name);
+
+                req.onsuccess =
+                    () => resolve(req.result);
+
+                req.onerror =
+                    () => reject(req.error);
             });
+
         } catch (err) {
+
+            console.log(
+                "[Cloud Save] Could not open",
+                name,
+                ":",
+                err
+            );
+
             continue;
         }
 
-        const has = db.objectStoreNames.contains("FILE_DATA");
+        const stores =
+            Array.from(db.objectStoreNames);
+
         db.close();
 
-        if (has) {
+        console.log(
+            "[Cloud Save]",
+            name,
+            "stores:",
+            stores
+        );
+
+        if (stores.indexOf("FILE_DATA") !== -1) {
+
+            console.log(
+                "[Cloud Save] Using DB:",
+                name
+            );
+
             return name;
         }
     }
@@ -1037,7 +1091,7 @@ function startAutoSave() {
             autoSaveRunning = false;
         }
 
-    }, 20000);
+    }, 10000);
 }
 
 
