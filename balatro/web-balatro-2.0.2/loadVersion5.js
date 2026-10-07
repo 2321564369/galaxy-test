@@ -880,7 +880,180 @@ async function deleteCloudSave() {
     }
 }
 
+// ==========================================
+// AUTOMATIC CLOUD SAVE
+// ==========================================
 
+let cloudAutoSaveTimer = null;
+let cloudAutoSaveRunning = false;
+
+async function autoUploadCloudSave() {
+
+    // Don't do anything unless logged in and a game is loaded
+    if (!cloud_username || !loaded_game_id) {
+        return;
+    }
+
+    // Prevent two uploads from happening at once
+    if (cloudAutoSaveRunning) {
+        return;
+    }
+
+    cloudAutoSaveRunning = true;
+
+    try {
+
+        const save_data_id =
+            "Balatro_" +
+            loaded_game_id +
+            "_/home/web_user/love";
+
+        const request =
+            indexedDB.open(save_data_id);
+
+        const db = await new Promise((resolve, reject) => {
+            request.onsuccess = () =>
+                resolve(request.result);
+
+            request.onerror = () =>
+                reject(request.error);
+        });
+
+        const tx =
+            db.transaction(
+                "FILE_DATA",
+                "readonly"
+            );
+
+        const store =
+            tx.objectStore("FILE_DATA");
+
+        const files =
+            await new Promise((resolve, reject) => {
+
+                const allFiles = {};
+
+                const cursorRequest =
+                    store.openCursor();
+
+                cursorRequest.onsuccess =
+                    event => {
+
+                        const cursor =
+                            event.target.result;
+
+                        if (cursor) {
+
+                            const path =
+                                cursor.key.replace(
+                                    "/home/web_user/love/game/",
+                                    ""
+                                );
+
+                            const metadata =
+                                cursor.value;
+
+                            if (metadata.contents) {
+
+                                allFiles[path] =
+                                    new Blob([
+                                        metadata.contents
+                                    ]);
+                            }
+
+                            cursor.continue();
+
+                        } else {
+
+                            resolve(allFiles);
+                        }
+                    };
+
+                cursorRequest.onerror =
+                    () => reject(
+                        cursorRequest.error
+                    );
+            });
+
+        db.close();
+
+        const zip = new JSZip();
+
+        for (const [path, blob] of Object.entries(files)) {
+
+            zip.file(
+                path,
+                blob,
+                {
+                    createFolders: true
+                }
+            );
+        }
+
+        const zipBlob =
+            await zip.generateAsync({
+                type: "blob"
+            });
+
+        const arrayBuffer =
+            await zipBlob.arrayBuffer();
+
+        const bytes =
+            new Uint8Array(arrayBuffer);
+
+        let binary = "";
+
+        const chunkSize = 0x8000;
+
+        for (
+            let i = 0;
+            i < bytes.length;
+            i += chunkSize
+        ) {
+
+            binary += String.fromCharCode(
+                ...bytes.subarray(
+                    i,
+                    Math.min(
+                        i + chunkSize,
+                        bytes.length
+                    )
+                )
+            );
+        }
+
+        const base64 =
+            btoa(binary);
+
+        await uploadCloudSave(base64);
+
+        console.log(
+            "[Cloud Save] Automatically saved."
+        );
+
+        setCloudStatus(
+            "Automatically saved • " +
+            new Date().toLocaleTimeString()
+        );
+
+    } catch (error) {
+
+        console.error(
+            "[Cloud Save] Auto-save failed:",
+            error
+        );
+
+        setCloudStatus(
+            "Auto-save failed: " +
+            error.message
+        );
+
+    } finally {
+
+        cloudAutoSaveRunning = false;
+    }
+    console.log("uploaded");
+}
 // ==========================================
 // START LOGIN SYSTEM
 // ==========================================
