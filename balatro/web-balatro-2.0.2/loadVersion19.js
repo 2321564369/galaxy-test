@@ -1,62 +1,52 @@
-// ===== TEMP IDB DIAGNOSTIC (remove once we know the answer) =====
+// ===== CAPTURE THE GAME'S ACTUAL SAVE DB =====
+// Balatro re-prefixes the mount path on every load, so the DB name
+// changes. Instead of guessing, we watch what the game opens and
+// remember the first one that actually has FILE_DATA.
+
+let game_save_db_name = null;
+
 (function () {
     const _open = indexedDB.open.bind(indexedDB);
-    indexedDB.open = function (...args) {
-        console.log("[IDB-HOOK] open", args);
-        const req = _open(...args);
-        req.addEventListener("upgradeneeded", () => {
-            console.log("[IDB-HOOK] upgradeneeded",
-                args[0], "→ v" + req.result.version,
-                "stores:", Array.from(req.result.objectStoreNames));
-        });
-        req.addEventListener("success", () => {
-            console.log("[IDB-HOOK] open success",
-                args[0], "v" + req.result.version,
-                "stores:", Array.from(req.result.objectStoreNames));
-        });
-        req.addEventListener("blocked", () => {
-            console.log("[IDB-HOOK] open BLOCKED", args[0]);
-        });
+
+    indexedDB.open = function (name, version) {
+        const req = _open(name, version);
+
+        if (
+            typeof name === "string" &&
+            name.startsWith("Balatro_") &&
+            name.includes("/home/web_user/love") &&
+            name !== "BalatroCacheDB"
+        ) {
+            req.addEventListener("success", () => {
+                const db = req.result;
+                const stores =
+                    Array.from(db.objectStoreNames);
+
+                console.log(
+                    "[Cloud Save] Game opened",
+                    name,
+                    "v" + db.version,
+                    "stores:", stores
+                );
+
+                if (stores.indexOf("FILE_DATA") !== -1) {
+                    if (game_save_db_name !== name) {
+                        game_save_db_name = name;
+                        console.log(
+                            "[Cloud Save] Game save DB captured:",
+                            name,
+                            "v" + db.version
+                        );
+                    }
+                }
+            });
+        }
+
         return req;
     };
-
-    const _del = indexedDB.deleteDatabase.bind(indexedDB);
-    indexedDB.deleteDatabase = function (name) {
-        console.log("[IDB-HOOK] deleteDatabase", name);
-        return _del(name);
-    };
-
-    const _add = IDBObjectStore.prototype.add;
-    IDBObjectStore.prototype.add = function (...args) {
-        console.log("[IDB-HOOK] store.add",
-            this.name, "key:", args[1]);
-        return _add.apply(this, args);
-    };
-
-    const _put = IDBObjectStore.prototype.put;
-    IDBObjectStore.prototype.put = function (...args) {
-        console.log("[IDB-HOOK] store.put",
-            this.name, "key:", args[1]);
-        return _put.apply(this, args);
-    };
-
-    // Check for the emscripten virtual FS. If it exists we can
-    // bypass IndexedDB entirely.
-    setInterval(() => {
-        if (typeof Module !== "undefined" && Module.FS) {
-            console.log("[FS-DIAG] Module.FS is available");
-            try {
-                const ls = Module.FS.readdir(
-                    "/home/web_user/love/game"
-                );
-                console.log("[FS-DIAG] /home/web_user/love/game:", ls);
-            } catch (e) {
-                console.log("[FS-DIAG] readdir failed:", e.message);
-            }
-        }
-    }, 10000);
 })();
-// ===== END TEMP IDB DIAGNOSTIC =====
+
+
 /**
  * 
  * @param {IDBRequest} idbRequest - A request to unwrap
@@ -406,58 +396,46 @@ async function loadVersion(versionId) {
             return;
         }
 
+        // 1. Prefer the DB the game actually opened this session.
+        // 2. Fall back to the expected name.
         if (!save_data_id) {
             save_data_id =
-                "Balatro_" +
-                loaded_game_id +
-                "_/home/web_user/love";
+                game_save_db_name ||
+                ("Balatro_" + loaded_game_id +
+                 "_/home/web_user/love");
         }
+
+        console.log(
+            "[Cloud Save] Uploading from:", save_data_id
+        );
 
         status_text.innerText =
             "Opening Save Database";
 
         progress_bar.value = 5;
 
-        // Make absolutely sure we don't create an empty shell.
+        let db = null;
+
         try {
-            const all = await indexedDB.databases();
-            const info =
-                all.find(d => d.name === save_data_id);
 
-            console.log(
-                "[Cloud Save] Want:",
-                save_data_id,
-                "| Found:",
-                info || "(missing)"
-            );
+            db = await new Promise((resolve, reject) => {
 
-            if (!info) {
-                throw new Error(
-                    "Save database '" +
-                    save_data_id +
-                    "' does not exist yet."
-                );
-            }
+                const req = indexedDB.open(save_data_id);
+
+                req.onsuccess =
+                    () => resolve(req.result);
+
+                req.onerror =
+                    () => reject(req.error);
+            });
 
         } catch (err) {
-            // indexedDB.databases() unavailable - fall through
-            console.log(
-                "[Cloud Save] databases() unavailable:",
-                err
+
+            throw new Error(
+                "Cannot open '" + save_data_id +
+                "': " + err.message
             );
         }
-
-        const request =
-            indexedDB.open(save_data_id);
-
-        const db = await new Promise((resolve, reject) => {
-
-            request.onsuccess = () =>
-                resolve(request.result);
-
-            request.onerror = () =>
-                reject(request.error);
-        });
 
         const stores =
             Array.from(db.objectStoreNames);
@@ -466,16 +444,17 @@ async function loadVersion(versionId) {
             "[Cloud Save] Opened",
             save_data_id,
             "v" + db.version,
-            "stores:",
-            stores
+            "stores:", stores
         );
 
         if (stores.indexOf("FILE_DATA") === -1) {
+
             db.close();
+
             throw new Error(
-                "Save database is not ready yet " +
-                "(v" + db.version + ", stores: " +
-                JSON.stringify(stores) + ")."
+                "Save database '" + save_data_id +
+                "' has no FILE_DATA (v" + db.version +
+                ", stores: " + JSON.stringify(stores) + ")."
             );
         }
 
@@ -543,6 +522,7 @@ async function loadVersion(versionId) {
                 });
 
             db.close();
+            db = null;
 
             const zip = new JSZip();
 
@@ -640,7 +620,9 @@ async function loadVersion(versionId) {
 
         } catch (error) {
 
-            try { db.close(); } catch (e) {}
+            if (db) {
+                try { db.close(); } catch (e) {}
+            }
 
             console.error(error);
 
