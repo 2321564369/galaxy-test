@@ -1,3 +1,62 @@
+// ===== TEMP IDB DIAGNOSTIC (remove once we know the answer) =====
+(function () {
+    const _open = indexedDB.open.bind(indexedDB);
+    indexedDB.open = function (...args) {
+        console.log("[IDB-HOOK] open", args);
+        const req = _open(...args);
+        req.addEventListener("upgradeneeded", () => {
+            console.log("[IDB-HOOK] upgradeneeded",
+                args[0], "→ v" + req.result.version,
+                "stores:", Array.from(req.result.objectStoreNames));
+        });
+        req.addEventListener("success", () => {
+            console.log("[IDB-HOOK] open success",
+                args[0], "v" + req.result.version,
+                "stores:", Array.from(req.result.objectStoreNames));
+        });
+        req.addEventListener("blocked", () => {
+            console.log("[IDB-HOOK] open BLOCKED", args[0]);
+        });
+        return req;
+    };
+
+    const _del = indexedDB.deleteDatabase.bind(indexedDB);
+    indexedDB.deleteDatabase = function (name) {
+        console.log("[IDB-HOOK] deleteDatabase", name);
+        return _del(name);
+    };
+
+    const _add = IDBObjectStore.prototype.add;
+    IDBObjectStore.prototype.add = function (...args) {
+        console.log("[IDB-HOOK] store.add",
+            this.name, "key:", args[1]);
+        return _add.apply(this, args);
+    };
+
+    const _put = IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put = function (...args) {
+        console.log("[IDB-HOOK] store.put",
+            this.name, "key:", args[1]);
+        return _put.apply(this, args);
+    };
+
+    // Check for the emscripten virtual FS. If it exists we can
+    // bypass IndexedDB entirely.
+    setInterval(() => {
+        if (typeof Module !== "undefined" && Module.FS) {
+            console.log("[FS-DIAG] Module.FS is available");
+            try {
+                const ls = Module.FS.readdir(
+                    "/home/web_user/love/game"
+                );
+                console.log("[FS-DIAG] /home/web_user/love/game:", ls);
+            } catch (e) {
+                console.log("[FS-DIAG] readdir failed:", e.message);
+            }
+        }
+    }, 10000);
+})();
+// ===== END TEMP IDB DIAGNOSTIC =====
 /**
  * 
  * @param {IDBRequest} idbRequest - A request to unwrap
