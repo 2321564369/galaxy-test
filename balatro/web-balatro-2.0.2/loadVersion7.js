@@ -373,6 +373,13 @@ async function loadVersion(versionId) {
                     reject(request.error);
             });
 
+            if (!db.objectStoreNames.contains("FILE_DATA")) {
+                db.close();
+                throw new Error(
+                    "Save database is not ready yet."
+                );
+            }
+
             const tx =
                 db.transaction(
                     "FILE_DATA",
@@ -605,6 +612,13 @@ async function loadVersion(versionId) {
             progress_bar.value = 0;
         }
     };
+
+
+    // ==========================================
+    // START WATCHING BALATRO SAVE DATABASE
+    // ==========================================
+
+    watchBalatroSaveDatabase();
 }
 
 
@@ -671,15 +685,6 @@ function setupCloudLogin() {
 
         cloud_username = username;
 
-        if (cloudAutoSaveTimer) {
-            clearInterval(cloudAutoSaveTimer);
-        }
-
-        cloudAutoSaveTimer = setInterval(
-            autoUploadCloudSave,
-            20000
-        );
-        
         document
             .getElementById("cloud-login")
             .classList.add("hidden");
@@ -889,180 +894,277 @@ async function deleteCloudSave() {
     }
 }
 
+
 // ==========================================
-// AUTOMATIC CLOUD SAVE
+// CLOUD SAVE AFTER BALATRO SAVE
 // ==========================================
 
-let cloudAutoSaveTimer = null;
-let cloudAutoSaveRunning = false;
+let cloudSaveDebounceTimer = null;
+let cloudSaveDatabase = null;
 
-async function autoUploadCloudSave() {
+function scheduleCloudSave() {
 
-    // Don't do anything unless logged in and a game is loaded
     if (!cloud_username || !loaded_game_id) {
         return;
     }
 
-    // Prevent two uploads from happening at once
-    if (cloudAutoSaveRunning) {
+    // Reset the timer whenever Balatro saves again
+    if (cloudSaveDebounceTimer) {
+        clearTimeout(cloudSaveDebounceTimer);
+    }
+
+    cloudSaveDebounceTimer = setTimeout(
+        async function () {
+
+            console.log(
+                "[Cloud Save] Balatro saved - uploading..."
+            );
+
+            try {
+
+                await uploadCurrentIndexedDBSave();
+
+                console.log(
+                    "[Cloud Save] Automatically uploaded."
+                );
+
+                setCloudStatus(
+                    "Auto-saved • " +
+                    new Date().toLocaleTimeString()
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "[Cloud Save] Auto-save failed:",
+                    error
+                );
+
+                setCloudStatus(
+                    "Auto-save failed: " +
+                    error.message
+                );
+            }
+
+        },
+        5000
+    );
+}
+
+
+// ==========================================
+// UPLOAD CURRENT INDEXEDDB SAVE
+// ==========================================
+
+async function uploadCurrentIndexedDBSave() {
+
+    if (!cloud_username || !loaded_game_id) {
         return;
     }
 
-    cloudAutoSaveRunning = true;
+    const save_data_id =
+        "Balatro_" +
+        loaded_game_id +
+        "_/home/web_user/love";
 
-    try {
+    const request =
+        indexedDB.open(save_data_id);
 
-        const save_data_id =
-            "Balatro_" +
-            loaded_game_id +
-            "_/home/web_user/love";
+    const db = await new Promise((resolve, reject) => {
 
-        const request =
-            indexedDB.open(save_data_id);
+        request.onsuccess = () =>
+            resolve(request.result);
 
-        const db = await new Promise((resolve, reject) => {
-            request.onsuccess = () =>
-                resolve(request.result);
+        request.onerror = () =>
+            reject(request.error);
+    });
 
-            request.onerror = () =>
-                reject(request.error);
+    // Make sure the save database actually has FILE_DATA
+    if (!db.objectStoreNames.contains("FILE_DATA")) {
+        db.close();
+        throw new Error(
+            "Save database is not ready yet."
+        );
+    }
+
+    const tx =
+        db.transaction(
+            "FILE_DATA",
+            "readonly"
+        );
+
+    const store =
+        tx.objectStore("FILE_DATA");
+
+    const files =
+        await new Promise((resolve, reject) => {
+
+            const allFiles = {};
+
+            const cursorRequest =
+                store.openCursor();
+
+            cursorRequest.onsuccess =
+                event => {
+
+                    const cursor =
+                        event.target.result;
+
+                    if (cursor) {
+
+                        const path =
+                            cursor.key.replace(
+                                "/home/web_user/love/game/",
+                                ""
+                            );
+
+                        const metadata =
+                            cursor.value;
+
+                        if (metadata.contents) {
+
+                            allFiles[path] =
+                                new Blob([
+                                    metadata.contents
+                                ]);
+                        }
+
+                        cursor.continue();
+
+                    } else {
+
+                        resolve(allFiles);
+                    }
+                };
+
+            cursorRequest.onerror =
+                () => reject(
+                    cursorRequest.error
+                );
         });
 
-        const tx =
-            db.transaction(
-                "FILE_DATA",
-                "readonly"
-            );
+    db.close();
 
-        const store =
-            tx.objectStore("FILE_DATA");
+    const zip = new JSZip();
 
-        const files =
-            await new Promise((resolve, reject) => {
+    for (
+        const [path, blob]
+        of Object.entries(files)
+    ) {
 
-                const allFiles = {};
+        zip.file(
+            path,
+            blob,
+            {
+                createFolders: true
+            }
+        );
+    }
 
-                const cursorRequest =
-                    store.openCursor();
+    const zipBlob =
+        await zip.generateAsync({
+            type: "blob"
+        });
 
-                cursorRequest.onsuccess =
-                    event => {
+    const arrayBuffer =
+        await zipBlob.arrayBuffer();
 
-                        const cursor =
-                            event.target.result;
+    const bytes =
+        new Uint8Array(arrayBuffer);
 
-                        if (cursor) {
+    let binary = "";
 
-                            const path =
-                                cursor.key.replace(
-                                    "/home/web_user/love/game/",
-                                    ""
-                                );
+    const chunkSize = 0x8000;
 
-                            const metadata =
-                                cursor.value;
+    for (
+        let i = 0;
+        i < bytes.length;
+        i += chunkSize
+    ) {
 
-                            if (metadata.contents) {
+        binary += String.fromCharCode(
+            ...bytes.subarray(
+                i,
+                Math.min(
+                    i + chunkSize,
+                    bytes.length
+                )
+            )
+        );
+    }
 
-                                allFiles[path] =
-                                    new Blob([
-                                        metadata.contents
-                                    ]);
-                            }
+    const base64 =
+        btoa(binary);
 
-                            cursor.continue();
+    await uploadCloudSave(base64);
+}
 
-                        } else {
 
-                            resolve(allFiles);
-                        }
-                    };
+// ==========================================
+// WATCH BALATRO SAVE DATABASE
+// ==========================================
 
-                cursorRequest.onerror =
-                    () => reject(
-                        cursorRequest.error
-                    );
-            });
+function watchBalatroSaveDatabase() {
 
-        db.close();
+    if (!loaded_game_id) {
+        return;
+    }
 
-        const zip = new JSZip();
+    const save_data_id =
+        "Balatro_" +
+        loaded_game_id +
+        "_/home/web_user/love";
 
-        for (const [path, blob] of Object.entries(files)) {
+    const request =
+        indexedDB.open(save_data_id);
 
-            zip.file(
-                path,
-                blob,
-                {
-                    createFolders: true
-                }
-            );
+    request.onsuccess = function () {
+
+        const db = request.result;
+
+        if (!db.objectStoreNames.contains("FILE_DATA")) {
+            db.close();
+            return;
         }
 
-        const zipBlob =
-            await zip.generateAsync({
-                type: "blob"
-            });
+        const originalTransaction =
+            db.transaction.bind(db);
 
-        const arrayBuffer =
-            await zipBlob.arrayBuffer();
-
-        const bytes =
-            new Uint8Array(arrayBuffer);
-
-        let binary = "";
-
-        const chunkSize = 0x8000;
-
-        for (
-            let i = 0;
-            i < bytes.length;
-            i += chunkSize
+        db.transaction = function (
+            storeNames,
+            mode,
+            options
         ) {
 
-            binary += String.fromCharCode(
-                ...bytes.subarray(
-                    i,
-                    Math.min(
-                        i + chunkSize,
-                        bytes.length
-                    )
-                )
-            );
-        }
+            const tx =
+                originalTransaction(
+                    storeNames,
+                    mode,
+                    options
+                );
 
-        const base64 =
-            btoa(binary);
+            if (
+                mode === "readwrite" ||
+                mode === "versionchange"
+            ) {
 
-        await uploadCloudSave(base64);
+                tx.oncomplete = function () {
+                    scheduleCloudSave();
+                };
+            }
+
+            return tx;
+        };
+
+        cloudSaveDatabase = db;
 
         console.log(
-            "[Cloud Save] Automatically saved."
+            "[Cloud Save] Watching Balatro save database."
         );
-
-        setCloudStatus(
-            "Automatically saved • " +
-            new Date().toLocaleTimeString()
-        );
-
-    } catch (error) {
-
-        console.error(
-            "[Cloud Save] Auto-save failed:",
-            error
-        );
-
-        setCloudStatus(
-            "Auto-save failed: " +
-            error.message
-        );
-
-    } finally {
-
-        cloudAutoSaveRunning = false;
-    }
-    console.log("uploaded");
+    };
 }
+
+
 // ==========================================
 // START LOGIN SYSTEM
 // ==========================================
