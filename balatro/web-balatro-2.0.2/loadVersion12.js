@@ -340,11 +340,18 @@ async function loadVersion(versionId) {
     // UPLOAD CLOUD SAVE (reusable function)
     // ==========================================
 
-    async function uploadCurrentSaveToCloud() {
+    async function uploadCurrentSaveToCloud(save_data_id) {
 
         if (!cloud_username) {
             setCloudStatus("Please log in first.");
             return;
+        }
+
+        if (!save_data_id) {
+            save_data_id =
+                "Balatro_" +
+                loaded_game_id +
+                "_/home/web_user/love";
         }
 
         try {
@@ -353,11 +360,6 @@ async function loadVersion(versionId) {
                 "Opening Save Database";
 
             progress_bar.value = 5;
-
-            const save_data_id =
-                "Balatro_" +
-                loaded_game_id +
-                "_/home/web_user/love";
 
             const request =
                 indexedDB.open(save_data_id);
@@ -904,6 +906,74 @@ async function deleteCloudSave() {
 
 
 // ==========================================
+// FIND READY SAVE DATABASE
+// ==========================================
+
+async function findReadySaveDatabase() {
+
+    if (!loaded_game_id) {
+        return null;
+    }
+
+    const expected =
+        "Balatro_" +
+        loaded_game_id +
+        "_/home/web_user/love";
+
+    let list;
+    try {
+        list = await indexedDB.databases();
+    } catch (err) {
+        // indexedDB.databases() isn't supported - just use
+        // the expected name and let the uploader handle it.
+        return expected;
+    }
+
+    // Build candidates: exact match first, then any other
+    // Balatro save DB containing the same mount path.
+    const candidates = [];
+
+    for (const info of list) {
+        if (!info.name) continue;
+
+        if (info.name === expected) {
+            candidates.unshift(info.name);
+        } else if (
+            info.name.startsWith("Balatro_") &&
+            info.name.includes("/home/web_user/love")
+        ) {
+            candidates.push(info.name);
+        }
+    }
+
+    // Return the first one that actually has FILE_DATA.
+    for (const name of candidates) {
+
+        let db;
+
+        try {
+            db = await new Promise((resolve, reject) => {
+                const req = indexedDB.open(name);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        } catch (err) {
+            continue;
+        }
+
+        const has = db.objectStoreNames.contains("FILE_DATA");
+        db.close();
+
+        if (has) {
+            return name;
+        }
+    }
+
+    return null;
+}
+
+
+// ==========================================
 // AUTOMATIC CLOUD SAVE
 // ==========================================
 
@@ -926,69 +996,27 @@ function startAutoSave() {
             return;
         }
 
+        if (typeof window.uploadCurrentSaveToCloud !== "function") {
+            return;
+        }
+
         autoSaveRunning = true;
 
         try {
 
-            // Check that the actual game database exists
-            const dbName =
-                "Balatro_" +
-                loaded_game_id +
-                "_/home/web_user/love";
+            const dbName = await findReadySaveDatabase();
 
-            const databases =
-                await indexedDB.databases();
-
-            const database =
-                databases.find(
-                    db => db.name === dbName
-                );
-
-            if (!database) {
+            if (!dbName) {
                 console.log(
-                    "[Cloud Save] Database not ready."
+                    "[Cloud Save] No ready save database yet."
                 );
-
                 return;
             }
 
-            // Make sure FILE_DATA exists
-            const request =
-                indexedDB.open(dbName);
-
-            const db =
-                await new Promise((resolve, reject) => {
-
-                    request.onsuccess =
-                        () => resolve(request.result);
-
-                    request.onerror =
-                        () => reject(request.error);
-                });
-
-            if (
-                !db.objectStoreNames.contains(
-                    "FILE_DATA"
-                )
-            ) {
-
-                db.close();
-
-                console.log(
-                    "[Cloud Save] FILE_DATA not ready."
-                );
-
-                return;
-            }
-
-            db.close();
-
-            // Use the exact same upload
-            // that the manual button uses
-            await window.uploadCurrentSaveToCloud();
+            await window.uploadCurrentSaveToCloud(dbName);
 
             console.log(
-                "[Cloud Save] Auto-saved at " +
+                "[Cloud Save] Auto-saved (" + dbName + ") at " +
                 new Date().toLocaleTimeString()
             );
 
