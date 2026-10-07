@@ -671,6 +671,15 @@ function setupCloudLogin() {
 
         cloud_username = username;
 
+        if (cloudAutoSaveTimer) {
+            clearInterval(cloudAutoSaveTimer);
+        }
+
+        cloudAutoSaveTimer = setInterval(
+            autoUploadCloudSave,
+            20000
+        );
+        
         document
             .getElementById("cloud-login")
             .classList.add("hidden");
