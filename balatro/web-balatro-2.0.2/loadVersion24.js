@@ -115,31 +115,17 @@ async function loadVersion(versionId) {
     // OPEN SAVE DB (forced to version 21, bypassing hooks)
     // ==========================================
 
-    // runVersion.js monkey-patches indexedDB.open, which strips the
-    // version argument. We call the native prototype method directly
-    // so our version request actually reaches Chrome.
     const SAVE_DB_VERSION = 21;
 
-    // Grab the native open once, before anyone else gets a chance to
-    // overwrite it. If IDBFactory.prototype.open is already hooked,
-    // this still gives us the real function.
     const nativeOpen = (function () {
-
-        // Try the prototype first.
-        let fn = IDBFactory.prototype.open;
-
-        // Verify it isn't itself a wrapper by checking source length.
-        // A wrapper usually re-invokes indexedDB.open, so its
-        // toString would contain "indexedDB.open".
+        const fn = IDBFactory.prototype.open;
         const src = Function.prototype.toString.call(fn);
-
         if (src.indexOf("indexedDB.open") !== -1) {
             console.warn(
                 "[Cloud Save] IDBFactory.prototype.open looks hooked:",
                 src.slice(0, 200)
             );
         }
-
         return fn;
     })();
 
@@ -147,8 +133,6 @@ async function loadVersion(versionId) {
 
         return new Promise((resolve, reject) => {
 
-            // Call the native method, bypassing any instance-level
-            // indexedDB.open wrapper that runVersion.js installed.
             const req =
                 nativeOpen.call(indexedDB, save_data_id, SAVE_DB_VERSION);
 
@@ -295,12 +279,15 @@ async function loadVersion(versionId) {
                         timestamp: file.date,
 
                         contents:
-                            new Int8Array(arrayBuffer)
+                            new Uint8Array(arrayBuffer)
                     };
                 }
             }
 
-            // Clear existing save
+            // Clear existing save, then write everything back in one
+            // transaction. store.clear() is atomic and avoids the
+            // cursor + await pitfall that could leave the transaction
+            // half-done.
             let tx =
                 db.transaction(
                     "FILE_DATA",
@@ -315,42 +302,7 @@ async function loadVersion(versionId) {
 
             progress_bar.value = 60;
 
-            await new Promise((resolve, reject) => {
-
-                const cursorRequest =
-                    store.openCursor();
-
-                cursorRequest.onsuccess =
-                    async event => {
-
-                        const cursor =
-                            event.target.result;
-
-                        if (cursor) {
-
-                            await unwrapIDBRequest(
-                                store.delete(cursor.key)
-                            );
-
-                            cursor.continue();
-
-                        } else {
-
-                            resolve();
-                        }
-                    };
-
-                cursorRequest.onerror =
-                    () => reject(cursorRequest.error);
-            });
-
-            // Write cloud save into IndexedDB
-            tx = db.transaction(
-                "FILE_DATA",
-                "readwrite"
-            );
-
-            store = tx.objectStore("FILE_DATA");
+            store.clear();
 
             status_text.innerText =
                 "Restoring Save";
@@ -379,6 +331,55 @@ async function loadVersion(versionId) {
 
             });
 
+            // Verify what we actually wrote.
+            const verifyTx =
+                db.transaction(
+                    "FILE_DATA",
+                    "readonly"
+                );
+
+            const verifyStore =
+                verifyTx.objectStore("FILE_DATA");
+
+            const written =
+                await new Promise((resolve, reject) => {
+
+                    const keys = [];
+
+                    const cursorRequest =
+                        verifyStore.openCursor();
+
+                    cursorRequest.onsuccess = (event) => {
+                        const cursor = event.target.result;
+                        if (cursor) {
+                            const v = cursor.value;
+                            keys.push({
+                                key: cursor.key,
+                                mode: v.mode,
+                                hasContents: !!v.contents,
+                                length: v.contents
+                                    ? v.contents.length
+                                    : 0,
+                                ctor: v.contents
+                                    ? v.contents.constructor.name
+                                    : null
+                            });
+                            cursor.continue();
+                        } else {
+                            resolve(keys);
+                        }
+                    };
+
+                    cursorRequest.onerror =
+                        () => reject(cursorRequest.error);
+                });
+
+            console.log(
+                "[Cloud Save] Wrote " + written.length +
+                " entries to " + save_data_id
+            );
+            console.table(written);
+
             db.close();
 
             progress_bar.value = 100;
@@ -386,8 +387,8 @@ async function loadVersion(versionId) {
             status_text.innerText = "Ready";
 
             setCloudStatus(
-                "Cloud save loaded for " +
-                cloud_username
+                "Cloud save loaded for " + cloud_username +
+                " — reload the page to see it in-game"
             );
 
             setTimeout(() => {
