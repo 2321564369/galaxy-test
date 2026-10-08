@@ -227,6 +227,20 @@ async function loadVersion(versionId) {
 
             const zipFile = await JSZip.loadAsync(fileBlob);
 
+            console.log(
+                "[Cloud Save] Zip entries:",
+                Object.keys(zipFile.files).length
+            );
+            console.table(
+                Object.values(zipFile.files).map(f => ({
+                    name: f.name,
+                    dir: f.dir,
+                    size: f._data
+                        ? f._data.uncompressedSize
+                        : "?"
+                }))
+            );
+
             const DIR_PERMS = 16832;
             const FILE_PERMS = 33152;
             const SETTINGS_PERMS = 33206;
@@ -285,9 +299,7 @@ async function loadVersion(versionId) {
             }
 
             // Clear existing save, then write everything back in one
-            // transaction. store.clear() is atomic and avoids the
-            // cursor + await pitfall that could leave the transaction
-            // half-done.
+            // transaction. store.clear() is atomic.
             let tx =
                 db.transaction(
                     "FILE_DATA",
@@ -344,7 +356,7 @@ async function loadVersion(versionId) {
             const written =
                 await new Promise((resolve, reject) => {
 
-                    const keys = [];
+                    const entries = [];
 
                     const cursorRequest =
                         verifyStore.openCursor();
@@ -353,7 +365,7 @@ async function loadVersion(versionId) {
                         const cursor = event.target.result;
                         if (cursor) {
                             const v = cursor.value;
-                            keys.push({
+                            entries.push({
                                 key: cursor.key,
                                 mode: v.mode,
                                 hasContents: !!v.contents,
@@ -366,7 +378,7 @@ async function loadVersion(versionId) {
                             });
                             cursor.continue();
                         } else {
-                            resolve(keys);
+                            resolve(entries);
                         }
                     };
 
@@ -468,54 +480,75 @@ async function loadVersion(versionId) {
 
             progress_bar.value = 15;
 
-            const files =
+            // Read EVERY entry in the store so we can see exactly
+            // what the game has written.
+            const allEntries =
                 await new Promise((resolve, reject) => {
 
-                    const allFiles = {};
+                    const arr = [];
 
                     const cursorRequest =
                         store.openCursor();
 
-                    cursorRequest.onsuccess =
-                        event => {
-
-                            const cursor =
-                                event.target.result;
-
-                            if (cursor) {
-
-                                const path =
-                                    cursor.key.replace(
-                                        "/home/web_user/love/game/",
-                                        ""
-                                    );
-
-                                const metadata =
-                                    cursor.value;
-
-                                if (metadata.contents) {
-
-                                    allFiles[path] =
-                                        new Blob([
-                                            metadata.contents
-                                        ]);
-                                }
-
-                                cursor.continue();
-
-                            } else {
-
-                                resolve(allFiles);
-                            }
-                        };
+                    cursorRequest.onsuccess = (event) => {
+                        const cursor = event.target.result;
+                        if (cursor) {
+                            arr.push({
+                                key: cursor.key,
+                                value: cursor.value
+                            });
+                            cursor.continue();
+                        } else {
+                            resolve(arr);
+                        }
+                    };
 
                     cursorRequest.onerror =
-                        () => reject(
-                            cursorRequest.error
-                        );
+                        () => reject(cursorRequest.error);
                 });
 
+            console.log(
+                "[Cloud Save] DB has " + allEntries.length +
+                " entries total"
+            );
+            console.table(allEntries.map(e => {
+                const v = e.value;
+                return {
+                    key: e.key,
+                    mode: v && v.mode,
+                    hasContents: !!(v && v.contents),
+                    ctor: (v && v.contents)
+                        ? v.contents.constructor.name
+                        : null,
+                    length: (v && v.contents)
+                        ? v.contents.length
+                        : 0,
+                    valueKeys: v
+                        ? Object.keys(v).join(",")
+                        : ""
+                };
+            }));
+
             db.close();
+
+            // Now build the ZIP from the entries with contents.
+            const files = {};
+
+            for (const e of allEntries) {
+                const v = e.value;
+                if (!v || !v.contents) continue;
+                const path = e.key.replace(
+                    "/home/web_user/love/game/",
+                    ""
+                );
+                files[path] = new Blob([v.contents]);
+            }
+
+            console.log(
+                "[Cloud Save] Files to zip:",
+                Object.keys(files).length,
+                Object.keys(files)
+            );
 
             const zip = new JSZip();
 
@@ -590,6 +623,12 @@ async function loadVersion(versionId) {
             const base64 =
                 btoa(binary);
 
+            console.log(
+                "[Cloud Save] Uploading " +
+                bytes.length + " bytes (" +
+                fileEntries.length + " files)"
+            );
+
             status_text.innerText =
                 "Uploading to Supabase";
 
@@ -631,8 +670,6 @@ async function loadVersion(versionId) {
         }
     }
 
-    // Expose the uploader so the file-scoped auto-save timer
-    // can call the latest version after each loadVersion().
     window.uploadCurrentSaveToCloud = uploadCurrentSaveToCloud;
 
     save_upload.disabled = false;
